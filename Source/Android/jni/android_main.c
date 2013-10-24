@@ -1,4 +1,5 @@
 #include "..\..\Core\mobitech.h"
+#include "..\..\Core\lodepng\lodepng.h"
 
 struct saved_state {
     float angle;
