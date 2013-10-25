@@ -5,7 +5,7 @@
 #include <jni.h>
 #include <errno.h>
 
-#include <EGL/egl.h>
+#include <EGL/egl.h
 #include <GLES/gl.h>
 
 #include <android/sensor.h>
@@ -18,5 +18,22 @@
 
 #ifdef MOBITECH_WIN32
 #endif //MOBITECH_WIN32
+
+#include "UResourceFactory.h"
+
+class UEngine 
+{
+    unsigned int fps;
+    float elapsedTime;
+
+public:
+    
+    static UResourceFactory  rf;
+    
+    bool Initialize();
+    void Run();
+    void Stop();
+    void Release();
+};
 
 #endif //MOBITECH_H
