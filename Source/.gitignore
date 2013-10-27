@@ -1,2 +1,15 @@
+/Source/.metadata/**/*.*
+/*.o
+/*.suo
+/*.log
 /*.pidb
 /StyleCop.Cache
+/*.ilk
+/*.pdb
+/*.sdf
+/*.opensdf
+/*.tlog
+/*.obj
+/*.tree
+/*.index
+/*.lastbuildstate
