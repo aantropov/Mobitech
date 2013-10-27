@@ -4,18 +4,21 @@
 using namespace std;
 
 #ifdef MOBITECH_ANDROID
+
 #include <jni.h>
 #include <errno.h>
 
-#include <EGL/egl.h
-#include <GLES/gl.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 #include <android/sensor.h>
 #include <android/log.h>
-#include <android_native_app_glue.h>
+//#include <android_native_app_glue.h>
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#define  LOG_TAG    "libgl2jni"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 #endif //MOBITECH_ANDROID
 
 #ifdef MOBITECH_WIN32

@@ -33,14 +33,14 @@ inline double round(double value, double precious)
 }
 
 #ifndef min
-__forceinline float min(float a, float b)
+inline float min(float a, float b)
 {
     return (a < b ? a : b);
 }
 #endif
 
 #ifndef max
-__forceinline float max(float a, float b)
+inline float max(float a, float b)
 {
     return (a < b ? b : a);
 }
