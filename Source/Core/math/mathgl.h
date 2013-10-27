@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _MATHGL_H_
+#define _MATHGL_H_
+
 #include "math3d.h"
 
 // transformation
@@ -181,3 +183,5 @@ inline const mat4 GLLookAt(const vec3 &position, const vec3 &center, const vec3 
                 f.x, f.y, f.z, -dot(f, position),
                 0, 0, 0, 1);
 }
+
+#endif 

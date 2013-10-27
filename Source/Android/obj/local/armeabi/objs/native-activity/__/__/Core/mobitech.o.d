@@ -1,2 +1,2 @@
-obj/local/armeabi/objs/native-activity/__/__/Core/mobitech.o: \
- jni/../../Core/mobitech.cpp
+obj/local/armeabi/objs/native-activity/__/__/core//mobitech.o: \
+ jni/../../core//mobitech.cpp

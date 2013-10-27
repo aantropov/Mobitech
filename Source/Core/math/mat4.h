@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MAT4_H_
+#define _MAT4_H_
 
 #include <cmath>
 
@@ -232,3 +233,4 @@ inline const mat4 transpose(const mat4 &M)
                 M[ 3], M[ 7], M[11], M[15]);
 }
 
+#endif

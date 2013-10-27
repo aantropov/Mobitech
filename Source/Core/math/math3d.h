@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MATH3D_H_
+#define _MATH3D_H_
 
 #include <cmath>
 #include "stdlib.h"
@@ -445,3 +446,5 @@ inline vec3 VertexTangentSpace(vec3& v0pos, vec3& v1pos, vec3& v2pos, vec2& v0te
 
     return normalize(v0t);
 }/**/
+
+#endif 

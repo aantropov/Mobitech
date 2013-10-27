@@ -1,12 +1,13 @@
-#pragma once
+#ifndef _UTILS_H_
+#define _UTILS_H_
 
 template<typename T>
-class USingleton 
+class Singleton
 {
 protected:
 
     static T* instance;
-    USingleton(){}
+    Singleton(){}
 
 public:
 
@@ -18,4 +19,6 @@ public:
 };
 
 template<typename T>
-T* USingleton<T>:: instance = nullptr;
+T* Singleton<T>:: instance = nullptr;
+
+#endif //_UTILS_H_

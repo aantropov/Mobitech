@@ -1,6 +1,8 @@
 #ifndef MOBITECH_H
 #define MOBITECH_H
 
+using namespace std;
+
 #ifdef MOBITECH_ANDROID
 #include <jni.h>
 #include <errno.h>
@@ -19,16 +21,17 @@
 #ifdef MOBITECH_WIN32
 #endif //MOBITECH_WIN32
 
-#include "UResourceFactory.h"
+#include "resources.h"
+#include "math\mathgl.h"
 
-class UEngine 
+class Engine 
 {
     unsigned int fps;
     float elapsedTime;
 
 public:
     
-    static UResourceFactory  rf;
+    static ResourceFactory  rf;
     
     bool Initialize();
     void Run();

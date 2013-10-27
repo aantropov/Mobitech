@@ -59,7 +59,8 @@ obj/local/armeabi/objs/native-activity/android_main.o: jni/android_main.c \
  D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/asset_manager.h \
  D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/native_activity.h \
  D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/input.h \
- D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/keycodes.h
+ D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/keycodes.h \
+ jni/..\..\Core\lodepng\lodepng.h
 
 jni/..\..\Core\mobitech.h:
 
@@ -182,3 +183,5 @@ D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/native_ac
 D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/input.h:
 
 D:/ndk/android-ndk-r9/platforms/android-9/arch-arm/usr/include/android/keycodes.h:
+
+jni/..\..\Core\lodepng\lodepng.h:

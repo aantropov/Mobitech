@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _FRUSTUM_H_
+#define _FRUSTUM_H_
 
 struct vec2;
 struct vec3;
@@ -18,3 +19,5 @@ struct frustum
 bool IsPointInFrustum (vec3 point, const frustum fr);
 bool IsSphereInFrustum(sphere sph, const frustum fr);
 bool IsCubeInFrustum(const vec3 center, const float size, const frustum fr);
+
+#endif

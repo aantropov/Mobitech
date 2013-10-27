@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MAT2_H_
+#define _MAT2_H_
 
 #include <cmath>
 
@@ -140,3 +141,4 @@ inline const mat2 transpose(const mat2 &M)
                 M[1], M[3]);
 }
 
+#endif
