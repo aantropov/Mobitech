@@ -4,28 +4,9 @@
 #include "math\mathgl.h"
 #include <map>
 #include <string>
+#include "Utils.hpp"
 
 using namespace std;
-
-enum RESOURCE_TYPE
-{
-    RT_TEXTURE,
-    RT_SHADER,
-    RT_SHADER_PROGRAM,
-    RT_AUDIO
-};
-
-enum SHADER_TYPE
-{
-    ST_VERTEX,
-    ST_FRAGMENT
-};
-
-enum BUFFER_TYPE
-{
-    STATIC,
-    DYNAMIC
-};
 
 struct Vertex
 {
