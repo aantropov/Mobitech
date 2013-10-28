@@ -92,7 +92,7 @@ public:
     void SetSize(int width, int height, bool isFullScreen = false);
 };
 
-class URenderer: public Singleton<URenderer>
+class Renderer: public Singleton<Renderer>
 {
     Window uWnd;
 
@@ -117,10 +117,10 @@ public:
     
 	unsigned int drawCalls;
 
-    static URenderer* GetInstance();
+    static Renderer* GetInstance();
 
-    URenderer();
-    ~URenderer();
+    Renderer();
+    ~Renderer();
 
     Camera currentCamera;
     Camera mainCamera;

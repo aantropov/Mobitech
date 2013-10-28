@@ -59,6 +59,7 @@ T* Singleton<T>:: instance = nullptr;
 class Logger : public Singleton<Logger>
 {
 protected:
+    FILE* fLog;
 
     Logger() 
     { 
@@ -67,27 +68,7 @@ protected:
         #endif //MOBITECH_WIN32
     }
 
-    FILE* fLog;
-
-public:
-    static const string ULOG_FILE_PATH;
-    static Logger* GetInstance()
-    {
-        if(instance == NULL)
-        {
-            instance = new Logger();
-        }
-        return instance;
-    }
-    
-    ~Logger()
-    {
-        #ifdef MOBITECH_WIN32
-        fclose(fLog);
-        #endif //MOBITECH_WIN32
-    }
-   
-    void Message(string text, LOG_TYPE msg_type)
+    void LOG(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO)
     {        
         if(msg_type == LOG_TYPE::LT_WARNING)
             text = "<font color=\"orange\">" + text + "</font>";
@@ -106,6 +87,29 @@ public:
          else
             __android_log_print(ANDROID_LOG_INFO, "Mobitech", text);
         #endif //MOBITECH_ANDROID
+    }
+
+public:
+    static const string ULOG_FILE_PATH;
+    static Logger* GetInstance()
+    {
+        if(instance == NULL)
+        {
+            instance = new Logger();
+        }
+        return instance;
+    }
+    
+    static void Message(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO)
+    {
+        GetInstance()->LOG(text, msg_type);
+    }
+    
+    ~Logger()
+    {
+        #ifdef MOBITECH_WIN32
+        fclose(fLog);
+        #endif //MOBITECH_WIN32
     }
 };
 
