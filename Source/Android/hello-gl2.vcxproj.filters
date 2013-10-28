@@ -10,32 +10,8 @@
     <Filter Include="AndroidApk\JavaSource">
       <UniqueIdentifier>{ab0536cf-ea92-4e84-b130-25292ade30e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core">
-      <UniqueIdentifier>{0adb9e07-93e2-4c77-ad3d-9798d70453e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Math">
-      <UniqueIdentifier>{c00b34a9-ce26-4b11-a0d5-a572828700fb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\Mobitech.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Renderer.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Resources.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\math\bounds.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\math\frustum.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\math\transform.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
     <ClCompile Include="CppSource\android_main.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
@@ -62,55 +38,5 @@
     <None Include="AndroidApk\project.properties">
       <Filter>AndroidApk</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Core\Mobitech.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Renderer.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Resources.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Utils.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\bounds.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\frustum.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat2.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat3.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat4.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\math3d.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mathgl.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\quat.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\transform.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\vec2.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\vec3.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\vec4.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

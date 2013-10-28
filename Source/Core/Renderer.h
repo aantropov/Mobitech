@@ -68,9 +68,9 @@ public:
     Window();
     ~Window();
     
-    static bool IsActive() const { return active; }
-    static bool IsRunning() const { return running; }
-    static bool IsFullscreen() const { return fullscreen; }
+    static bool IsActive() { return active; }
+    static bool IsRunning() { return running; }
+    static bool IsFullscreen() { return fullscreen; }
     
     static void SetActive(bool value){ active = value; }
     static void SetRunning(bool value ){ running = value; }
@@ -117,7 +117,7 @@ public:
     
 	unsigned int drawCalls;
 
-    static Renderer* GetInstance() const;
+    static Renderer* GetInstance();
 
     Renderer();
     ~Renderer();

@@ -111,7 +111,7 @@ public:
 
     virtual void Free();
 
-    ShaderProgram(const ShaderProgram& s) {this->pixel_sh = s.pixel_sh; this->vertex_sh = s.vertex_sh; this->_id = s._id; };
+    ShaderProgram(const ShaderProgram& s) { this->pixel_sh = s.pixel_sh; this->vertex_sh = s.vertex_sh; this->_id = s._id; };
     ShaderProgram(void);
     virtual ~ShaderProgram(void);
 };

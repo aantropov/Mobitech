@@ -38,12 +38,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\math\bounds.cpp" />
-    <ClCompile Include="..\Core\math\frustum.cpp" />
-    <ClCompile Include="..\Core\math\transform.cpp" />
-    <ClCompile Include="..\Core\Mobitech.cpp" />
-    <ClCompile Include="..\Core\Renderer.cpp" />
-    <ClCompile Include="..\Core\Resources.cpp" />
     <ClCompile Include="CppSource\android_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -54,24 +48,6 @@
     <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIActivity.java" />
     <None Include="AndroidApk\src\com\android\gl2jni\GL2JNILib.java" />
     <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIView.java" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Core\math\bounds.h" />
-    <ClInclude Include="..\Core\math\frustum.h" />
-    <ClInclude Include="..\Core\math\mat2.h" />
-    <ClInclude Include="..\Core\math\mat3.h" />
-    <ClInclude Include="..\Core\math\mat4.h" />
-    <ClInclude Include="..\Core\math\math3d.h" />
-    <ClInclude Include="..\Core\math\mathgl.h" />
-    <ClInclude Include="..\Core\math\quat.h" />
-    <ClInclude Include="..\Core\math\transform.h" />
-    <ClInclude Include="..\Core\math\vec2.h" />
-    <ClInclude Include="..\Core\math\vec3.h" />
-    <ClInclude Include="..\Core\math\vec4.h" />
-    <ClInclude Include="..\Core\Mobitech.h" />
-    <ClInclude Include="..\Core\Renderer.h" />
-    <ClInclude Include="..\Core\Resources.h" />
-    <ClInclude Include="..\Core\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
