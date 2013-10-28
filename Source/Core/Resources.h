@@ -30,8 +30,8 @@ protected:
 
 public:
 
-    int GetId() { return _id; }
-    bool IsInitialized(){ return _id > 0;}
+    int GetId() const { return _id; }
+    bool IsInitialized() const { return _id > 0;}
     virtual bool Instantiate();
 
     GLObject(void) {_id = -1; }
@@ -44,7 +44,7 @@ public:
 
     string resourceId;
 
-    virtual bool Load(string path){ return true; }
+    virtual bool Load(string path) { return true; }
     virtual void Free() {}
 
     Resource() : resourceId("") {}
@@ -60,8 +60,8 @@ public:
 
     string name;
 
-    int Width() {return width;}
-    int Height() {return height;}
+    int Width() const {return width;}
+    int Height() const {return height;}
 
     virtual bool Instantiate();
     virtual void Free();
@@ -101,7 +101,7 @@ public:
         unsigned int transform_viewPosition;
     };
 
-    UniformLocations locations;
+    const UniformLocations locations;
 
     void InitLocations();
 
@@ -125,16 +125,16 @@ protected:
 
 public:
 
-    ResourceFactory(){ unique_id = 0;}
-    ~ResourceFactory(){ ReleaseAll(); }
+    ResourceFactory() { unique_id = 0;}
+    ~ResourceFactory() { ReleaseAll(); }
 
-    Resource* Get(string path);
+    Resource* Get (string path) const;
     bool Add(string path, Resource* res);
-    Resource *Load(string path, RESOURCE_TYPE type);
-    ShaderProgram *Load(string vp, string pp);
-    Resource *Create(RESOURCE_TYPE type);
+    Resource* Load(string path, RESOURCE_TYPE type);
+    ShaderProgram* Load(string vp, string pp);
+    Resource* Create(RESOURCE_TYPE type);
 
-    void Release(string path);    
+    void Release(string path);
     void Release(Resource *resource);
     void ReleaseAll();
 };
@@ -155,11 +155,11 @@ class Buffer: public GLObject
 
 public:
 
-    virtual void* Lock() = 0;
-    virtual void Unlock() = 0;
+    virtual void* Lock() const = 0;
+    virtual void Unlock() const = 0;
 
-    virtual void* GetPointer() = 0;
-    virtual int GetNum() = 0;
+    virtual void* GetPointer() const = 0;
+    virtual unsigned int GetNum() = 0;
     virtual void Create(int num) = 0;
     virtual bool Initialize() = 0;
     virtual bool Instantiate() = 0;
@@ -177,14 +177,14 @@ class IndexBuffer : public Buffer
 
 public:
 
-    void* GetPointer() {return (void*)indices;}
-    int GetNum() { return num_indices; }
+    void* GetPointer() const { return (void*)indices; }
+    unsigned int GetNum() const { return num_indices; }
 
     void Create(int num_faces);
     bool Initialize();
     void Free();
-    void* Lock();
-    void Unlock();
+    void* Lock() const;
+    void Unlock() const;
 
     IndexBuffer(void);
     virtual ~IndexBuffer(void);
@@ -199,16 +199,16 @@ class VertexBuffer : public Buffer
     
 public:
 
-	void* GetPointer();
-    int GetNum();
+    void* GetPointer() const;
+    unsigned int GetNum() const;
     void Create(int num_vertices);
     VertexArrayObject* GetVAO();
     
     bool Initialize(IndexBuffer* ib);
     bool Instantiate();
     void Free();
-    void* Lock();
-    void Unlock();
+    void* Lock() const;
+    void Unlock() const;
 
     VertexBuffer(void);
     virtual ~VertexBuffer(void);
