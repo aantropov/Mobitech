@@ -46,7 +46,7 @@ protected:
 
 public:
 
-    static T* GetInstance();
+    static T* GetInstance() const;
     static void Free()
     {
         delete instance;
@@ -91,7 +91,7 @@ protected:
 
 public:
     static const string ULOG_FILE_PATH;
-    static Logger* GetInstance()
+    static Logger* GetInstance() const
     {
         if(instance == NULL)
         {
@@ -100,7 +100,7 @@ public:
         return instance;
     }
     
-    static void Message(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO)
+    static void Message(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO) const
     {
         GetInstance()->LOG(text, msg_type);
     }

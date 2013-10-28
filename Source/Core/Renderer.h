@@ -68,23 +68,23 @@ public:
     Window();
     ~Window();
     
-    static bool IsActive(){ return active; }
-    static bool IsRunning(){ return running; }
-    static bool IsFullscreen(){ return fullscreen; }
+    static bool IsActive() const { return active; }
+    static bool IsRunning() const { return running; }
+    static bool IsFullscreen() const { return fullscreen; }
     
-    static void SetActive( bool value){ active = value; }
-    static void SetRunning( bool value ){ running = value; }
-    static void SetFullscreen( bool value ){ fullscreen = value; }
+    static void SetActive(bool value){ active = value; }
+    static void SetRunning(bool value ){ running = value; }
+    static void SetFullscreen(bool value ){ fullscreen = value; }
     
     static void SetWindowTitle(string title);
 
 #ifdef MOBITECH_WIN32
-    static HWND GetHWND(){ return g_hWnd; }
-    static HDC GetHDC(){ return g_hDC; }
+    static HWND GetHWND() const { return g_hWnd; }
+    static HDC GetHDC() const { return g_hDC; }
 #endif //MOBITECH_WIN32
 
-    int GetWidth(){ return width; }
-    int GetHeight(){ return height; }
+    int GetWidth() const { return width; }
+    int GetHeight() const { return height; }
 
     bool Create(string title = "Mobitech", int width = 800, int height = 600, bool isFullScreen = false);
     
@@ -117,7 +117,7 @@ public:
     
 	unsigned int drawCalls;
 
-    static Renderer* GetInstance();
+    static Renderer* GetInstance() const;
 
     Renderer();
     ~Renderer();
@@ -128,11 +128,11 @@ public:
     bool Initialize();
 
 #ifdef MOBITECH_WIN32
-    HWND GetHWND() { return uWnd.GetHWND(); }
+    HWND GetHWND() const { return uWnd.GetHWND(); }
 #endif //MOBITECH_WIN32
 
-    int GetWidth(){ return uWnd.GetWidth(); }
-    int GetHeight(){ return uWnd.GetHeight(); }
+    int GetWidth() const { return uWnd.GetWidth(); }
+    int GetHeight() const { return uWnd.GetHeight(); }
         
     void Release();
 
@@ -145,31 +145,31 @@ public:
     void SetupCameraForShaderProgram(Camera *cam, ShaderProgram *shd, const mat4 &model);
     void SetupCameraLightForShaderProgram(Camera &camera);
 
-    int CreateTexture(Texture *tex);
-    void BindTexture(Texture *tex);
-    void DeleteTexture(Texture *tex);
-    void BindTexture(Texture *tex, unsigned int channel);
+    int CreateTexture(Texture *tex) const;
+    void BindTexture(Texture *tex) const;
+    void DeleteTexture(Texture *tex) const;
+    void BindTexture(Texture *tex, unsigned int channel) const;
 
-    void BindBuffer(VertexBuffer *vb);
-    void BindBuffer(IndexBuffer *ib);
-    void UnbindBuffer(bool is_vertex_buffer);
+    void BindBuffer(VertexBuffer *vb) const;
+    void BindBuffer(IndexBuffer *ib) const;
+    void UnbindBuffer(bool is_vertex_buffer) const;
     
-    int CreateVBO(VertexBuffer *vb, BUFFER_TYPE state);
-    int CreateVBO(IndexBuffer *ib, BUFFER_TYPE state);    
-    void DeleteVBO(Buffer *vb);
+    int CreateVBO(VertexBuffer *vb, BUFFER_TYPE state) const;
+    int CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const;    
+    void DeleteVBO(Buffer *vb) const;
 
-    void BindVAO(VertexBuffer *vb);
-    void UnbindVAO();
+    void BindVAO(VertexBuffer *vb) const;
+    void UnbindVAO() const;
     
-    int CreateVAO();
-    void DeleteVAO(VertexArrayObject *vao);
+    int CreateVAO() const;
+    void DeleteVAO(VertexArrayObject *vao) const;
 
-    int CompileShader(string source, SHADER_TYPE st);
-    void DeleteShader(Shader* shd);
+    int CompileShader(string source, SHADER_TYPE st) const;
+    void DeleteShader(Shader* shd) const;
 
-    int CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh);
-    void SetShaderProgram(ShaderProgram *sh);
-    void DeleteShaderProgram(ShaderProgram *sh);
+    int CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const;
+    void SetShaderProgram(ShaderProgram *sh) const;
+    void DeleteShaderProgram(ShaderProgram *sh) const;
 
     void CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
     void CacheUniform4(std::string name, unsigned int num , float *variable);
@@ -187,19 +187,19 @@ public:
     void CacheUniformMatrix4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
     void CacheUniformMatrix3(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
 
-    void Uniform4(unsigned int location, unsigned int num , float *variable);
-    void Uniform1(unsigned int location, unsigned int num , float *variable);
-    void Uniform1(unsigned int location, int value);
-    void Uniform3(unsigned int location, unsigned int num , float *variable);
-    void UniformMatrix4(unsigned int location, unsigned int num , float *variable);
-    void UniformMatrix3(unsigned int location, unsigned int num , float *variable);
+    void Uniform4(unsigned int location, unsigned int num , float *variable) const;
+    void Uniform1(unsigned int location, unsigned int num , float *variable) const;
+    void Uniform1(unsigned int location, int value) const;
+    void Uniform3(unsigned int location, unsigned int num , float *variable) const;
+    void UniformMatrix4(unsigned int location, unsigned int num , float *variable) const;
+    void UniformMatrix3(unsigned int location, unsigned int num , float *variable) const;
 
-    void DrawSegment(const vec3& p1, const vec3& p2, const vec3& color);
-    void DrawTransform(::transform xf);
-    void DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color);
+    void DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const;
+    void DrawTransform(::transform xf) const;
+    void DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color) const;
         
-    void DrawBuffer(VertexBuffer *vb);
-    void DrawBuffer(IndexBuffer* ib);
+    void DrawBuffer(VertexBuffer *vb) const;
+    void DrawBuffer(IndexBuffer* ib) const;
 };
 
 
