@@ -68,8 +68,8 @@ void Engine::Run()
 
             if (elapsedTime >= 1.0f)
             {
-                WCHAR buff[50];
-				wsprintf(buff, L"Mobitech FPS: %u, Draw Calls: %u", fps, render->drawCalls);
+                char buff[50];
+				sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, render->drawCalls);
 
                 Window::SetWindowTitle(buff);
                 fps = 0;
@@ -78,8 +78,8 @@ void Engine::Run()
         }
     }
 
-    UWindow::SetActive(false);
-    UWindow::SetRunning(false);
+    Window::SetActive(false);
+    Window::SetRunning(false);
     #endif //MOBITECH_WIN32
 }
 

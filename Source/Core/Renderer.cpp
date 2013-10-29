@@ -2,6 +2,10 @@
 #include "Mobitech.h"
 #include "Utils.hpp"
 
+const string Window:: WND_CLASS_NAME = "MobitechWindow";
+
+GLenum g_OpenGLError = GL_NO_ERROR;
+
 bool Window::active;
 bool Window::fullscreen;
 bool Window::running;
@@ -62,8 +66,6 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 #endif //MOBITECH_RELEASE
 
     g_hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
-    //NULL to all keys
-    memset(&g_input, 0, sizeof(g_input));
 
     // Window class registration
     memset(&wcx, 0, sizeof(wcx));
@@ -71,7 +73,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     wcx.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wcx.lpfnWndProc   = reinterpret_cast<WNDPROC>(WindowProc);
     wcx.hInstance     = g_hInstance;
-    wcx.lpszClassName = (LPCWSTR)UWND_CLASS_NAME.c_str();
+    wcx.lpszClassName = (LPCSTR)WND_CLASS_NAME.c_str();
     wcx.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
     wcx.hCursor       = LoadCursor(NULL, IDC_ARROW);
 
@@ -100,7 +102,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     AdjustWindowRectEx (&rect, style, FALSE, exStyle);
 
     // Create window
-    g_hWnd = CreateWindowEx(exStyle, (LPCWSTR)UWND_CLASS_NAME.c_str(), title, style, rect.left, rect.top,
+    g_hWnd = CreateWindowEx(exStyle, (LPCSTR)WND_CLASS_NAME.c_str(), (LPCSTR)title.c_str(), style, rect.left, rect.top,
         rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, g_hInstance, NULL);
 
     if (!g_hWnd)
@@ -318,7 +320,7 @@ void Window:: Destroy()
 
     // Release window class
     if (g_hInstance)
-        UnregisterClassA((LPCSTR)UWND_CLASS_NAME.c_str(), g_hInstance);
+        UnregisterClassA((LPCSTR)WND_CLASS_NAME.c_str(), g_hInstance);
 #endif // MOBITECH_WIN32
 }
 
@@ -874,7 +876,7 @@ bool Renderer::Initialize()
     for (TiXmlElement *platform = config->FirstChildElement("platform"); platform; platform = platform->NextSiblingElement("platform"))
     {
         const char *name = platform->Attribute("name");
-        if (strcmp(name, MOBITECH_PLATFORM.c_str()))
+        if (strcmp(name, MOBITECH_PLATFORM.c_str()) == 0)
         {
             TiXmlElement *display = platform->FirstChildElement("display");
             if (display)

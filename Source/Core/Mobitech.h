@@ -19,6 +19,7 @@ using namespace std;
 
 #define GL_GLEXT_PROTOTYPES
 #define GL3_PROTOTYPES 1
+#include "windows.h"
 
 #include <GL\glew.h>
 #include <GL\wglew.h>

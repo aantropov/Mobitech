@@ -1,6 +1,3 @@
-#define MOBITECH_WIN32
-#define MOBITECH_DEBUG
-
 #include "stdafx.h"
 #include "..\..\Core\Mobitech.h"
 

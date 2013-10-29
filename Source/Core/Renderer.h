@@ -53,7 +53,7 @@ class Window
     static HDC       g_hDC;
 #endif //MOBITECH_WIN32    
 
-    static const string UWND_CLASS_NAME;
+    static const string WND_CLASS_NAME;
     
     int width;
     int height;
@@ -76,11 +76,16 @@ public:
     static void SetRunning(bool value ){ running = value; }
     static void SetFullscreen(bool value ){ fullscreen = value; }
     
-    static void SetWindowTitle(string title);
+    static void SetWindowTitle(string title)
+    { 
+#ifdef MOBITECH_WIN32 
+        SetWindowText(g_hWnd, title.c_str()); 
+#endif //MOBITECH_WIN32   
+    }
 
 #ifdef MOBITECH_WIN32
-    static HWND GetHWND() const { return g_hWnd; }
-    static HDC GetHDC() const { return g_hDC; }
+    static HWND GetHWND() { return g_hWnd; }
+    static HDC GetHDC() { return g_hDC; }
 #endif //MOBITECH_WIN32
 
     int GetWidth() const { return width; }
