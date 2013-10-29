@@ -529,7 +529,7 @@ int Renderer:: CreateTexture(Texture *tex) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger ( IL_IMAGE_FORMAT ) , tex->GetWidth(), tex->GetHeight(), 0, ilGetInteger ( IL_IMAGE_FORMAT ) , ilGetInteger ( IL_IMAGE_TYPE    ), ilGetData()));
-    //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+    OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_FLOAT, &tex->GetData()[0]));
     OPENGL_CHECK_FOR_ERRORS();
     return texture;
 }
@@ -901,7 +901,7 @@ bool Renderer::Initialize()
 
     OPENGL_CHECK_FOR_ERRORS();
 
-    float aspectRatio = width / height;
+    float aspectRatio = (float)width / (float)height;
     mainCamera.Create(0.0f, 1.0f, 0.0f);
     mainCamera.Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
 

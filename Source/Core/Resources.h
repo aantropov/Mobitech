@@ -3,6 +3,7 @@
 
 #include "math\mathgl.h"
 #include <map>
+#include <vector>
 #include <string>
 #include "Utils.hpp"
 
@@ -17,6 +18,7 @@ struct Vertex
     vec3 color;
     vec2 texcoord;
 
+    Vertex(): pos(vec3_zero), normal(vec3_zero), texcoord(vec2_zero) {}
     Vertex(vec3 p): pos(p), normal(vec3_zero), texcoord(vec2_zero) {}
     Vertex(vec3 p, vec3 n): pos(p), normal(n), texcoord(vec2_zero) {}
     Vertex(vec3 p, vec3 n, vec2 tc): pos(p), normal(n), texcoord(tc) {}
@@ -32,37 +34,41 @@ public:
 
     int GetId() const { return _id; }
     bool IsInitialized() const { return _id > 0;}
-    virtual bool Instantiate();
+    virtual bool Instantiate() = 0;
 
-    GLObject(void) {_id = -1; }
+    GLObject(void) { _id = -1; }
     virtual ~GLObject(void) { _id = -1; } 
 };
 
+class ResourceFactory;
 class Resource
 {    
 public:
 
     string resourceId;
+    ResourceFactory* resourceFactory;
 
     virtual bool Load(string path) { return true; }
     virtual void Free() {}
 
     Resource() : resourceId("") {}
-    virtual ~Resource();
+    virtual ~Resource() {}
 };
 
 class Texture :  public Resource, public GLObject
 {
 protected:
-    int width, height;
+    unsigned int width, height;
+    std::vector<unsigned char> data;
 
 public:
 
     string name;
 
-    int GetWidth() const {return width;}
-    int GetHeight() const {return height;}
-
+    unsigned int GetWidth() const { return width; }
+    unsigned int GetHeight() const { return height; }
+    const std::vector<unsigned char>& GetData() const { return data; }
+    
     virtual bool Instantiate();
     virtual void Free();
     virtual bool Load(string path);
@@ -101,13 +107,13 @@ public:
         unsigned int transform_viewPosition;
     };
 
-    const UniformLocations locations;
+    UniformLocations locations;
 
     void InitLocations();
 
     virtual bool Instantiate();
     virtual bool Load(string path);
-    bool Load(Shader* vertex, Shader* fragment);
+    bool Load(std::string vertexshd_path, std::string pixelshd_path);
 
     virtual void Free();
 
@@ -142,11 +148,11 @@ public:
 class VertexArrayObject: public GLObject
 {
 public:
-    
-    bool Initialize();
+
+    virtual bool Instantiate();
     void Free();
-    VertexArrayObject(void){ _id = -1; };
-    virtual ~VertexArrayObject(void){Free();};
+    VertexArrayObject(void){ _id = -1; }
+    virtual ~VertexArrayObject(void) { Free(); }
 };
 
 class Buffer: public GLObject
@@ -161,7 +167,6 @@ public:
     virtual void* GetPointer() const = 0;
     virtual unsigned int GetNum() = 0;
     virtual void Create(int num) = 0;
-    virtual bool Initialize() = 0;
     virtual bool Instantiate() = 0;
     virtual void Free() = 0;
 
@@ -177,12 +182,13 @@ class IndexBuffer : public Buffer
 
 public:
 
-    void* GetPointer() const { return (void*)indices; }
-    unsigned int GetNum() const { return num_indices; }
+    virtual void* GetPointer() const { return (void*)indices; }
+    virtual unsigned int GetNum() const { return num_indices; }
 
-    void Create(int num_faces);
-    bool Initialize();
-    void Free();
+    virtual void Create(int num_faces);
+    virtual bool Instantiate();
+    virtual void Free();
+
     void* Lock() const;
     void Unlock() const;
 
@@ -196,17 +202,15 @@ class VertexBuffer : public Buffer
     int num_vertices;
     void *vertices;    
     VertexArrayObject* vao;
-    
+
 public:
 
-    void* GetPointer() const;
-    unsigned int GetNum() const;
-    void Create(int num_vertices);
-    VertexArrayObject* GetVAO();
-    
-    bool Initialize(IndexBuffer* ib);
-    bool Instantiate();
-    void Free();
+    virtual void* GetPointer() const;
+    virtual unsigned int GetNum() const;
+    virtual void Create(int num_vertices);
+    VertexArrayObject* GetVAO() const;
+    virtual bool Instantiate();    
+    virtual void Free();
     void* Lock() const;
     void Unlock() const;
 
