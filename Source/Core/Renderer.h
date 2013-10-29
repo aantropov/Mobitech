@@ -95,15 +95,14 @@ public:
 class Renderer: public Singleton<Renderer>
 {
     Window uWnd;
-
-    bool InitExtensions();
+    
     bool SetVerticalSynchronization(bool enabled);
-
     void PrintDebugInfo();
     
     std::vector<mat4> modelViewMatrixStack;
 
     // Optimization
+    ShaderProgram *shaderProgram;
     unsigned int previousVAO;
     unsigned int previousIB;
     
@@ -136,9 +135,6 @@ public:
         
     void Release();
 
-    void PushModelMatrix();
-    void PopModelMatrix();
-
     Camera GetCurrentCamera();
     void SetCurrentCamera(Camera cam);
     void SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model);
@@ -146,21 +142,20 @@ public:
     void SetupCameraLightForShaderProgram(Camera &camera);
 
     int CreateTexture(Texture *tex) const;
-    void BindTexture(Texture *tex) const;
+    void BindTexture(Texture *tex);
     void DeleteTexture(Texture *tex) const;
-    void BindTexture(Texture *tex, unsigned int channel) const;
+    void BindTexture(Texture *tex, unsigned int channel);
 
     void BindBuffer(VertexBuffer *vb) const;
-    void BindBuffer(IndexBuffer *ib) const;
+    void BindBuffer(IndexBuffer *ib);
     void UnbindBuffer(bool is_vertex_buffer) const;
     
     int CreateVBO(VertexBuffer *vb, BUFFER_TYPE state) const;
     int CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const;    
     void DeleteVBO(Buffer *vb) const;
 
-    void BindVAO(VertexBuffer *vb) const;
-    void UnbindVAO() const;
-    
+    void BindVAO(VertexBuffer *vb);
+    void UnbindVAO() const;    
     int CreateVAO() const;
     void DeleteVAO(VertexArrayObject *vao) const;
 
@@ -168,7 +163,7 @@ public:
     void DeleteShader(Shader* shd) const;
 
     int CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const;
-    void SetShaderProgram(ShaderProgram *sh) const;
+    void SetShaderProgram(ShaderProgram *sh);
     void DeleteShaderProgram(ShaderProgram *sh) const;
 
     void CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
@@ -198,8 +193,8 @@ public:
     void DrawTransform(::transform xf) const;
     void DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color) const;
         
-    void DrawBuffer(VertexBuffer *vb) const;
-    void DrawBuffer(IndexBuffer* ib) const;
+    void DrawBuffer(VertexBuffer *vb);
+    void DrawBuffer(IndexBuffer* ib);
 };
 
 

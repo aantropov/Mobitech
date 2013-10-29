@@ -3,11 +3,68 @@
 
 using namespace std;
 
+#ifdef MOBITECH_WIN32
+#include <windows.h>
+#endif // MOBITECH_WIN32
+
 #include <string>
 #include <stdio.h>
-#include <windows.h>
+#include <list>
+
+#define MAX_UNIFORM_LOCATIONS 1000
+
+
+#ifdef MOBITECH_ANDROID
+const string MOBITECH_PLATFORM = "android";
+#else
+const string MOBITECH_PLATFORM = "win32";
+#endif //MOBITECH_
+
+#ifdef MOBITECH_DEBUG
+#define OPENGL_GET_PROC(p,n) \
+    n = (p)wglGetProcAddress(#n); \
+    if (n == NULL) \
+    { \
+    Logger::Message("Loading extension \"" #n "\" is failed", LOG_TYPE::LT_ERROR); \
+        /*return false;*/ \
+    }
+
+#define OPENGL_CHECK_FOR_ERRORS() \
+    if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
+    { \
+        char message[UE_MAXCHAR]; \
+        sprintf_s(message, "OpenGL error 0x%X", (unsigned)g_OpenGLError); \
+        Logger::Message(message, LOG_TYPE::LT_ERROR);  \
+    }
+
+#define OPENGL_CALL(expression) \
+    { \
+        expression; \
+        if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
+        { \
+            char message[UE_MAXCHAR]; \
+            sprintf_s(message,"OpenGL expression \"" #expression "\" error %d\n", (int)g_OpenGLError); \
+            Logger::Message(message, LOG_TYPE::LT_ERROR); \
+        } \
+    }
+//MOBITECH_DEBUG
+#else //MOBITECH_RELEASE
+#define OPENGL_CHECK_FOR_ERRORS() ;
+//#undef OPENGL_GET_PROC(p,n)
+//#undef OPENGL_CALL(expression)
+
+#define OPENGL_CALL(expression) expression;
+#define OPENGL_GET_PROC(p,n) \
+    n = (p)wglGetProcAddress(#n); \
+    if (n == NULL) \
+    { \
+    Logger::Message("Loading extension \"" #n "\" is failed", LOG_TYPE::LT_ERROR); \
+        return false; \
+    }
+#endif //MOBITECH_RELEASE
 
 const string LOG_FILE_NAME = "log.html";
+const string ASSETS_ROOT = "..\\..\\Assets\\";
 
 enum RESOURCE_TYPE
 {
@@ -111,6 +168,63 @@ public:
         fclose(fLog);
         #endif //MOBITECH_WIN32
     }
+};
+
+class IInputListener
+{
+public:
+    virtual void OnTouchDown(int x, int y) = 0;
+    virtual void OnTouchUp(int x, int y) = 0;
+    virtual void OnMove(int x, int y) = 0;
+};
+
+class Input: public Singleton<Input>
+{
+protected:
+
+    Input() {}
+    std::list<IInputListener*> listeners;  
+
+public:
+    static const string ULOG_FILE_PATH;
+    static Input* GetInstance()
+    {
+        if(instance == NULL)
+        {
+            instance = new Input();
+        }
+        return instance;
+    }
+    
+    void Register(IInputListener* listener)
+    {
+        GetInstance()->listeners.push_back(listener);
+    }
+
+    void Unregister(IInputListener* listener)
+    {
+        GetInstance()->listeners.remove(listener);
+    }
+
+    void Move(int x, int y)
+    {
+       for(auto i = listeners.begin(); i != listeners.end(); ++i)
+            (*i)->OnMove(x, y);
+    }
+
+    void OnTouchUp(int x, int y)
+    {
+       for(auto i = listeners.begin(); i != listeners.end(); ++i)
+            (*i)->OnTouchUp(x, y);
+    }
+
+    void OnTouchDown(int x, int y)
+    {
+        for(auto i = listeners.begin(); i != listeners.end(); ++i)
+            (*i)->OnTouchDown(x, y);
+    }
+
+    ~Input() {}
 };
 
 #endif //_UTILS_H_

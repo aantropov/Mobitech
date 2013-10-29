@@ -60,8 +60,8 @@ public:
 
     string name;
 
-    int Width() const {return width;}
-    int Height() const {return height;}
+    int GetWidth() const {return width;}
+    int GetHeight() const {return height;}
 
     virtual bool Instantiate();
     virtual void Free();
