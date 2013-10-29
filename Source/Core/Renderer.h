@@ -4,7 +4,7 @@
 #include "Utils.hpp"
 #include "Resources.h"
 #include "math\mathgl.h"
-#include <hash_map>
+//#include <hash_map>
 #include <map>
 
 using namespace std;
@@ -111,7 +111,7 @@ class Renderer: public Singleton<Renderer>
     unsigned int previousVAO;
     unsigned int previousIB;
     
-    map<unsigned int, hash_map<string, unsigned int>> uniformsCache;
+    map<unsigned int, map<string, unsigned int> > uniformsCache;
     map<unsigned int, unsigned int> texChannelsCache;
 
     int CacheUniformLocation(string name);

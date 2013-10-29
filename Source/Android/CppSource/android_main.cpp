@@ -65,9 +65,7 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     GLuint program = glCreateProgram();
     if (program) {
         glAttachShader(program, vertexShader);
-        checkGlError("glAttachShader");
         glAttachShader(program, pixelShader);
-        checkGlError("glAttachShader");
         glLinkProgram(program);
         GLint linkStatus = GL_FALSE;
         glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
@@ -120,6 +118,7 @@ void renderFrame() {
     if (grey > 1.0f) {
         grey = 0.0f;
     }
+
     glClearColor(grey, grey, grey, 1.0f);
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -127,7 +126,7 @@ void renderFrame() {
 
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
-
+        
     glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);

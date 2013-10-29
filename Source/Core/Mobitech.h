@@ -10,6 +10,7 @@ using namespace std;
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#include <GLES2/gl2platform.h>
 
 #include <android/sensor.h>
 #include <android/log.h>
@@ -40,7 +41,7 @@ using namespace std;
 #include "lodepng\lodepng.h"
 #include "math\mathgl.h"
 #include "resources.h"
-
+#include "renderer.h"
 
 class Engine 
 {

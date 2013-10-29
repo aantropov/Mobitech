@@ -295,6 +295,8 @@ void Window::SetSize(int width, int height, bool isFullScreen)
 
 void Window:: Destroy()
 {
+ #ifdef MOBITECH_WIN32   
+    
     // Restore window size
     if (fullscreen)
     {
@@ -302,7 +304,6 @@ void Window:: Destroy()
         ShowCursor(TRUE);
     }
 
-#ifdef MOBITECH_WIN32
     // Release renderer`s context 
     if (g_hRC)
     {
@@ -573,7 +574,7 @@ void Renderer:: DeleteVBO(Buffer *vb) const
 }
 
 void Renderer:: DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const
-{
+{    /*
     glColor4f(color.x, color.y, color.z, 1);    
     GLfloat glVertices[] = 
     {
@@ -581,11 +582,12 @@ void Renderer:: DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) c
     };
 
     glVertexPointer(3, GL_FLOAT, 0, glVertices);
-    glDrawArrays(GL_LINES, 0, 2);
+    glDrawArrays(GL_LINES, 0, 2);*/
 }
 
 void Renderer:: DrawTransform(::transform xf) const
 {
+    /*
     vec3 p1 = xf.position;
     vec3 p2;
 
@@ -598,12 +600,13 @@ void Renderer:: DrawTransform(::transform xf) const
     DrawSegment(p1, p2, vec3(0,1,0));
 
     p2 = p1 + (xf.matrix() * vec4_z) * k_axisScale;
-    DrawSegment(p1, p2, vec3(0,0,1));
+    DrawSegment(p1, p2, vec3(0,0,1));*/
 }
 
 void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color)  const
 {
-    GLfloat glverts[24];
+
+    /*GLfloat glverts[24];
     glVertexPointer(3, GL_FLOAT, 0, glverts);
     glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -616,10 +619,10 @@ void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertexCount, const 
 
     glColor4f(color.x, color.y, color.z, 1);
     glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-
+    
     glLineWidth(3);
     glColor4f(1, 0, 1, 1 );
-    glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
+    glDrawArrays(GL_LINE_LOOP, 0, vertexCount);*/
 }
 
 void Renderer:: DrawBuffer(VertexBuffer* vb)
@@ -659,29 +662,29 @@ void Renderer:: UnbindBuffer(bool vertex_buffer) const
 int Renderer:: CreateVAO() const
 {
     GLuint vao;
-    OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
-    glBindVertexArray( vao );        
+    //OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
+    //glBindVertexArray( vao );        
     return vao;
 }
 
 void Renderer:: DeleteVAO(VertexArrayObject *vao) const
 {
-    GLuint id =  vao->GetId();
-    OPENGL_CALL(glDeleteVertexArrays(1, &id));
+    //GLuint id =  vao->GetId();
+    //OPENGL_CALL(glDeleteVertexArrays(1, &id));
 }
 
 void Renderer:: BindVAO(VertexBuffer *vb)
 {
-    if(previousVAO != vb->GetVAO()->GetId())
+    /*if(previousVAO != vb->GetVAO()->GetId())
     {
         previousVAO = vb->GetVAO()->GetId();
         glBindVertexArray(vb->GetVAO()->GetId());
-    }
+    }*/
 }
 
 void Renderer:: UnbindVAO() const
 {
-    glBindVertexArray(0);    
+    //glBindVertexArray(0);    
 }
 
 int  Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
@@ -703,7 +706,7 @@ int  Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
         GLchar* strInfoLog = new GLchar[infoLogLength + 1];
         glGetShaderInfoLog(shd, infoLogLength, NULL, strInfoLog);
 
-        Logger::Message(string((char*)strInfoLog), LOG_TYPE::LT_ERROR);    
+        Logger::Message(string((char*)strInfoLog), LT_ERROR);    
     }
 
     return shd;
@@ -730,7 +733,7 @@ void Renderer:: DeleteShaderProgram(ShaderProgram *shd) const
 
 void Renderer:: SetShaderProgram(ShaderProgram *sh)
 {
-    if(sh == nullptr || (shaderProgram != nullptr && sh == shaderProgram))
+    if(sh == NULL || (shaderProgram != NULL && sh == shaderProgram))
         return;
 
     shaderProgram = sh;
@@ -869,7 +872,7 @@ bool Renderer::Initialize()
     bool fullscreen = false;
     bool vsync = false;
 
-    TiXmlDocument document((ASSETS_ROOT + "\config.xml").c_str());
+    TiXmlDocument document((ASSETS_ROOT + "/config.xml").c_str());
     document.LoadFile(TIXML_ENCODING_UTF8);
     TiXmlElement *config = document.FirstChildElement("config");
 
@@ -895,7 +898,7 @@ bool Renderer::Initialize()
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
     OPENGL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-    OPENGL_CALL(glClearDepth(1.0f));
+    //OPENGL_CALL(glClearDepth(1.0f));
     OPENGL_CALL(glEnable(GL_DEPTH_TEST));
     OPENGL_CALL(glEnable(GL_CULL_FACE));
 
@@ -918,11 +921,10 @@ void Renderer::Release()
 
 void Renderer::PrintDebugInfo()
 {
-    GLint major, minor, mrt;
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
-    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &mrt);
-
+    const char *major = (const char *)glGetString(GL_MAJOR_VERSION);
+    const char *minor = (const char *)glGetString(GL_MAJOR_VERSION);
+    const char *mrt = (const char *)glGetString(GL_MAJOR_VERSION);
+    
     char message[1024];
 
     sprintf_s(message, "\nOpenGL render context information:\n"

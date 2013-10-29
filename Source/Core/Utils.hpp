@@ -11,6 +11,20 @@ using namespace std;
 #include <stdio.h>
 #include <list>
 
+#ifdef MOBITECH_ANDROID
+
+#include <jni.h>
+#include <errno.h>
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+
+#include <android/sensor.h>
+#include <android/log.h>
+
+#define sprintf_s sprintf
+#endif
+
 #define MAX_UNIFORM_LOCATIONS 1000
 #define MAXCHAR 1000
 
@@ -34,7 +48,7 @@ const string MOBITECH_PLATFORM = "win32";
     { \
         char message[MAXCHAR]; \
         sprintf_s(message, "OpenGL error 0x%X", (unsigned)g_OpenGLError); \
-        Logger::Message(message, LOG_TYPE::LT_ERROR);  \
+        Logger::Message(message, LT_ERROR);  \
     }
 
 #define OPENGL_CALL(expression) \
@@ -44,7 +58,7 @@ const string MOBITECH_PLATFORM = "win32";
         { \
             char message[MAXCHAR]; \
             sprintf_s(message,"OpenGL expression \"" #expression "\" error %d\n", (int)g_OpenGLError); \
-            Logger::Message(message, LOG_TYPE::LT_ERROR); \
+            Logger::Message(message, LT_ERROR); \
         } \
     }
 //MOBITECH_DEBUG
@@ -58,7 +72,7 @@ const string MOBITECH_PLATFORM = "win32";
     n = (p)wglGetProcAddress(#n); \
     if (n == NULL) \
     { \
-    Logger::Message("Loading extension \"" #n "\" is failed", LOG_TYPE::LT_ERROR); \
+    Logger::Message("Loading extension \"" #n "\" is failed", LT_ERROR); \
         return false; \
     }
 #endif //MOBITECH_RELEASE
