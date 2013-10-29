@@ -171,7 +171,7 @@ public:
     virtual void Free() = 0;
 
     Buffer(void);
-    virtual ~Buffer(void);
+    virtual ~Buffer(void) {}
 };
 
 
@@ -209,13 +209,13 @@ public:
     virtual unsigned int GetNum() const;
     virtual void Create(int num_vertices);
     VertexArrayObject* GetVAO() const;
-    virtual bool Instantiate();    
+    virtual bool Instantiate();
     virtual void Free();
     void* Lock() const;
     void Unlock() const;
 
     VertexBuffer(void);
-    virtual ~VertexBuffer(void);
+    virtual ~VertexBuffer(void) {}
 };
 
 #endif //_RESOURCES_H

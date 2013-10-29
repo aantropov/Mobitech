@@ -921,24 +921,26 @@ void Renderer::Release()
 
 void Renderer::PrintDebugInfo()
 {
+#ifdef MOBITECH_WIN32
     const char *major = (const char *)glGetString(GL_MAJOR_VERSION);
-    const char *minor = (const char *)glGetString(GL_MAJOR_VERSION);
-    const char *mrt = (const char *)glGetString(GL_MAJOR_VERSION);
-    
+    const char *minor = (const char *)glGetString(GL_MINOR_VERSION);
+    const char *mrt = (const char *)glGetString(GL_MINOR_VERSION);
+#endif //MOBITECH_WIN32
+
     char message[1024];
 
     sprintf_s(message, "\nOpenGL render context information:\n"
         "  Renderer       : %s\n"
         "  Vendor         : %s\n"
         "  Version        : %s\n"
-        "  GLSL version   : %s\n"
-        "  OpenGL version : %d.%d\n"
-        "  Max Render Targets: %d\n",
+        "  GLSL version   : %s\n",
+        //"  OpenGL version : %s.%s\n"
+        //"  Max Render Targets: %s\n",
         (const char*)glGetString(GL_RENDERER),
         (const char*)glGetString(GL_VENDOR),
         (const char*)glGetString(GL_VERSION),
-        (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION),
-        major, minor, mrt
+        (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION)
+        //major, minor, mrt
         );
 
     Logger::Message(message);

@@ -1,6 +1,5 @@
 #include "..\..\Core\Mobitech.h"
 
-
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     Logger::Message(LT_ERROR, "GL %s = %s\n", name, v);

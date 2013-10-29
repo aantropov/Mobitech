@@ -12,14 +12,14 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
     Logger::Message("Creating resource: \"" + path + "\"");
 
     Resource* temp;
-    if(type == RESOURCE_TYPE::RT_SHADER)
+    if(type == RT_SHADER)
         temp = new Shader();
-    else if(type == RESOURCE_TYPE::RT_TEXTURE)
+    else if(type == RT_TEXTURE)
         temp = new Texture();
-    else if(type == RESOURCE_TYPE::RT_SHADER_PROGRAM)
+    else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
     else
-        return nullptr;
+        return NULL;
 
     temp->resourceFactory = this;
     temp->resourceId = path;
@@ -35,7 +35,7 @@ Resource* ResourceFactory:: Get(std::string path) const
 bool ResourceFactory:: Add(std::string path, Resource* resource)
 {
     Resource* res = Get(path);
-    if(res != nullptr)
+    if(res != NULL)
         return false;
     
     resources[path] = resource;
@@ -47,7 +47,7 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
     string path = "\\shader_program\\" + vp + "\\" + pp;
 
     ShaderProgram* res = dynamic_cast<ShaderProgram*>(Get(path));
-    if(res != nullptr)
+    if(res != NULL)
         return res;
 
     Logger::Message("Loading resource: \"" + path + "\"");
@@ -63,19 +63,19 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
 Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
 {
     Resource* res = Get(path);
-    if(res != nullptr)
+    if(res != NULL)
         return res;
 
     Logger::Message("Loading resource: \"" + path + "\"");
        Resource* temp;
-    if(type == RESOURCE_TYPE::RT_SHADER)
+    if(type == RT_SHADER)
         temp = new Shader();
-    else if(type == RESOURCE_TYPE::RT_TEXTURE)
+    else if(type == RT_TEXTURE)
         temp = new Texture();
-    else if(type == RESOURCE_TYPE::RT_SHADER_PROGRAM)
+    else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
     else
-        return nullptr;
+        return NULL;
     
     temp->Load(path);
     temp->resourceFactory = this;
@@ -129,7 +129,7 @@ bool VertexBuffer:: Instantiate()
     Renderer::GetInstance()->BindVAO(this);
 
     _id = -1;
-    _id = Renderer::GetInstance()->CreateVBO(this, BUFFER_TYPE::STATIC);
+    _id = Renderer::GetInstance()->CreateVBO(this, STATIC);
 
     return (_id != -1) && (vao->GetId() != -1);
 }
@@ -140,24 +140,29 @@ void VertexBuffer:: Free()
     Renderer::GetInstance()->DeleteVBO(this);
     _id = -1;
 
-    delete[] vertices;
+    delete[] (Vertex*)vertices;
     delete vao;
 }
 
 void* VertexBuffer:: Lock() const
 {
+#ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
     glBufferData(GL_ARRAY_BUFFER, num_vertices * sizeof(Vertex), 0, GL_STREAM_DRAW_ARB);
     Vertex* pBuffer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     return pBuffer;
+#endif //MOBITECH_WIN32
+    return NULL;
 }
 
 void VertexBuffer:: Unlock() const
 {
+#ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
     GLboolean result = glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif //MOBITECH_WIN32
 }
 
 bool VertexArrayObject:: Instantiate()
@@ -183,11 +188,11 @@ bool Shader::Instantiate()
 bool Shader::Load(std::string path) 
 {
     FILE* fShd;
-    fopen_s(&fShd, path.c_str() , "rb");
+    fShd = fopen(path.c_str() , "rb");
 
     if(fShd == NULL)
     {
-        Logger::Message("Shader: Can`t open file " + path, LOG_TYPE::LT_ERROR);    
+        Logger::Message("Shader: Can`t open file " + path, LT_ERROR);    
         return false;
     }
 
@@ -248,18 +253,18 @@ bool ShaderProgram:: Load(std::string vertexshd_path, std::string pixelshd_path)
     Shader *vs = dynamic_cast<Shader*>(resourceFactory->Get(vertexshd_path));
     Shader *ps = dynamic_cast<Shader*>(resourceFactory->Get(pixelshd_path));
 
-    vertex_sh = dynamic_cast<Shader*> (resourceFactory->Load(vertexshd_path, RESOURCE_TYPE::RT_SHADER));
-    pixel_sh = dynamic_cast<Shader*> (resourceFactory->Load(pixelshd_path, RESOURCE_TYPE::RT_SHADER));
+    vertex_sh = dynamic_cast<Shader*> (resourceFactory->Load(vertexshd_path, RT_SHADER));
+    pixel_sh = dynamic_cast<Shader*> (resourceFactory->Load(pixelshd_path, RT_SHADER));
 
-    if(vs == nullptr)
+    if(vs == NULL)
     {
-        vertex_sh->type = SHADER_TYPE::ST_VERTEX;
+        vertex_sh->type = ST_VERTEX;
         vertex_sh->Instantiate();
     }
     
-    if(ps == nullptr)
+    if(ps == NULL)
     {
-        pixel_sh->type = SHADER_TYPE::ST_FRAGMENT;
+        pixel_sh->type = ST_FRAGMENT;
         pixel_sh->Instantiate();
     } 
     

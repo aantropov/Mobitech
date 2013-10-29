@@ -30,6 +30,7 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>MOBITECH_DEBUG; MOBITECH_ANDROID;</PreprocessorDefinitions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Android'">
