@@ -111,7 +111,7 @@ public:
 };
 
 template<typename T>
-T* Singleton<T>:: instance = nullptr;
+T* Singleton<T>:: instance = NULL;
 
 class Logger : public Singleton<Logger>
 {
@@ -125,13 +125,13 @@ protected:
         #endif //MOBITECH_WIN32
     }
 
-    void LOG(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO)
+    void LOG(string text, LOG_TYPE msg_type = LT_INFO)
     {        
-        if(msg_type == LOG_TYPE::LT_WARNING)
+        if(msg_type == LT_WARNING)
             text = "<font color=\"orange\">" + text + "</font>";
-        else if(msg_type == LOG_TYPE::LT_ERROR)
+        else if(msg_type == LT_ERROR)
             text = "<font color=\"red\">" + text + "</font>";
-        else if(msg_type == LOG_TYPE::LT_INFO)
+        else if(msg_type == LT_INFO)
            text = "<font color=\"black\">" + text + "</font>";
         
         #ifdef MOBITECH_WIN32
@@ -139,10 +139,10 @@ protected:
         #endif //MOBITECH_WIN32
 
         #ifdef MOBITECH_ANDROID
-         if(msg_type == LOG_TYPE::LT_ERROR)
-            __android_log_print(ANDROID_LOG_ERROR, "Mobitech", text);
+         if(msg_type == LT_ERROR)
+            __android_log_print(ANDROID_LOG_ERROR, "Mobitech", text.c_str());
          else
-            __android_log_print(ANDROID_LOG_INFO, "Mobitech", text);
+            __android_log_print(ANDROID_LOG_INFO, "Mobitech", text.c_str());
         #endif //MOBITECH_ANDROID
     }
 
@@ -157,11 +157,16 @@ public:
         return instance;
     }
     
-    static void Message(string text, LOG_TYPE msg_type = LOG_TYPE::LT_INFO)
+    static void Message(string text, LOG_TYPE msg_type = LT_INFO)
     {
         GetInstance()->LOG(text, msg_type);
     }
-    
+
+    static void Message(LOG_TYPE msg_type, const char *msg, ...)
+    {
+        GetInstance()->LOG(msg, msg_type);
+    }
+
     ~Logger()
     {
         #ifdef MOBITECH_WIN32
@@ -208,19 +213,19 @@ public:
 
     void Move(int x, int y)
     {
-       for(auto i = listeners.begin(); i != listeners.end(); ++i)
+        for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
             (*i)->OnMove(x, y);
     }
 
     void OnTouchUp(int x, int y)
     {
-       for(auto i = listeners.begin(); i != listeners.end(); ++i)
+       for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
             (*i)->OnTouchUp(x, y);
     }
 
     void OnTouchDown(int x, int y)
     {
-        for(auto i = listeners.begin(); i != listeners.end(); ++i)
+        for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
             (*i)->OnTouchDown(x, y);
     }
 

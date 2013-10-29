@@ -28,6 +28,9 @@
     <Link>
       <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>MOBITECH_DEBUG; MOBITECH_ANDROID;</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Android'">
     <AntBuild>

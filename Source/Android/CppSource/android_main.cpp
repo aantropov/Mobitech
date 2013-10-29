@@ -1,16 +1,15 @@
-#define MOBITECH_ANDROID
 #include "..\..\Core\Mobitech.h"
 
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
-    LOGI("GL %s = %s\n", name, v);
+    Logger::Message(LT_ERROR, "GL %s = %s\n", name, v);
 }
 
 static void checkGlError(const char* op) {
     for (GLint error = glGetError(); error; error
             = glGetError()) {
-        LOGI("after %s() glError (0x%x)\n", op, error);
+       Logger::Message(LT_INFO, "after %s() glError (0x%x)\n", op, error);
     }
 }
 
@@ -40,7 +39,7 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
                 char* buf = (char*) malloc(infoLen);
                 if (buf) {
                     glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                    LOGE("Could not compile shader %d:\n%s\n",
+                    Logger::Message(LT_ERROR, "Could not compile shader %d:\n%s\n",
                             shaderType, buf);
                     free(buf);
                 }
@@ -79,7 +78,7 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
                 char* buf = (char*) malloc(bufLength);
                 if (buf) {
                     glGetProgramInfoLog(program, bufLength, NULL, buf);
-                    LOGE("Could not link program:\n%s\n", buf);
+                    Logger::Message(LT_ERROR, "Could not link program:\n%s\n", buf);
                     free(buf);
                 }
             }
@@ -99,17 +98,14 @@ bool setupGraphics(int w, int h) {
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
 
-    LOGI("setupGraphics(%d, %d)", w, h);
+    Logger::Message(LT_INFO, "setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
     if (!gProgram) {
-        LOGE("Could not create program.");
+        Logger::Message(LT_ERROR,"Could not create program.");
         return false;
     }
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
     checkGlError("glGetAttribLocation");
-    LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-            gvPositionHandle);
-
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
     return true;
