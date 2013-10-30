@@ -43,19 +43,37 @@ using namespace std;
 #include "resources.h"
 #include "renderer.h"
 
+extern void GameMain();
+
+class Scene 
+{
+public:
+    virtual void DrawFrame() = 0;
+    virtual void Update(float delta) = 0;
+};
+
 class Engine 
 {
     unsigned int fps;
     float elapsedTime;
+    Scene* currentScene;
+        
+    double deltaTime, beginFrameTime, fixedTimeStep;  
 
 public:
     
     static ResourceFactory  rf;
     
+    Engine() { currentScene = NULL; }
+
     bool Initialize();
     void Run();
+    void OneFrame();
     void Stop();
     void Release();
+
+    void SetScene(Scene *scene) { currentScene = scene; }
+    Scene* GetScene() const { return currentScene; }
 };
 
 #endif //MOBITECH_H

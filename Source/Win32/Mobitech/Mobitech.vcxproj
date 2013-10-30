@@ -90,6 +90,7 @@
     <ClCompile Include="..\..\Core\tinyxml\tinyxml.cpp" />
     <ClCompile Include="..\..\Core\tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\Core\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\Game\Game.cpp" />
     <ClCompile Include="win32_main.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

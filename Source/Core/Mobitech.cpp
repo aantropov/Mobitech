@@ -22,17 +22,35 @@ void Engine:: Stop()
     Window::SetRunning(false);
 }
 
+void Engine:: OneFrame()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+	Renderer::GetInstance()->drawCalls = 0;
+
+    if(currentScene != NULL)
+        currentScene->DrawFrame();
+
+#ifdef MOBITECH_WIN32
+    SwapBuffers(Window::GetHDC());
+#endif //MOBITECH_WIN32
+
+    deltaTime += GetTickCount() - beginFrameTime;
+            
+    if(currentScene != NULL)
+        currentScene->Update(GetTickCount() - beginFrameTime);
+
+    elapsedTime += (float)(GetTickCount() - beginFrameTime)/1000.0f;
+    ++fps;
+}
+
 void Engine::Run()
 {
     #ifdef MOBITECH_WIN32
     MSG msg;
     
     Window::SetActive(true);
-    Window::SetRunning(true);
-    
-    double deltaTime, beginFrameTime, fixedTimeStep;
-    
-	auto render = Renderer::GetInstance();	
+    Window::SetRunning(true); 	
 
     deltaTime      = 0.0;
     fixedTimeStep  = 1.0 / 100.0;
@@ -56,20 +74,12 @@ void Engine::Run()
 
         if (Window::IsRunning() && Window::IsActive())
         {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-			render->drawCalls = 0;
-
-            SwapBuffers(Window::GetHDC());
-
-            deltaTime += GetTickCount() - beginFrameTime;
-            elapsedTime += (float)(GetTickCount() - beginFrameTime)/1000.0f;
-            ++fps;
+            OneFrame();
 
             if (elapsedTime >= 1.0f)
             {
                 char buff[50];
-				sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, render->drawCalls);
+                sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, Renderer::GetInstance()->drawCalls);
 
                 Window::SetWindowTitle(buff);
                 fps = 0;

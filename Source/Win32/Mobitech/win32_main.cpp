@@ -3,10 +3,6 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-    Engine engine;
-    engine.Initialize();
-    engine.Run();
-    engine.Stop();
-
+    GameMain();
     return 0;
 }
