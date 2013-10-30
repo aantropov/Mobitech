@@ -693,7 +693,7 @@ int Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
     GLchar *strings = (GLchar*)source.c_str();
 
     shd = glCreateShader(st); 
-    glShaderSource(shd, 1, (const GLchar**)&strings , NULL);
+    glShaderSource(shd, 1, (const GLchar**)&strings, NULL);
     glCompileShader(shd);
 
     GLint status = 0;

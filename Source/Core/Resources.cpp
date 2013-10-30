@@ -58,6 +58,7 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
     temp->resourceFactory = this;
     temp->Load(vp, pp);
     temp->resourceId = path;
+    temp->Instantiate();
     resources[path] = temp;
     return temp;
 }
@@ -236,9 +237,9 @@ void ShaderProgram:: InitLocations()
     uniformLocations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection");
     uniformLocations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition");
     
-    attributeLocations.position = glGetAttribLocation(_id, "position");
-    attributeLocations.texcoords = glGetAttribLocation(_id, "texcoords");
     attributeLocations.color = glGetAttribLocation(_id, "color");
+    attributeLocations.position = glGetAttribLocation(_id, "position");
+    attributeLocations.texcoords = glGetAttribLocation(_id, "texcoords");    
 }
 
 bool ShaderProgram:: Load(string path)

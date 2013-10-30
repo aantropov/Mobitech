@@ -90,8 +90,8 @@ enum RESOURCE_TYPE
 
 enum SHADER_TYPE
 {
-    ST_VERTEX,
-    ST_FRAGMENT
+    ST_VERTEX = 0x8B31,
+    ST_FRAGMENT = 0x8B30
 };
 
 enum BUFFER_TYPE
