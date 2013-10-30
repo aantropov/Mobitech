@@ -52,19 +52,19 @@ public:
     virtual void Update(float delta) = 0;
 };
 
-class Engine 
+class Engine : public Singleton<Engine>
 {
     unsigned int fps;
     float elapsedTime;
     Scene* currentScene;
         
     double deltaTime, beginFrameTime, fixedTimeStep;  
+    Engine() { currentScene = NULL; }
 
 public:
     
     static ResourceFactory  rf;
-    
-    Engine() { currentScene = NULL; }
+    static Engine* GetInstance();
 
     bool Initialize();
     void Run();

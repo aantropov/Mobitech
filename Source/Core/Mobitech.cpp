@@ -3,6 +3,13 @@
 
 ResourceFactory Engine::rf;
 
+Engine* Engine::GetInstance()
+{
+    if(instance == NULL)
+        instance = new Engine();        
+    return instance;
+}
+
 bool Engine::Initialize()
 {
     elapsedTime = 0;

@@ -485,11 +485,11 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
     mat3 normal         = transpose(mat3(inverse(model)));
     mat4 modelViewProjection = model * viewProjection;
 
-    UniformMatrix4(shd->locations.transform_model,  1, model.m);
-    UniformMatrix4(shd->locations.transform_viewProjection, 1, viewProjection.m);
-    UniformMatrix3(shd->locations.transform_normal, 1, normal.m);
-    UniformMatrix4(shd->locations.transform_modelViewProjection, 1, modelViewProjection.m);
-    Uniform3(shd->locations.transform_viewPosition, 1, currentCamera.GetPosition().v);
+    UniformMatrix4(shd->uniformLocations.transform_model,  1, model.m);
+    UniformMatrix4(shd->uniformLocations.transform_viewProjection, 1, viewProjection.m);
+    UniformMatrix3(shd->uniformLocations.transform_normal, 1, normal.m);
+    UniformMatrix4(shd->uniformLocations.transform_modelViewProjection, 1, modelViewProjection.m);
+    Uniform3(shd->uniformLocations.transform_viewPosition, 1, currentCamera.GetPosition().v);
 }
 
 void Renderer:: SetCurrentCamera(Camera cam)
@@ -687,7 +687,7 @@ void Renderer:: UnbindVAO() const
     //glBindVertexArray(0);    
 }
 
-int  Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
+int Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
 {
     GLuint shd;
     GLchar *strings = (GLchar*)source.c_str();
@@ -696,11 +696,11 @@ int  Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
     glShaderSource(shd, 1, (const GLchar**)&strings , NULL);
     glCompileShader(shd);
 
-    GLint status;
+    GLint status = 0;
     glGetShaderiv(shd, GL_COMPILE_STATUS, &status);
     if(status != GL_TRUE)
     {
-        GLint infoLogLength;
+        GLint infoLogLength = 0;
         glGetShaderiv(shd, GL_INFO_LOG_LENGTH, &infoLogLength);
 
         GLchar* strInfoLog = new GLchar[infoLogLength + 1];

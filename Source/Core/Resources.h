@@ -104,10 +104,18 @@ public:
         unsigned int transform_viewProjection;
         unsigned int transform_normal;
         unsigned int transform_modelViewProjection;
-        unsigned int transform_viewPosition;
+        unsigned int transform_viewPosition;        
     };
 
-    UniformLocations locations;
+    struct AttributeLocations
+    {
+        unsigned int position;
+        unsigned int texcoords;
+        unsigned int color;
+    };
+
+    UniformLocations uniformLocations;
+    AttributeLocations attributeLocations;
 
     void InitLocations();
 

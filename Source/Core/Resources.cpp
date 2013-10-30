@@ -29,6 +29,8 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 
 Resource* ResourceFactory:: Get(std::string path) const
 {
+    if(resources.find(path) == resources.end())
+        return NULL;
     return resources.at(path);
 }
 
@@ -54,10 +56,10 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
 
     ShaderProgram* temp = new ShaderProgram();
     temp->resourceFactory = this;
+    temp->Load(vp, pp);
     temp->resourceId = path;
     resources[path] = temp;
     return temp;
-
 }
 
 Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
@@ -228,11 +230,15 @@ void ShaderProgram::Free()
 
 void ShaderProgram:: InitLocations()
 {
-    locations.transform_model = glGetUniformLocation(_id, "transform.model" );
-    locations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection" );
-    locations.transform_normal = glGetUniformLocation(_id, "transform.normal" );
-    locations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection" );
-    locations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition" );
+    uniformLocations.transform_model = glGetUniformLocation(_id, "transform.model");
+    uniformLocations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection");
+    uniformLocations.transform_normal = glGetUniformLocation(_id, "transform.normal");
+    uniformLocations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection");
+    uniformLocations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition");
+    
+    attributeLocations.position = glGetAttribLocation(_id, "position");
+    attributeLocations.texcoords = glGetAttribLocation(_id, "texcoords");
+    attributeLocations.color = glGetAttribLocation(_id, "color");
 }
 
 bool ShaderProgram:: Load(string path)

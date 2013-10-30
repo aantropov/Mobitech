@@ -39,7 +39,7 @@ const string MOBITECH_PLATFORM = "win32";
     n = (p)wglGetProcAddress(#n); \
     if (n == NULL) \
     { \
-    Logger::Message("Loading extension \"" #n "\" is failed", LOG_TYPE::LT_ERROR); \
+    Logger::Message("Loading extension \"" #n "\" is failed<br>", LOG_TYPE::LT_ERROR); \
         /*return false;*/ \
     }
 
@@ -47,7 +47,7 @@ const string MOBITECH_PLATFORM = "win32";
     if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
     { \
         char message[MAXCHAR]; \
-        sprintf_s(message, "OpenGL error 0x%X", (unsigned)g_OpenGLError); \
+        sprintf_s(message, "OpenGL error 0x%X<br>", (unsigned)g_OpenGLError); \
         Logger::Message(message, LT_ERROR);  \
     }
 
@@ -57,7 +57,7 @@ const string MOBITECH_PLATFORM = "win32";
         if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
         { \
             char message[MAXCHAR]; \
-            sprintf_s(message,"OpenGL expression \"" #expression "\" error %d\n", (int)g_OpenGLError); \
+            sprintf_s(message,"OpenGL expression \"" #expression "\" error %d<br>", (int)g_OpenGLError); \
             Logger::Message(message, LT_ERROR); \
         } \
     }
@@ -72,7 +72,7 @@ const string MOBITECH_PLATFORM = "win32";
     n = (p)wglGetProcAddress(#n); \
     if (n == NULL) \
     { \
-    Logger::Message("Loading extension \"" #n "\" is failed", LT_ERROR); \
+    Logger::Message("Loading extension \"" #n "\" is failed<br>", LT_ERROR); \
         return false; \
     }
 #endif //MOBITECH_RELEASE
@@ -142,11 +142,11 @@ protected:
     void LOG(string text, LOG_TYPE msg_type = LT_INFO)
     {        
         if(msg_type == LT_WARNING)
-            text = "<font color=\"orange\">" + text + "</font>";
+            text = "<font color=\"orange\">" + text + "</font>"+ "<br>";
         else if(msg_type == LT_ERROR)
-            text = "<font color=\"red\">" + text + "</font>";
+            text = "<font color=\"red\">" + text + "</font>"+ "<br>";
         else if(msg_type == LT_INFO)
-           text = "<font color=\"black\">" + text + "</font>";
+           text = "<font color=\"black\">" + text + "</font>"+ "<br>";
         
         #ifdef MOBITECH_WIN32
         fprintf(fLog, text.c_str());
