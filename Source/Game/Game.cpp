@@ -1,10 +1,11 @@
 #include "../Core/Mobitech.h"
 
+float vertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
+
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
-
-    vec2 vertices[3];
+    
     vec4 colors[3];
 
 public:
@@ -14,9 +15,9 @@ public:
         shader = Engine::rf.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");        
         Input::GetInstance()->Register(this);
 
-        vertices[0] = vec2(0.0f, 0.5f);
+        /*vertices[0] = vec2(0.0f, 0.5f);
         vertices[1] = vec2(-0.5f, -0.5f);
-        vertices[3] = vec2(0.5f, -0.5f);
+        vertices[3] = vec2(0.5f, -0.5f);*/
 
         colors[0] = vec4(0.5f, 0.5f, 0.5f, 1.0f);
         colors[1] = vec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -33,7 +34,7 @@ public:
     {
         Renderer::GetInstance()->SetShaderProgram(shader);
 
-        glVertexAttribPointer(shader->attributeLocations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices[0].v);
+        glVertexAttribPointer(shader->attributeLocations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attributeLocations.position);
 
         glVertexAttribPointer(shader->attributeLocations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
@@ -44,7 +45,17 @@ public:
 
     virtual void OnTouchDown(int x, int y) {}
     virtual void OnTouchUp(int x, int y) {}
-    virtual void OnMove(int x, int y) {}
+    
+    virtual void OnMove(int x, int y)
+    {
+        Renderer* renderer = Renderer::GetInstance();
+        float t = (float)x / renderer->GetWidth();
+        float v = (float)y / renderer->GetHeight();
+
+        colors[0] = vec4(t-v, v*v, t*t, 1.0f);
+        colors[1] = vec4(1.0f - t, 1.0f/t, v*2.0f, 1.0f);
+        colors[2] = vec4(v-t, v*t, v+t, 1.0f);
+    }
 };
 
 void GameMain()
