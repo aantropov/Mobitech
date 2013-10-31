@@ -11,16 +11,15 @@ extern "C" {
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_initResourceFactory(JNIEnv * env, jobject obj, jstring apkFilePath)
 {
-    Engine* eng = Engine::GetInstance();
+    /*Engine* eng = Engine::GetInstance();
 
     jboolean isCopy;
     eng->APK_ROOT = env->GetStringUTFChars(apkFilePath, &isCopy); 
-    eng->rf.APKArchive = zip_open(eng->GetApkRoot().c_str(), 0, NULL); 
+    eng->rf.APKArchive = zip_open(eng->GetApkRoot().c_str(), 0, NULL); */
 }
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
 {
-    
     GameMain();
 }
 
