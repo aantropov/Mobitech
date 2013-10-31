@@ -79,7 +79,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     if (!RegisterClassEx(&wcx))
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"RegisterClassEx fail (%d)", GetLastError());
         Logger::Message(message, LT_ERROR);
         return false;
@@ -107,7 +107,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     if (!g_hWnd)
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"CreateWindowEx fail (%d)", GetLastError());
         Logger::Message(message, LT_ERROR);
         return false;
@@ -118,7 +118,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     if (!g_hDC)
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"GetDC fail (%d)", GetLastError());
         Logger::Message(message, LT_ERROR);
         return false;
@@ -137,7 +137,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     format = ChoosePixelFormat(g_hDC, &pfd);
     if (!format || !SetPixelFormat(g_hDC, format, &pfd))
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"Setting pixel format fail (%d)", GetLastError());
         Logger::Message(message, LT_ERROR);
         return false;
@@ -148,7 +148,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     hRCTemp = wglCreateContext(g_hDC);
     if (!hRCTemp || !wglMakeCurrent(g_hDC, hRCTemp))
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"Ñreating temp render context fail (%d)", GetLastError());
         Logger::Message(message, LT_ERROR);
         return false;
@@ -167,7 +167,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     if (!wglCreateContextAttribsARB)
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"wglCreateContextAttribsARB fail (%d), try to create context with wglCreateContext", GetLastError());
         Logger::GetInstance()->Message(message, LOG_TYPE::LT_ERROR);
         //return false;
@@ -183,7 +183,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     if (!g_hRC || !wglMakeCurrent(g_hDC, g_hRC))
     {
-        char message[MAXCHAR];
+        char message[BUFFER_LENGTH];
         sprintf_s(message,"Creating render context fail (%d)", GetLastError());
         Logger::GetInstance()->Message(message, LOG_TYPE::LT_ERROR);
         return false;
@@ -230,7 +230,7 @@ void Window::SetSize(int width, int height, bool isFullScreen)
         result = ChangeDisplaySettings(&devMode, CDS_FULLSCREEN);
         if (result != DISP_CHANGE_SUCCESSFUL)
         {
-            char message[MAXCHAR];
+            char message[BUFFER_LENGTH];
             sprintf_s(message,"ChangeDisplaySettings fail %dx%d (%d)", width, height, result);
             Logger::Message(message, LOG_TYPE::LT_ERROR);
             fullscreen = false;

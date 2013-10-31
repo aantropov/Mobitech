@@ -38,16 +38,22 @@ void Engine:: OneFrame()
     if(currentScene != NULL)
         currentScene->DrawFrame();
 
+    int currentTick = 0;
 #ifdef MOBITECH_WIN32
     SwapBuffers(Window::GetHDC());
-#endif //MOBITECH_WIN32
+    currentTick = GetTickCount();
+#else if MOBITECH_ANDROID
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC,&ts);
+    currentTick = ts.tv_nsec;
+#endif //MOBITECH_WIN32    
+    
+    deltaTime +=  currentTick - beginFrameTime;
 
-    deltaTime += GetTickCount() - beginFrameTime;
-            
     if(currentScene != NULL)
-        currentScene->Update(GetTickCount() - beginFrameTime);
+        currentScene->Update(currentTick - beginFrameTime);
 
-    elapsedTime += (float)(GetTickCount() - beginFrameTime)/1000.0f;
+    elapsedTime += (float)(currentTick - beginFrameTime)/1000.0f;
     ++fps;
 }
 

@@ -76,7 +76,7 @@ class GL2JNIView extends GLSurfaceView {
     public GL2JNIView(Context context, boolean translucent, int depth, int stencil) {
         super(context);
         init(translucent, depth, stencil);
-    }
+    }	
 
     private void init(boolean translucent, int depth, int stencil) {
 
@@ -335,5 +335,34 @@ class GL2JNIView extends GLSurfaceView {
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             // Do nothing.
         }
+    }
+
+	@Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+		// Get the action from the touch screen
+        int eventAction = event.getAction();
+
+        int X = (int) event.getX();
+        int Y = (int) event.getY();
+
+        // If the user presses on the screen....
+        if (eventAction == MotionEvent.ACTION_DOWN)
+        {
+			GL2JNILib.touchDown(X, Y);
+        }
+		else if (eventAction == MotionEvent.ACTION_UP)
+        {
+			GL2JNILib.touchUp(X, Y);
+        }
+		else if(eventAction == MotionEvent.ACTION_MOVE)
+		{
+			GL2JNILib.touchMove(X, Y);
+		}
+
+        // Redraw the screen
+        invalidate();
+
+        return super.onTouchEvent(event);
     }
 }

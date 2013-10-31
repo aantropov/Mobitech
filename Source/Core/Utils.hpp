@@ -26,7 +26,7 @@ using namespace std;
 #endif
 
 #define MAX_UNIFORM_LOCATIONS 1000
-#define MAXCHAR 1000
+#define BUFFER_LENGTH 1000
 
 #ifdef MOBITECH_ANDROID
 const string MOBITECH_PLATFORM = "android";
@@ -46,7 +46,7 @@ const string MOBITECH_PLATFORM = "win32";
 #define OPENGL_CHECK_FOR_ERRORS() \
     if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
     { \
-        char message[MAXCHAR]; \
+        char message[BUFFER_LENGTH]; \
         sprintf_s(message, "OpenGL error 0x%X<br>", (unsigned)g_OpenGLError); \
         Logger::Message(message, LT_ERROR);  \
     }
@@ -56,7 +56,7 @@ const string MOBITECH_PLATFORM = "win32";
         expression; \
         if ((g_OpenGLError = glGetError()) != GL_NO_ERROR) \
         { \
-            char message[MAXCHAR]; \
+            char message[BUFFER_LENGTH]; \
             sprintf_s(message,"OpenGL expression \"" #expression "\" error %d<br>", (int)g_OpenGLError); \
             Logger::Message(message, LT_ERROR); \
         } \

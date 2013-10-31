@@ -74,6 +74,9 @@
     <ClCompile Include="..\Core\tinyxml\tinyxmlparser.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Game\Game.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\lodepng\lodepng.h">

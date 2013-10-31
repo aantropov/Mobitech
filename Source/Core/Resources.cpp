@@ -4,8 +4,8 @@
 
 Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 {
-    char buffer[MAXCHAR];
-    memset(buffer, '\0', MAXCHAR);
+    char buffer[BUFFER_LENGTH];
+    memset(buffer, '\0', BUFFER_LENGTH);
     sprintf_s(buffer, "\\memory\\%d%d\\", (int)type, unique_id++);
     std::string path = buffer;
 
