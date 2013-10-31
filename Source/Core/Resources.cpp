@@ -1,6 +1,7 @@
 #include "mobitech.h"
 #include "resources.h"
 #include "renderer.h"
+#include "libzip\zip.h"
 
 Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 {
@@ -190,26 +191,46 @@ bool Shader::Instantiate()
 
 bool Shader::Load(std::string path) 
 {
-    FILE* fShd;
-    fShd = fopen(path.c_str() , "rb");
-
-    if(fShd == NULL)
+#ifdef MOBITECH_WIN32
+    FILE* file;
+    file = fopen(path.c_str() , "rb");
+    if(file == NULL)
     {
         Logger::Message("Shader: Can`t open file " + path, LT_ERROR);    
         return false;
     }
 
-    while(!feof(fShd))
+    while(!feof(file))
     {
         char temp = '\0';
-        fread(&temp, 1, 1, fShd);
+        fread(&temp, 1, 1, file);
         source.push_back(temp);
     }    
 
-    if(fShd != NULL)
+    if(file != NULL)
     {
-        fclose(fShd);
+        fclose(file);
     }
+#else if MOBITECH_ANDROID
+    zip_file* file = zip_fopen(resourceFactory->GetApkArchive(), path.c_str(), 0);
+    if (!file) 
+    {
+        Logger::Message(LT_ERROR, "Error opening %s from APK", path.c_str());
+        return false;
+    }
+
+    char temp = '\0';
+    do
+    {
+        zip_fread(file, &temp, 1);
+        source.push_back(temp);    
+    }while(temp != ZIP_ER_EOF);
+
+    if(file != NULL)
+    {
+        zip_fclose(file);
+    }
+#endif //MOBITECH_ANDROID   
     return true;
 }
 

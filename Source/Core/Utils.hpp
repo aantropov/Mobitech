@@ -78,7 +78,12 @@ const string MOBITECH_PLATFORM = "win32";
 #endif //MOBITECH_RELEASE
 
 const string LOG_FILE_NAME = "log.html";
+
+#ifdef MOBITECH_WIN32
 const string ASSETS_ROOT = "..\\..\\Assets\\";
+#else if MOBITECH_ANDROID
+const string ASSETS_ROOT = "Assets\\";
+#endif
 
 enum RESOURCE_TYPE
 {
@@ -225,7 +230,7 @@ public:
         GetInstance()->listeners.remove(listener);
     }
 
-    void Move(int x, int y)
+    void OnTouchMove(int x, int y)
     {
         for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
             (*i)->OnMove(x, y);

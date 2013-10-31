@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "Utils.hpp"
+#include "libzip\zip.h"
 
 using namespace std;
 
@@ -138,10 +139,13 @@ protected:
     int unique_id;
 
 public:
+    
+    zip* APKArchive;
 
     ResourceFactory() { unique_id = 0;}
     ~ResourceFactory() { ReleaseAll(); }
 
+    zip* GetApkArchive() const { return APKArchive; }
     Resource* Get (string path) const;
     bool Add(string path, Resource* res);
     Resource* Load(string path, RESOURCE_TYPE type);

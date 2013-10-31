@@ -38,6 +38,7 @@ using namespace std;
 
 #include "tinyxml\tinyxml.h"
 #include "lodepng\lodepng.h"
+#include "libzip\zip.h"
 #include "math\mathgl.h"
 #include "resources.h"
 #include "renderer.h"
@@ -58,12 +59,15 @@ class Engine : public Singleton<Engine>
     Scene* currentScene;
         
     double deltaTime, beginFrameTime, fixedTimeStep;  
-    Engine() { currentScene = NULL; }
+    Engine(): APK_ROOT("") { currentScene = NULL; }
 
 public:
-    
+  
+    string APK_ROOT;
     static ResourceFactory  rf;
     static Engine* GetInstance();
+
+    string GetApkRoot() const { return APK_ROOT; }
 
     bool Initialize();
     void Run();

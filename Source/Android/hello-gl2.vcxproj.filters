@@ -10,8 +10,23 @@
     <Filter Include="AndroidApk\JavaSource">
       <UniqueIdentifier>{ab0536cf-ea92-4e84-b130-25292ade30e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core">
+    <Filter Include="CppSource\Core">
       <UniqueIdentifier>{28413413-9657-4b37-a056-4d5853985b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\Core\math">
+      <UniqueIdentifier>{05219aef-bac2-4da9-8737-d702405b872f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\Core\lodepng">
+      <UniqueIdentifier>{b8eef51f-22d1-4af1-a3fd-7f9524630e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\Core\libzip">
+      <UniqueIdentifier>{f0b2019f-907b-483e-bbce-a840184e0bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\Core\tinyxml">
+      <UniqueIdentifier>{38b9cf1b-2b33-4cc8-9d33-726c3165a8d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\Game">
+      <UniqueIdentifier>{c3ef30ae-b78a-420e-aa32-aaa66886acfb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -41,103 +56,271 @@
     <ClCompile Include="CppSource\android_main.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\libzip\mkstemp.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_add.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_add_dir.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_close.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_delete.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_dirent.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_entry_free.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_entry_new.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_err_str.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error_clear.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error_get.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error_get_sys_type.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error_strerror.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_error_to_str.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_fclose.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_file_error_clear.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_file_error_get.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_file_get_offset.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_file_strerror.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_filerange_crc.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_fopen.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_fopen_index.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_fread.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_free.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_get_archive_comment.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_get_archive_flag.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_get_file_comment.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_get_name.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_get_num_files.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_memdup.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_name_locate.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_new.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_open.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_rename.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_replace.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_set_archive_comment.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_set_archive_flag.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_set_file_comment.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_set_name.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_buffer.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_file.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_filep.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_free.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_function.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_source_zip.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_stat.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_stat_index.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_stat_init.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_strerror.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_unchange.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_unchange_all.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_unchange_archive.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\libzip\zip_unchange_data.c">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClCompile>
     <ClCompile Include="..\Core\lodepng\lodepng.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\math\bounds.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\math\frustum.cpp">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\lodepng</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\math\transform.cpp">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\math</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Mobitech.cpp">
-      <Filter>Core</Filter>
+    <ClCompile Include="..\Core\math\bounds.cpp">
+      <Filter>CppSource\Core\math</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Renderer.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Resources.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\tinyxml\tinystr.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\tinyxml\tinyxml.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\tinyxml\tinyxmlerror.cpp">
-      <Filter>Core</Filter>
+    <ClCompile Include="..\Core\math\frustum.cpp">
+      <Filter>CppSource\Core\math</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\tinyxml\tinyxmlparser.cpp">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\tinyxml\tinyxmlerror.cpp">
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\tinyxml\tinyxml.cpp">
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\tinyxml\tinystr.cpp">
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Resources.cpp">
+      <Filter>CppSource\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Mobitech.cpp">
+      <Filter>CppSource\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Renderer.cpp">
+      <Filter>CppSource\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Game\Game.cpp">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Core\libzip\config.h">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\libzip\zip.h">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\libzip\zipint.h">
+      <Filter>CppSource\Core\libzip</Filter>
+    </ClInclude>
     <ClInclude Include="..\Core\lodepng\lodepng.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\bounds.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\frustum.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat2.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat3.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\mat4.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\lodepng</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\math\math3d.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\math\frustum.h">
+      <Filter>CppSource\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\math\mat4.h">
+      <Filter>CppSource\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\math\mat3.h">
+      <Filter>CppSource\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\math\mat2.h">
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\math\mathgl.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\quat.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\math\transform.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\UMath.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\vec2.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\math\vec3.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\math\vec4.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Mobitech.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="..\Core\math\vec3.h">
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Renderer.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="..\Core\math\vec2.h">
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Resources.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="..\Core\math\bounds.h">
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\tinyxml\tinystr.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="..\Core\math\quat.h">
+      <Filter>CppSource\Core\math</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\tinyxml\tinyxml.h">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\tinyxml\tinystr.h">
+      <Filter>CppSource\Core\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Resources.h">
+      <Filter>CppSource\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Mobitech.h">
+      <Filter>CppSource\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\Utils.hpp">
-      <Filter>Core</Filter>
+      <Filter>CppSource\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Renderer.h">
+      <Filter>CppSource\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

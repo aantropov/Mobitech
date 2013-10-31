@@ -39,6 +39,17 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.view.MotionEvent;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -67,18 +78,18 @@ import javax.microedition.khronos.opengles.GL10;
 class GL2JNIView extends GLSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
-
-    public GL2JNIView(Context context) {
+	
+    public GL2JNIView(Context context) {		
         super(context);
-        init(false, 0, 0);
+	    init(false, 0, 0, context);
     }
 
     public GL2JNIView(Context context, boolean translucent, int depth, int stencil) {
         super(context);
-        init(translucent, depth, stencil);
+	    init(translucent, depth, stencil, context);
     }	
 
-    private void init(boolean translucent, int depth, int stencil) {
+    private void init(boolean translucent, int depth, int stencil, Context context) {
 
         /* By default, GLSurfaceView() creates a RGB_565 opaque surface.
          * If we want a translucent one, we should change the surface's
@@ -104,7 +115,7 @@ class GL2JNIView extends GLSurfaceView {
                              new ConfigChooser(5, 6, 5, 0, depth, stencil) );
 
         /* Set the renderer responsible for frame rendering */
-        setRenderer(new Renderer());
+        setRenderer(new Renderer(context));
     }
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -324,12 +335,34 @@ class GL2JNIView extends GLSurfaceView {
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {
+
+		private Context context;
+		
+		public Renderer(Context context) 
+		{ 
+			this.context = context; 
+		}
+
         public void onDrawFrame(GL10 gl) {
             GL2JNILib.step();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            GL2JNILib.init(width, height);
+			// return apk file path (or null on error)
+			String apkFilePath = null;
+			ApplicationInfo appInfo = null;
+			PackageManager packMgmr = context.getPackageManager();
+			
+			try {
+				appInfo = packMgmr.getApplicationInfo("net.fhtagn.moob", 0);
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Unable to locate assets, aborting...");
+			}
+			apkFilePath = appInfo.sourceDir;
+
+			//GL2JNILib.initResourceFactory(apkFilePath);
+            GL2JNILib.init(width, height);			
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
