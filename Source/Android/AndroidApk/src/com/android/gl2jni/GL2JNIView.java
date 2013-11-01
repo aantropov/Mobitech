@@ -354,15 +354,15 @@ class GL2JNIView extends GLSurfaceView {
 			PackageManager packMgmr = context.getPackageManager();
 			
 			try {
-				appInfo = packMgmr.getApplicationInfo("net.fhtagn.moob", 0);
+				appInfo = packMgmr.getApplicationInfo("com.android.gl2jni", 0);
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 				throw new RuntimeException("Unable to locate assets, aborting...");
 			}
 			apkFilePath = appInfo.sourceDir;
-
-			//GL2JNILib.initResourceFactory(apkFilePath);
-            GL2JNILib.init(width, height);			
+			
+			GL2JNILib.initResourceFactory(apkFilePath);
+            GL2JNILib.init(width, height);	
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {

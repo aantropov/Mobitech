@@ -15,6 +15,7 @@
  */
 
 package com.android.gl2jni;
+import android.util.Log;
 
 // Wrapper for native library
 

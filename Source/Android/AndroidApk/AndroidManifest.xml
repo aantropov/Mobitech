@@ -19,9 +19,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.gl2jni"
-    android:versionCode="1"
-    android:versionName="1.0">
+    package="com.android.gl2jni">
     <application
             android:label="@string/gl2jni_activity">
         <activity android:name=".GL2JNIActivity"
