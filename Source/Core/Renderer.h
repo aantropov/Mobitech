@@ -95,6 +95,8 @@ public:
     
     void Destroy();
     void SetSize(int width, int height, bool isFullScreen = false);
+
+    friend class Renderer;
 };
 
 class Renderer: public Singleton<Renderer>
@@ -137,7 +139,10 @@ public:
 
     int GetWidth() const { return uWnd.GetWidth(); }
     int GetHeight() const { return uWnd.GetHeight(); }
-        
+
+    void SetWidth(int w) { uWnd.width = w; }
+    void SetHeight(int h) { uWnd.height = h; }
+      
     void Release();
 
     Camera GetCurrentCamera();

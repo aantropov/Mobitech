@@ -872,6 +872,7 @@ bool Renderer::Initialize()
     bool fullscreen = false;
     bool vsync = false;
 
+#ifdef MOBITECH_WIN32
     TiXmlDocument document((ASSETS_ROOT + "/config.xml").c_str());
     document.LoadFile(TIXML_ENCODING_UTF8);
     TiXmlElement *config = document.FirstChildElement("config");
@@ -895,6 +896,7 @@ bool Renderer::Initialize()
 
     if( !uWnd.Create("Mobitech", width, height, fullscreen))
         return false;
+#endif //MOBITECH_WIN32
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
     OPENGL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -902,7 +904,9 @@ bool Renderer::Initialize()
     OPENGL_CALL(glEnable(GL_DEPTH_TEST));
     OPENGL_CALL(glEnable(GL_CULL_FACE));
 
+#ifdef MOBITECH_WIN32
     SetVerticalSynchronization(vsync);
+#endif //MOBITECH_WIN32
 
     OPENGL_CHECK_FOR_ERRORS();
 

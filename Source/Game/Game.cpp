@@ -1,5 +1,4 @@
 #include "../Core/Mobitech.h"
-
 float vertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
 
 class GameScene : public Scene, IInputListener
@@ -12,7 +11,7 @@ public:
     
     GameScene()
     {  
-        shader = Engine::rf.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");        
+        //shader = Engine::rf.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");        
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -32,8 +31,6 @@ public:
 
     virtual void DrawFrame()
     {
-        return;
-
         Renderer::GetInstance()->SetShaderProgram(shader);
 
         glVertexAttribPointer(shader->attributeLocations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
@@ -62,13 +59,13 @@ public:
 
 void GameMain()
 {
-    Engine engine = *(Engine::GetInstance());
-    engine.Initialize();
+    Engine *engine = Engine::GetInstance();
+    engine->Initialize();
     
     GameScene gameScene;
-    engine.SetScene(&gameScene);
+    engine->SetScene(&gameScene);
     
-    engine.Run();
-    engine.Stop();
+    engine->Run();
+    //engine->Stop();
 }
 
