@@ -57,6 +57,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.res.AssetManager;
+
 /**
  * A simple GLSurfaceView sub-class that demonstrate how to perform
  * OpenGL ES 2.0 rendering into a GL Surface. Note the following important
@@ -348,7 +350,7 @@ class GL2JNIView extends GLSurfaceView {
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-			// return apk file path (or null on error)
+		  // return apk file path (or null on error)
 			String apkFilePath = null;
 			ApplicationInfo appInfo = null;
 			PackageManager packMgmr = context.getPackageManager();
@@ -361,12 +363,12 @@ class GL2JNIView extends GLSurfaceView {
 			}
 			apkFilePath = appInfo.sourceDir;
 			
-			GL2JNILib.initResourceFactory(apkFilePath);
+			GL2JNILib.initResourceFactory(context.getAssets(), apkFilePath);
             GL2JNILib.init(width, height);	
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            // Do nothing.
+         
         }
     }
 

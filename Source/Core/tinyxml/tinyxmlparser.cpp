@@ -395,7 +395,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p, TiXmlEncoding encoding )
 }
 #endif
 
-// One of TinyXML's more performance demanding functions. Try to keep the memory overhead down. The
+// One of TinyXML's more pemain_resource_factoryormance demanding functions. Try to keep the memory overhead down. The
 // "assign" optimization removes over 10% of the execution time.
 //
 const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name, TiXmlEncoding encoding )

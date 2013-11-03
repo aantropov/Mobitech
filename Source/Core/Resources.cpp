@@ -3,6 +3,10 @@
 #include "renderer.h"
 #include "libzip\zip.h"
 
+#ifdef MOBITECH_ANDROID
+#include <android/asset_manager_jni.h>
+#endif //MOBITECH_ANDROID
+
 Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 {
     char buffer[BUFFER_LENGTH];
@@ -22,10 +26,31 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
     else
         return NULL;
 
-    temp->resourceFactory = this;
+    temp->resource_factory = this;
     temp->resourceId = path;
     resources[path] = temp;
     return temp;  
+}
+
+FileData ResourceFactory:: GetFileData(const char* relative_path) const
+{
+    assert(relative_path != NULL);
+
+    if(asset_manager == NULL)
+        Logger::Message("Assert manager is not initialized");
+    
+    AAsset* asset = AAssetManager_open(asset_manager, relative_path, AASSET_MODE_UNKNOWN);
+    Logger::Message("Loading ok");
+    assert(asset != NULL);
+ 
+    return (FileData) { AAsset_getLength(asset), AAsset_getBuffer(asset), asset };
+}
+ 
+void ResourceFactory:: ReleaseFileData(const FileData* file_data) const
+{
+    assert(file_data != NULL);
+    assert(file_data->file_handle != NULL);
+    AAsset_close((AAsset*)file_data->file_handle);
 }
 
 Resource* ResourceFactory:: Get(std::string path) const
@@ -54,10 +79,11 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
         return res;
 
     Logger::Message("Loading resource: \"" + path + "\"");
-
+    
     ShaderProgram* temp = new ShaderProgram();
-    temp->resourceFactory = this;
+    temp->resource_factory = this;
     temp->Load(vp, pp);
+    return NULL;
     temp->resourceId = path;
     temp->Instantiate();
     resources[path] = temp;
@@ -82,7 +108,7 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
         return NULL;
     
     temp->Load(path);
-    temp->resourceFactory = this;
+    temp->resource_factory = this;
     temp->resourceId = path;
     resources[path] = temp;
     return temp;  
@@ -206,30 +232,26 @@ bool Shader::Load(std::string path)
         fread(&temp, 1, 1, file);
         source.push_back(temp);
     }    
-
+        
     if(file != NULL)
     {
         fclose(file);
     }
 #else if MOBITECH_ANDROID
-    zip_file* file = zip_fopen(resourceFactory->GetApkArchive(), path.c_str(), 0);
-    if (!file) 
+    Logger::Message("LOAD SHADER 1");
+    FileData file = resource_factory->GetFileData(path.c_str());
+    Logger::Message(LT_INFO, "LOAD SHADER 2", path.c_str());
+    if (file.data_length <= 0) 
     {
         Logger::Message(LT_ERROR, "Error opening %s from APK", path.c_str());
         return false;
     }
-
-    char temp = '\0';
-    do
-    {
-        zip_fread(file, &temp, 1);
-        source.push_back(temp);    
-    }while(temp != ZIP_ER_EOF);
-
-    if(file != NULL)
-    {
-        zip_fclose(file);
-    }
+    Logger::Message(LT_INFO, "LOAD SHADER 3", path.c_str());
+    for(int i = 0; i < file.data_length; i++)
+        source.push_back(((char*)file.data)[i]);
+    Logger::Message(LT_INFO, "LOAD SHADER 4", path.c_str());
+    resource_factory->ReleaseFileData(&file);
+    Logger::Message(LT_INFO, "LOAD SHADER 5", path.c_str());
 #endif //MOBITECH_ANDROID   
     return true;
 }
@@ -245,22 +267,22 @@ void Shader::Free()
 
 void ShaderProgram::Free()
 {    
-        if(_id != -1)
-            Renderer::GetInstance()->DeleteShaderProgram(this);
-        _id = -1;
+    if(_id != -1)
+        Renderer::GetInstance()->DeleteShaderProgram(this);
+    _id = -1;
 }
 
 void ShaderProgram:: InitLocations()
 {
-    uniformLocations.transform_model = glGetUniformLocation(_id, "transform.model");
-    uniformLocations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection");
-    uniformLocations.transform_normal = glGetUniformLocation(_id, "transform.normal");
-    uniformLocations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection");
-    uniformLocations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition");
+    uniform_locations.transform_model = glGetUniformLocation(_id, "transform.model");
+    uniform_locations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection");
+    uniform_locations.transform_normal = glGetUniformLocation(_id, "transform.normal");
+    uniform_locations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection");
+    uniform_locations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition");
     
-    attributeLocations.color = glGetAttribLocation(_id, "color");
-    attributeLocations.position = glGetAttribLocation(_id, "position");
-    attributeLocations.texcoords = glGetAttribLocation(_id, "texcoords");    
+    attribute_locations.color = glGetAttribLocation(_id, "color");
+    attribute_locations.position = glGetAttribLocation(_id, "position");
+    attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");    
 }
 
 bool ShaderProgram:: Load(string path)
@@ -278,12 +300,12 @@ bool ShaderProgram:: Instantiate()
 
 bool ShaderProgram:: Load(std::string vertexshd_path, std::string pixelshd_path)
 {
-    Shader *vs = dynamic_cast<Shader*>(resourceFactory->Get(vertexshd_path));
-    Shader *ps = dynamic_cast<Shader*>(resourceFactory->Get(pixelshd_path));
+    Shader *vs = dynamic_cast<Shader*>(resource_factory->Get(vertexshd_path));
+    Shader *ps = dynamic_cast<Shader*>(resource_factory->Get(pixelshd_path));
 
-    vertex_sh = dynamic_cast<Shader*> (resourceFactory->Load(vertexshd_path, RT_SHADER));
-    pixel_sh = dynamic_cast<Shader*> (resourceFactory->Load(pixelshd_path, RT_SHADER));
-
+    vertex_sh = dynamic_cast<Shader*> (resource_factory->Load(vertexshd_path, RT_SHADER));
+    pixel_sh = dynamic_cast<Shader*> (resource_factory->Load(pixelshd_path, RT_SHADER));
+    
     if(vs == NULL)
     {
         vertex_sh->type = ST_VERTEX;

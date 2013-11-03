@@ -772,7 +772,7 @@ unsigned lodepng_zlib_compress(unsigned char** out, size_t* outsize,
 
 /*
 Find length-limited Huffman code for given frequencies. This function is in the
-public interface only for tests, it's used internally by lodepng_deflate.
+public intemain_resource_factoryace only for tests, it's used internally by lodepng_deflate.
 */
 unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequencies,
                                       size_t numcodes, unsigned maxbitlen);
@@ -940,9 +940,9 @@ The specifications used are:
 *) Portable Network Graphics (PNG) Specification (Second Edition):
      http://www.w3.org/TR/2003/REC-PNG-20031110
 *) RFC 1950 ZLIB Compressed Data Format version 3.3:
-     http://www.gzip.org/zlib/rfc-zlib.html
+     http://www.gzip.org/zlib/main_resource_factoryc-zlib.html
 *) RFC 1951 DEFLATE Compressed Data Format Specification ver 1.3:
-     http://www.gzip.org/zlib/rfc-deflate.html
+     http://www.gzip.org/zlib/main_resource_factoryc-deflate.html
 
 The most recent version of LodePNG can currently be found at
 http://lodev.org/lodepng/
@@ -1020,7 +1020,7 @@ The C version uses buffers allocated with alloc that you need to free()
 yourself. You need to use init and cleanup functions for each struct whenever
 using a struct from the C version to avoid exploits and memory leaks.
 
-The C++ version has extra functions with std::vectors in the interface and the
+The C++ version has extra functions with std::vectors in the intemain_resource_factoryace and the
 lodepng::State class which is a LodePNGState with constructor and destructor.
 
 These files work without modification for both C and C++ compilers because all
@@ -1284,7 +1284,7 @@ as the PNG has, by setting the color_convert setting to false. Settings in
 info_raw are then ignored.
 
 The function lodepng_convert does the color conversion. It is available in the
-interface but normally isn't needed since the encoder and decoder already call
+intemain_resource_factoryace but normally isn't needed since the encoder and decoder already call
 it.
 
 6.3. padding bits
@@ -1445,11 +1445,11 @@ LodePNG. For the C++ version, only the standard C++ library is needed on top.
 Add the files lodepng.c(pp) and lodepng.h to your project, include
 lodepng.h where needed, and your program can read/write PNG files.
 
-If performance is important, use optimization when compiling! For both the
+If pemain_resource_factoryormance is important, use optimization when compiling! For both the
 encoder and decoder, this makes a large difference.
 
 Make sure that LodePNG is compiled with the same compiler of the same version
-and with the same settings as the rest of the program, or the interfaces with
+and with the same settings as the rest of the program, or the intemain_resource_factoryaces with
 std::vectors and std::strings in C++ can be incompatible.
 
 CHAR_BITS must be 8 or higher, because LodePNG uses unsigned chars for octets.
@@ -1580,7 +1580,7 @@ symbol.
 *) 23 jun 2012: Added more filter strategies. Made it easier to use custom alloc
     and free functions and toggle #defines from compiler flags. Small fixes.
 *) 6 may 2012 (!): Made plugging in custom zlib/deflate functions more flexible.
-*) 22 apr 2012 (!): Made interface more consistent, renaming a lot. Removed
+*) 22 apr 2012 (!): Made intemain_resource_factoryace more consistent, renaming a lot. Removed
     redundant C++ codec classes. Reduced amount of structs. Everything changed,
     but it is cleaner now imho and functionality remains the same. Also fixed
     several bugs and shrinked the implementation code. Made new samples.
@@ -1622,7 +1622,7 @@ symbol.
 *) 13 jan 2008: Added ability to encode Adam7-interlaced images. Improved
     filtering code of encoder.
 *) 07 jan 2008: (!) changed LodePNG to use ISO C90 instead of C++. A
-    C++ wrapper around this provides an interface almost identical to before.
+    C++ wrapper around this provides an intemain_resource_factoryace almost identical to before.
     Having LodePNG be pure ISO C90 makes it more portable. The C and C++ code
     are together in these files but it works both for C and C++ compilers.
 *) 29 dec 2007: (!) changed most integer types to unsigned int + other tweaks
@@ -1641,15 +1641,15 @@ symbol.
 *) 24 apr 2007: changed the license from BSD to the zlib license
 *) 11 mar 2007: very simple addition: ability to encode bKGD chunks.
 *) 04 mar 2007: (!) tEXt chunk related fixes, and support for encoding
-    palettized PNG images. Plus little interface change with palette and texts.
+    palettized PNG images. Plus little intemain_resource_factoryace change with palette and texts.
 *) 03 mar 2007: Made it encode dynamic Huffman shorter with repeat codes.
     Fixed a bug where the end code of a block had length 0 in the Huffman tree.
 *) 26 feb 2007: Huffman compression with dynamic trees (BTYPE 2) now implemented
     and supported by the encoder, resulting in smaller PNGs at the output.
 *) 27 jan 2007: Made the Adler-32 test faster so that a timewaste is gone.
-*) 24 jan 2007: gave encoder an error interface. Added color conversion from any
+*) 24 jan 2007: gave encoder an error intemain_resource_factoryace. Added color conversion from any
     greyscale type to 8-bit greyscale with or without alpha.
-*) 21 jan 2007: (!) Totally changed the interface. It allows more color types
+*) 21 jan 2007: (!) Totally changed the intemain_resource_factoryace. It allows more color types
     to convert to and is more uniform. See the manual for how it works now.
 *) 07 jan 2007: Some cleanup & fixes, and a few changes over the last days:
     encode/decode custom tEXt chunks, separate classes for zlib & deflate, and
@@ -1665,10 +1665,10 @@ symbol.
 *) 15 okt 2006: Changed documentation structure
 *) 09 okt 2006: Encoder class added. It encodes a valid PNG image from the
     given image buffer, however for now it's not compressed.
-*) 08 sep 2006: (!) Changed to interface with a Decoder class
+*) 08 sep 2006: (!) Changed to intemain_resource_factoryace with a Decoder class
 *) 30 jul 2006: (!) LodePNG_InfoPng , width and height are now retrieved in different
     way. Renamed decodePNG to decodePNGGeneric.
-*) 29 jul 2006: (!) Changed the interface: image info is now returned as a
+*) 29 jul 2006: (!) Changed the intemain_resource_factoryace: image info is now returned as a
     struct of type LodePNG::LodePNG_Info, instead of a vector, which was a bit clumsy.
 *) 28 jul 2006: Cleaned the code and added new error checks.
     Corrected terminology "deflate" into "inflate".
@@ -1680,12 +1680,12 @@ symbol.
     Changed position of palette in info vector. Fixed an important bug that
     happened on PNGs with an uncompressed block.
 *) 16 jun 2006: Internally changed unsigned into unsigned where
-    needed, and performed some optimizations.
+    needed, and pemain_resource_factoryormed some optimizations.
 *) 07 jun 2006: (!) Renamed functions to decodePNG and placed them
     in LodePNG namespace. Changed the order of the parameters. Rewrote the
     documentation in the header. Renamed files to lodepng.cpp and lodepng.h
 *) 22 apr 2006: Optimized and improved some code
-*) 07 sep 2005: (!) Changed to std::vector interface
+*) 07 sep 2005: (!) Changed to std::vector intemain_resource_factoryace
 *) 12 aug 2005: Initial release (C++, decoder only)
 
 

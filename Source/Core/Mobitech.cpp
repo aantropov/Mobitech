@@ -1,7 +1,7 @@
 #include "Mobitech.h"
 #include "Renderer.h"
 
-ResourceFactory Engine::rf;
+ResourceFactory Engine::main_resource_factory;
 
 Engine* Engine::GetInstance()
 {
@@ -12,7 +12,7 @@ Engine* Engine::GetInstance()
 
 bool Engine::Initialize()
 {
-    elapsedTime = 0;
+    elapsed_time = 0;
     fps = 0;
 
     if(Window::IsRunning())
@@ -35,8 +35,8 @@ void Engine:: OneFrame()
         
 	Renderer::GetInstance()->drawCalls = 0;
 
-    if(currentScene != NULL)
-        currentScene->DrawFrame();
+    if(current_scene != NULL)
+        current_scene->DrawFrame();
 
     int currentTick = 0;
 #ifdef MOBITECH_WIN32
@@ -48,12 +48,12 @@ void Engine:: OneFrame()
     currentTick = ts.tv_nsec;
 #endif //MOBITECH_WIN32    
     
-    deltaTime +=  currentTick - beginFrameTime;
+    delta_time +=  currentTick - begin_frame_time;
 
-    if(currentScene != NULL)
-        currentScene->Update(currentTick - beginFrameTime);
+    if(current_scene != NULL)
+        current_scene->Update(currentTick - begin_frame_time);
 
-    elapsedTime += (float)(currentTick - beginFrameTime)/1000.0f;
+    elapsed_time += (float)(currentTick - begin_frame_time)/1000.0f;
     ++fps;
 }
 
@@ -65,8 +65,8 @@ void Engine::Run()
     Window::SetActive(true);
     Window::SetRunning(true); 	
 
-    deltaTime      = 0.0;
-    fixedTimeStep  = 1.0 / 100.0;
+    delta_time      = 0.0;
+    fixed_time_step  = 1.0 / 100.0;
 
     while (Window::IsRunning())
     {
@@ -80,7 +80,7 @@ void Engine::Run()
             DispatchMessage(&msg);
         }
         
-        beginFrameTime = GetTickCount();
+        begin_frame_time = GetTickCount();
 
         //if (Input::IsKeyPressed(VK_ESCAPE))
           //  this->Stop();
@@ -89,14 +89,14 @@ void Engine::Run()
         {
             OneFrame();
 
-            if (elapsedTime >= 1.0f)
+            if (elapsed_time >= 1.0f)
             {
                 char buff[50];
                 sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, Renderer::GetInstance()->drawCalls);
 
                 Window::SetWindowTitle(buff);
                 fps = 0;
-                elapsedTime = 0.0f;
+                elapsed_time = 0.0f;
             }
         }
     }
@@ -108,7 +108,7 @@ void Engine::Run()
 
 void Engine::Release()
 {
-    rf.ReleaseAll();
+    main_resource_factory.ReleaseAll();
     Renderer::GetInstance()->Release();
     Renderer::Free();
     Logger::Free();

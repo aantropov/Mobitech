@@ -12,6 +12,7 @@ using namespace std;
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
+#include <android/asset_manager_jni.h>
 #include <android/sensor.h>
 #include <android/log.h>
 
@@ -55,16 +56,16 @@ public:
 class Engine : public Singleton<Engine>
 {
     unsigned int fps;
-    float elapsedTime;
-    Scene* currentScene;
+    float elapsed_time;
+    Scene* current_scene;
         
-    double deltaTime, beginFrameTime, fixedTimeStep;  
-    Engine(): APK_ROOT("") { currentScene = NULL; }
+    double delta_time, begin_frame_time, fixed_time_step;  
+    Engine(): APK_ROOT("") { current_scene = NULL; }
 
 public:
   
     string APK_ROOT;
-    static ResourceFactory  rf;
+    static ResourceFactory  main_resource_factory;
     static Engine* GetInstance();
 
     string GetApkRoot() const { return APK_ROOT; }
@@ -75,8 +76,8 @@ public:
     void Stop();
     void Release();
 
-    void SetScene(Scene *scene) { currentScene = scene; }
-    Scene* GetScene() const { return currentScene; }
+    void SetScene(Scene *scene) { current_scene = scene; }
+    Scene* GetScene() const { return current_scene; }
 };
 
 #endif //MOBITECH_H

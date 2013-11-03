@@ -11,7 +11,7 @@ public:
     
     GameScene()
     {  
-        //shader = Engine::rf.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");        
+        shader = Engine::main_resource_factory.Load("assets/diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");  
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -33,11 +33,11 @@ public:
     {
         Renderer::GetInstance()->SetShaderProgram(shader);
 
-        glVertexAttribPointer(shader->attributeLocations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(shader->attributeLocations.position);
+        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(shader->attribute_locations.position);
 
-        glVertexAttribPointer(shader->attributeLocations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
-        glEnableVertexAttribArray(shader->attributeLocations.color);
+        glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
+        glEnableVertexAttribArray(shader->attribute_locations.color);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
@@ -66,6 +66,6 @@ void GameMain()
     engine->SetScene(&gameScene);
     
     engine->Run();
-    //engine->Stop();
+    engine->Stop();
 }
 

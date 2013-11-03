@@ -485,11 +485,11 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
     mat3 normal         = transpose(mat3(inverse(model)));
     mat4 modelViewProjection = model * viewProjection;
 
-    UniformMatrix4(shd->uniformLocations.transform_model,  1, model.m);
-    UniformMatrix4(shd->uniformLocations.transform_viewProjection, 1, viewProjection.m);
-    UniformMatrix3(shd->uniformLocations.transform_normal, 1, normal.m);
-    UniformMatrix4(shd->uniformLocations.transform_modelViewProjection, 1, modelViewProjection.m);
-    Uniform3(shd->uniformLocations.transform_viewPosition, 1, currentCamera.GetPosition().v);
+    UniformMatrix4(shd->uniform_locations.transform_model,  1, model.m);
+    UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
+    UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
+    UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
+    Uniform3(shd->uniform_locations.transform_viewPosition, 1, currentCamera.GetPosition().v);
 }
 
 void Renderer:: SetCurrentCamera(Camera cam)

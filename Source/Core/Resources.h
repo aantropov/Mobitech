@@ -8,7 +8,18 @@
 #include "Utils.hpp"
 #include "libzip\zip.h"
 
+#ifdef MOBITECH_ANDROID
+#include <android/asset_manager_jni.h>
+#endif //MOBITECH_ANDROID
+
 using namespace std;
+
+struct FileData
+{
+    const long data_length;
+    const void* data;
+    const void* file_handle;
+};
 
 struct Vertex
 {
@@ -47,7 +58,7 @@ class Resource
 public:
 
     string resourceId;
-    ResourceFactory* resourceFactory;
+    ResourceFactory* resource_factory;
 
     virtual bool Load(string path) { return true; }
     virtual void Free() {}
@@ -115,8 +126,8 @@ public:
         unsigned int color;
     };
 
-    UniformLocations uniformLocations;
-    AttributeLocations attributeLocations;
+    UniformLocations uniform_locations;
+    AttributeLocations attribute_locations;
 
     void InitLocations();
 
@@ -136,16 +147,24 @@ class ResourceFactory
 protected:
 
     map<string, Resource*> resources;
-    int unique_id;
+    int unique_id;      
 
 public:
     
-    zip* APKArchive;
+#ifdef MOBITECH_ANDROID
+    AAssetManager* asset_manager;
+    AAssetManager* GetAssetManagerArchive() const { return asset_manager; }
+#endif// MOBITECH_ANDROID
 
-    ResourceFactory() { unique_id = 0;}
+    zip* apk_archive;
+
+    ResourceFactory() { unique_id = 0; asset_manager = NULL; }
     ~ResourceFactory() { ReleaseAll(); }
 
-    zip* GetApkArchive() const { return APKArchive; }
+    FileData GetFileData(const char* path) const;
+    void ReleaseFileData(const FileData* file_data) const;
+
+    zip* GetApkArchive() const { return apk_archive; }
     Resource* Get (string path) const;
     bool Add(string path, Resource* res);
     Resource* Load(string path, RESOURCE_TYPE type);

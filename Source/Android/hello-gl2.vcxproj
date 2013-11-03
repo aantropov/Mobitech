@@ -26,12 +26,14 @@
       <AntBuildPath>$(ProjectDir)\AndroidApk</AntBuildPath>
     </AntBuild>
     <Link>
-      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>-lz</AdditionalDependencies>
+      <AdditionalOptions>-lGLESv2 -lz -landroid %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>MOBITECH_DEBUG; MOBITECH_ANDROID;</PreprocessorDefinitions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>-landroid %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Android'">

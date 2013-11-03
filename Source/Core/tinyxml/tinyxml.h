@@ -107,7 +107,7 @@ struct TiXmlCursor
 
 
 /**
-	Implements the interface to the "Visitor pattern" (see the Accept() method.)
+	Implements the intemain_resource_factoryace to the "Visitor pattern" (see the Accept() method.)
 	If you call the Accept() method, it requires being passed a TiXmlVisitor
 	class to handle callbacks. For nodes that contain other nodes (Document, Element)
 	you will get called with a VisitEnter/VisitExit pair. Nodes that are always leaves
@@ -236,7 +236,7 @@ public:
 		(by adding or changing nodes and attributes) the new values will NOT update to
 		reflect changes in the document.
 
-		There is a minor performance cost to computing the row and column. Computation
+		There is a minor pemain_resource_factoryormance cost to computing the row and column. Computation
 		can be disabled if TiXmlDocument::SetTabSize() is called with 0 as the value.
 
 		@sa TiXmlDocument::SetTabSize()
@@ -715,13 +715,13 @@ public:
 
 	/** Accept a hierchical visit the nodes in the TinyXML DOM. Every node in the 
 		XML tree will be conditionally visited and the host will be called back
-		via the TiXmlVisitor interface.
+		via the TiXmlVisitor intemain_resource_factoryace.
 
-		This is essentially a SAX interface for TinyXML. (Note however it doesn't re-parse
-		the XML for the callbacks, so the performance of TinyXML is unchanged by using this
-		interface versus any other.)
+		This is essentially a SAX intemain_resource_factoryace for TinyXML. (Note however it doesn't re-parse
+		the XML for the callbacks, so the pemain_resource_factoryormance of TinyXML is unchanged by using this
+		intemain_resource_factoryace versus any other.)
 
-		The interface has been based on ideas from:
+		The intemain_resource_factoryace has been based on ideas from:
 
 		- http://www.saxproject.org/
 		- http://c2.com/cgi/wiki?HierarchicalVisitorPattern 
@@ -1014,7 +1014,7 @@ public:
 	}
 
 	/** Template form of the attribute query which will try to read the
-		attribute into the specified type. Very easy, very powerful, but
+		attribute into the specified type. Very easy, very powemain_resource_factoryul, but
 		be careful to make sure to call this with the correct type.
 		
 		NOTE: This method doesn't work correctly for 'string' types that contain spaces.
@@ -1590,7 +1590,7 @@ private:
 	@endverbatim
 
 	And that doesn't even cover "else" cases. TiXmlHandle addresses the verbosity
-	of such code. A TiXmlHandle checks for null	pointers so it is perfectly safe 
+	of such code. A TiXmlHandle checks for null	pointers so it is pemain_resource_factoryectly safe 
 	and correct to use:
 
 	@verbatim

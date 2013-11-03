@@ -80,7 +80,7 @@ public:
     { 
 #ifdef MOBITECH_WIN32 
         SetWindowText(g_hWnd, title.c_str()); 
-#endif //MOBITECH_WIN32   
+#endif //MOBITECH_WIN32
     }
 
 #ifdef MOBITECH_WIN32

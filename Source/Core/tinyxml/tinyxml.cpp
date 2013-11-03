@@ -67,7 +67,7 @@ void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
 			// &#xA9;	-- copyright symbol, for example.
 			//
 			// The -1 is a bug fix from Rob Laveaux. It keeps
-			// an overflow from happening if there is no ';'.
+			// an ovemain_resource_factorylow from happening if there is no ';'.
 			// There are actually 2 ways to exit this loop -
 			// while fails (error case) and break (semicolon found).
 			// However, there is no mechanism (currently) for
