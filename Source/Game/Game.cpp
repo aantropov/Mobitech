@@ -1,5 +1,5 @@
 #include "../Core/Mobitech.h"
-float vertices[] = { 0.0f, 100.5f, -100.0f, -0.0f, 0.0f, -0.0f };
+float vertices[] = { 0.0f, 1000.5f, -1000.0f, -0.0f, 0.0f, -0.0f };
 float texcoords[] = { 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f };
 
 class GameScene : public Scene, IInputListener
@@ -18,8 +18,8 @@ public:
     {  
         angle = 0.0f;
         Renderer *render = Renderer::GetInstance();
-        camera.Create(-250.0f, -150.0f, 0.0f);
-        camera.Ortho(0.0f, render->GetWidth(), 0.0f, render->GetHeight(), 0.0f, 1000.0f);
+        camera.Create(-350.0f, -250.0f, 0.0f);
+        camera.Ortho(0.0f, 800, 0.0f, 600, 0.0f, 1000.0f);
 
         touch_pressed = false;
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
@@ -52,7 +52,7 @@ public:
         render->BindShaderProgram(shader);
         render->BindTexture(test_texture, 0);
         mat4 model = mat4_identity;
-        model = GLRotationZ(angle);
+        //model = GLRotationZ(angle);
 
         render->SetupCameraForShaderProgram(shader, model);
 

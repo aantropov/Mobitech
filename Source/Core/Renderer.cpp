@@ -480,14 +480,19 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
 {
     mat4 view           = current_camera->GetView();
     mat4 viewProjection = current_camera->GetProjection() * view;
-    mat3 normal         = transpose(mat3(inverse(model)));
-    mat4 modelViewProjection = model * viewProjection;
+    mat4 modelViewProjection = transpose(model * viewProjection);
+    
+    mat4 modelTr = transpose(model);
+    view = transpose(view);
+    viewProjection = transpose(viewProjection);
 
-    UniformMatrix4(shd->uniform_locations.transform_model,  1, model.m);
+    //mat3 normal         = transpose(mat3(inverse(model)));
+    
+    UniformMatrix4(shd->uniform_locations.transform_model,  1, modelTr.m);
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
-    UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
     Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera->GetPosition().v);
+    //UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
 }
 
 void Renderer:: SetCurrentCamera(Camera *cam)
@@ -827,13 +832,13 @@ void Renderer:: Uniform4(unsigned int location, unsigned int num , float *variab
 void Renderer:: UniformMatrix4(unsigned int location, unsigned int num , float *variable) const
 {    
     if(location < MAX_UNIFORM_LOCATIONS)
-        glUniformMatrix4fv(location, num, GL_TRUE, variable);
+        glUniformMatrix4fv(location, num, GL_FALSE, variable);
 }
 
 void Renderer:: UniformMatrix3(unsigned int location, unsigned int num , float *variable) const
 {    
     if(location < MAX_UNIFORM_LOCATIONS)
-        glUniformMatrix3fv(location, num, GL_TRUE, variable);
+        glUniformMatrix3fv(location, num, GL_FALSE, variable);
 }
 
 void Renderer:: Uniform1(unsigned int location, unsigned int num , float *variable) const
