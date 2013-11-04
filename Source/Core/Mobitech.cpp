@@ -19,9 +19,7 @@ bool Engine::Initialize()
         return true;
 
     Logger::Message("Start application");
-    Renderer::GetInstance()->Initialize();
-    
-    return true;
+    return Renderer::GetInstance()->Initialize();
 }
 
 void Engine:: Stop()

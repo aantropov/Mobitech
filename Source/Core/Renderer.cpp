@@ -189,11 +189,10 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
         return false;
     }
 
-    // Set up window size
-    SetSize(width, height, fullScreen);
     Logger::Message("Window: Window is created succesfully");
 #endif // MOBITECH_WIN32
 
+    SetSize(width, height, fullScreen);
     return true;
 }
 
@@ -911,7 +910,7 @@ bool Renderer::Initialize()
 
     float aspectRatio = (float)width / (float)height;
     mainCamera.Create(0.0f, 1.0f, 0.0f);
-    mainCamera.Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
+    mainCamera.Ortho(0, width, 0, height, 0.0f, 10.0f);// Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
 
     PrintDebugInfo();
     return true;

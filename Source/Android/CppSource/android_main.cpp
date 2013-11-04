@@ -15,7 +15,7 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_initResourceFactory(JNI
     jboolean isCopy;
     eng->main_resource_factory.asset_manager = AAssetManager_fromJava(env, java_asset_manager);
     eng->APK_ROOT = env->GetStringUTFChars(apk_path, &isCopy);
-    eng->main_resource_factory.apk_archive = zip_open(eng->GetApkRoot().c_str(), 0, NULL);
+    //eng->main_resource_factory.apk_archive = zip_open(eng->GetApkRoot().c_str(), 0, NULL);
 }
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
