@@ -351,7 +351,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             int mouse_x = (int)LOWORD(lParam);
             int mouse_y = (int)HIWORD(lParam);
 
-            Input::GetInstance()->Move(mouse_x, mouse_y);
+            Input::GetInstance()->OnTouchMove(mouse_x, mouse_y);
             return FALSE;
         }
 
@@ -514,6 +514,7 @@ void Renderer:: BindTexture(Texture *tex, unsigned int channel)
         tex_channels_cache[channel] = tex->GetId();
         glActiveTexture(GL_TEXTURE0 + channel);
         glBindTexture(GL_TEXTURE_2D, tex->GetId());
+        CacheUniform1(tex->name, channel);
     }
 }
 
@@ -526,11 +527,11 @@ int Renderer:: CreateTexture(Texture *tex) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger ( IL_IMAGE_FORMAT ) , tex->GetWidth(), tex->GetHeight(), 0, ilGetInteger ( IL_IMAGE_FORMAT ) , ilGetInteger ( IL_IMAGE_TYPE    ), ilGetData()));
-    OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_FLOAT, &tex->GetData()[0]));
+    OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
     OPENGL_CHECK_FOR_ERRORS();
     return texture;
 }
@@ -729,7 +730,7 @@ void Renderer:: DeleteShaderProgram(ShaderProgram *shd) const
     OPENGL_CALL(glDeleteProgram(shd->GetId()));
 }
 
-void Renderer:: SetShaderProgram(ShaderProgram *sh)
+void Renderer:: BindShaderProgram(ShaderProgram *sh)
 {
     if(sh == NULL || (shader_program != NULL && sh == shader_program))
         return;

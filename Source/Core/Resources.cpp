@@ -1,11 +1,14 @@
 #include "mobitech.h"
 #include "resources.h"
 #include "renderer.h"
-#include "libzip\zip.h"
 #include "Utils.hpp"
 
 #ifdef MOBITECH_ANDROID
+#include "libzip\zip.h"
 #include <android/asset_manager_jni.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif //MOBITECH_ANDROID
 
 void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::string& to)
@@ -19,7 +22,7 @@ void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::
     }
 }
 
-AssetFile::AssetFile(ResourceFactory* rf, const char *file_name)
+AssetFile:: AssetFile(ResourceFactory* rf, const char *file_name)
 {
     this->file_name = file_name;
 #ifdef MOBITECH_ANDROID
@@ -29,20 +32,19 @@ AssetFile::AssetFile(ResourceFactory* rf, const char *file_name)
         Logger::Message(LT_ERROR, "AssetManager = NULL");
     file = AAssetManager_open(mgr, this->file_name.c_str(), AASSET_MODE_UNKNOWN);
 #else
-    file = fopen(this->file_name, "rb");
+    file = fopen(this->file_name.c_str(), "rb");
 #endif // MOBITECH_ANDROID
        	
 	if (file == NULL)
         Logger::Message(LT_ERROR, (string("_ASSET_NOT_FOUND_  ") + string(file_name)).c_str());
-
 }
 
-int AssetFile::Read(void* buf, int size, int count) const
+unsigned int AssetFile:: Read(void* buf, int size, int count) const
 {
 #ifdef MOBITECH_ANDROID
 	return AAsset_read(file, buf, size*count);
 #else
-    return fread(&buf, size, count, file);
+    return fread(buf, size, count, file);
 #endif // MOBITECH_ANDROID
 }
 
@@ -53,6 +55,22 @@ void AssetFile::Close() const
 #else
     fclose(file);
 #endif // MOBITECH_ANDROID
+}
+
+unsigned int AssetFile:: GetFileSize() const
+{
+#ifdef MOBITECH_ANDROID
+	return AAsset_getLength (file);
+#else
+    struct stat filestatus;
+    stat(file_name.c_str(), &filestatus);
+    return filestatus.st_size;
+#endif // MOBITECH_ANDROID
+}
+
+void* AssetFile:: GetFile() const
+{
+	return (void*)(file);
 }
 
 Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
@@ -264,13 +282,12 @@ void VertexArrayObject::  Free()
 bool Shader::Instantiate()
 {
     _id = Renderer::GetInstance()->CompileShader(source, type);
-    return true;
+    return _id > -1;
 }
 
 bool Shader::Load(std::string path) 
 {
     AssetFile file(resource_factory, path.c_str());
-    
     char temp = '\0';
     while(file.Read(&temp, 1, 1) != 0)
         source.push_back(temp);
@@ -279,12 +296,11 @@ bool Shader::Load(std::string path)
 
 void Shader::Free()
 {
+    source.clear();
     if(_id != -1)
         Renderer::GetInstance()->DeleteShader(this);
     _id = -1;
-    source.clear();
 }
-
 
 void ShaderProgram::Free()
 {    
@@ -353,6 +369,7 @@ ShaderProgram::~ShaderProgram(void)
 
 Texture::Texture(void)
 {
+    data = NULL;
 }
 
 Texture::~Texture(void)
@@ -362,22 +379,46 @@ Texture::~Texture(void)
 
 bool Texture:: Instantiate()
 {
-    Renderer::GetInstance()->CreateTexture(this);
-    return true;
+    return Renderer::GetInstance()->CreateTexture(this);
 }
 
-bool Texture:: Load(std:: string path)
+bool Texture:: Load(std::string path)
 {   
-    std::vector<unsigned char> png;
-    lodepng::load_file(png, path);
-    unsigned error = lodepng::decode(data, width, height, path);
+    AssetFile png_file(resource_factory, path.c_str());
+    
+    unsigned int size = png_file.GetFileSize();
+    unsigned char *png_buffer = new unsigned char[size];
+    
+    if(data != NULL)
+        delete[] data;
+
+    data = new unsigned char[size];
+    png_file.Read(png_buffer, 1, size);
+
+    unsigned error = lodepng_decode_memory(&data, &width, &height, png_buffer, size, LCT_RGBA, 8);
+
+    if(png_buffer != NULL)
+        delete[] png_buffer;
+
     if(error)
+    {
+        Logger::Message(LT_ERROR, "LodePng decode error");
         return false;
-    return true;
+    }
+    
+    bool res = Instantiate();
+    
+    if(data != NULL)
+        delete[] data;
+
+    return res;
 }
 
 void Texture:: Free()
 {
+    if(data != NULL)
+        delete[] data;
+
     if(_id != -1)
         Renderer::GetInstance()->DeleteTexture(this);
 }

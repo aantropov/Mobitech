@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Core">
-      <UniqueIdentifier>{16fd663b-51f1-4bf9-a85e-c6073bb97208}</UniqueIdentifier>
+      <UniqueIdentifier>{81cfe8b2-eb6e-4af5-8672-5e039e5d0cc2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,13 +24,16 @@
     <ClCompile Include="win32_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Core\lodepng\lodepng.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Core\math\bounds.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\math\frustum.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Core\lodepng\lodepng.cpp">
+    <ClCompile Include="..\..\Core\math\transform.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\Mobitech.cpp">
@@ -40,9 +43,6 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\Resources.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\math\transform.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinystr.cpp">
@@ -68,13 +68,16 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Core\libzip\config.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\lodepng\lodepng.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Core\math\bounds.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\math\frustum.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\lodepng\lodepng.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\math\mat2.h">
@@ -92,25 +95,13 @@
     <ClInclude Include="..\..\Core\math\mathgl.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Core\Mobitech.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Core\math\quat.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\Renderer.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\Resources.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\math\transform.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\math\UMath.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\Utils.hpp">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\math\vec2.h">
@@ -122,10 +113,22 @@
     <ClInclude Include="..\..\Core\math\vec4.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Core\Mobitech.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\Renderer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\Resources.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Core\tinyxml\tinystr.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\tinyxml\tinyxml.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\Utils.hpp">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

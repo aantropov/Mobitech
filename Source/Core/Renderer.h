@@ -173,7 +173,7 @@ public:
     void DeleteShader(Shader* shd) const;
 
     int CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const;
-    void SetShaderProgram(ShaderProgram *sh);
+    void BindShaderProgram(ShaderProgram *sh);
     void DeleteShaderProgram(ShaderProgram *sh) const;
 
     void CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);

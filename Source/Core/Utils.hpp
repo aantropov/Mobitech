@@ -23,6 +23,14 @@ using namespace std;
 #include <android/log.h>
 
 #define sprintf_s sprintf
+#else 
+
+#include <GL\glew.h>
+#include <GL\wglew.h>
+
+#include "GL\glext.h"
+#include "GL\wglext.h"
+
 #endif
 
 #define MAX_UNIFORM_LOCATIONS 1000

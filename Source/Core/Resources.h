@@ -6,9 +6,9 @@
 #include <vector>
 #include <string>
 #include "Utils.hpp"
-#include "libzip\zip.h"
 
 #ifdef MOBITECH_ANDROID
+#include "libzip\zip.h"
 #include <android/asset_manager_jni.h>
 #endif //MOBITECH_ANDROID
 
@@ -31,8 +31,10 @@ public:
     AssetFile(ResourceFactory* rf, const char *file_name);
     ~AssetFile() { Close(); }
     
-    int Read(void* buf, int size, int count) const;
+    unsigned int Read(void* buf, int size, int count) const;
     void Close() const;
+    unsigned int GetFileSize() const;
+    void* GetFile() const;
 };
 
 struct Vertex
@@ -85,7 +87,7 @@ class Texture :  public Resource, public GLObject
 {
 protected:
     unsigned int width, height;
-    std::vector<unsigned char> data;
+    unsigned char *data;
 
 public:
 
@@ -93,7 +95,7 @@ public:
 
     unsigned int GetWidth() const { return width; }
     unsigned int GetHeight() const { return height; }
-    const std::vector<unsigned char>& GetData() const { return data; }
+    const unsigned char* GetData() const { return data; }
     
     virtual bool Instantiate();
     virtual void Free();
@@ -169,17 +171,20 @@ public:
 #ifdef MOBITECH_ANDROID
     AAssetManager* asset_manager;
     AAssetManager* GetAssetManagerArchive() const { return asset_manager; }
-#endif// MOBITECH_ANDROID
-
     zip* apk_archive;
+    zip* GetApkArchive() const { return apk_archive; }
+#endif// MOBITECH_ANDROID      
 
-    ResourceFactory() { unique_id = 0; asset_manager = NULL; }
+    ResourceFactory() 
+    { 
+        unique_id = 0; 
+#ifdef MOBITECH_ANDROID 
+        asset_manager = NULL; 
+#endif// MOBITECH_ANDROID
+    }
+
     ~ResourceFactory() { ReleaseAll(); }
 
-    //AssetFile GetFileData(const char* path) const;
-    //void ReleaseFileData(const FileData* file_data) const;
-
-    zip* GetApkArchive() const { return apk_archive; }
     Resource* Get (string path) const;
     bool Add(string path, Resource* res);
     Resource* Load(string path, RESOURCE_TYPE type);

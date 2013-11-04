@@ -39,11 +39,16 @@ using namespace std;
 
 #include "tinyxml\tinyxml.h"
 #include "lodepng\lodepng.h"
-#include "libzip\zip.h"
 #include "math\mathgl.h"
 #include "resources.h"
 #include "renderer.h"
+
+#ifdef MOBITECH_ANDROID
 #include <tr1/memory>
+using namespace std::tr1;
+#else 
+#include <memory>
+#endif
 
 extern void GameMain();
 
@@ -78,7 +83,7 @@ public:
     void Release();
 
     void SetScene(std::tr1::shared_ptr<Scene> scene) { current_scene = scene; }
-    std::tr1::shared_ptr<Scene> GetScene() const { return current_scene; }
+    shared_ptr<Scene> GetScene() const { return current_scene; }
 };
 
 #endif //MOBITECH_H
