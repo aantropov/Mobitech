@@ -99,7 +99,6 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
     ShaderProgram* temp = new ShaderProgram();
     temp->resource_factory = this;
     temp->Load(vp, pp);
-    return NULL;
     temp->resource_id = path;
     temp->Instantiate();
     resources[path] = temp;

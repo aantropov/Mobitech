@@ -91,11 +91,12 @@ public:
 
 class Shader : public Resource, public GLObject
 {
-public:
-
     string source;
+public:
+        
     SHADER_TYPE type;
 
+    string GetSource() const { return source; }
     virtual bool Instantiate();
     virtual bool Load(string path);
     void Free();

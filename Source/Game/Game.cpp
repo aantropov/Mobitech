@@ -4,15 +4,14 @@ float vertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
-    
     vec4 colors[3];
 
 public:
     
     GameScene()
     {  
-        shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");  
-        //Input::GetInstance()->Register(this);
+        shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
         vertices[1] = vec2(-0.5f, -0.5f);
@@ -31,20 +30,15 @@ public:
 
     virtual void DrawFrame()
     {
-        Logger::Message("Draw frame");
         Renderer::GetInstance()->SetShaderProgram(shader);
-        Logger::Message("SetShaderProgram");
-        OPENGL_CHECK_FOR_ERRORS();
+     
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        OPENGL_CHECK_FOR_ERRORS();
         glEnableVertexAttribArray(shader->attribute_locations.position);
-        OPENGL_CHECK_FOR_ERRORS();
+        
         glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
-        OPENGL_CHECK_FOR_ERRORS();
         glEnableVertexAttribArray(shader->attribute_locations.color);
-        OPENGL_CHECK_FOR_ERRORS();
+     
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        OPENGL_CHECK_FOR_ERRORS();
     }
 
     virtual void OnTouchDown(int x, int y) {}
