@@ -2,6 +2,7 @@
 #include "resources.h"
 #include "renderer.h"
 #include "libzip\zip.h"
+#include "Utils.hpp"
 
 #ifdef MOBITECH_ANDROID
 #include <android/asset_manager_jni.h>
@@ -32,14 +33,30 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
     return temp;  
 }
 
+void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::string& to)
+{
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
 FileData ResourceFactory:: GetFileData(const char* relative_path) const
 {
+    string path(relative_path);
+#ifdef MOBITECH_ANDROID    
+    ReplaceAllSubstrings(path, "\\", "/");    
+#endif //MOBITECH_ANDROID
+
     assert(relative_path != NULL);
 
     if(asset_manager == NULL)
         Logger::Message("Assert manager is not initialized");
     
-    AAsset* asset = AAssetManager_open(asset_manager, relative_path, AASSET_MODE_UNKNOWN);
+    AAsset* asset = AAssetManager_open(asset_manager, path.c_str(), AASSET_MODE_UNKNOWN);
     assert(asset != NULL);
  
     return (FileData) { AAsset_getLength(asset), AAsset_getBuffer(asset), asset };
@@ -106,8 +123,8 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
     else
         return NULL;
     
-    temp->Load(path);
     temp->resource_factory = this;
+    temp->Load(path);    
     temp->resource_id = path;
     resources[path] = temp;
     return temp;  
@@ -237,22 +254,19 @@ bool Shader::Load(std::string path)
         fclose(file);
     }
 #else if MOBITECH_ANDROID
-    Logger::Message("LOAD SHADER 1");
-  //  FileData file = resource_factory->GetFileData(path.c_str());
-    Logger::Message(LT_INFO, "LOAD SHADER 2", path.c_str());
-    
+
+    FileData file = resource_factory->GetFileData(path.c_str());
     if (file.data_length <= 0) 
     {
         Logger::Message(LT_ERROR, "Error opening %s from APK", path.c_str());
         return false;
     }
-    Logger::Message(LT_INFO, "LOAD SHADER 3", path.c_str());
+    
     for(int i = 0; i < file.data_length; i++)
         source.push_back(((char*)file.data)[i]);
-    Logger::Message(LT_INFO, "LOAD SHADER 4", path.c_str());
+
     resource_factory->ReleaseFileData(&file);
-    Logger::Message(LT_INFO, "LOAD SHADER 5", path.c_str());
-#endif //MOBITECH_ANDROID   
+#endif //MOBITECH_ANDROID
     return true;
 }
 
@@ -282,7 +296,11 @@ void ShaderProgram:: InitLocations()
     
     attribute_locations.color = glGetAttribLocation(_id, "color");
     attribute_locations.position = glGetAttribLocation(_id, "position");
-    attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");    
+    attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");
+
+    char buffer[256];
+    sprintf(buffer, "id:%d Locations: %d %d %d", _id, attribute_locations.color,attribute_locations.position, attribute_locations.texcoords);
+    Logger::Message(buffer);
 }
 
 bool ShaderProgram:: Load(string path)
@@ -293,8 +311,11 @@ bool ShaderProgram:: Load(string path)
 
 bool ShaderProgram:: Instantiate()
 {
+    Logger::Message("Try Instantiate");
     _id = Renderer::GetInstance()->CreateShaderProgram(vertex_sh, pixel_sh);
+    Logger::Message("instantiated");
     InitLocations();
+    Logger::Message("locations inited");
     return true;
 }
 
@@ -318,7 +339,7 @@ bool ShaderProgram:: Load(std::string vertexshd_path, std::string pixelshd_path)
         pixel_sh->Instantiate();
     } 
     
-    return true;
+    return Instantiate();
 }
 
 ShaderProgram::ShaderProgram(void)

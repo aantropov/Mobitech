@@ -48,7 +48,7 @@ const string MOBITECH_PLATFORM = "win32";
     { \
         char message[BUFFER_LENGTH]; \
         sprintf_s(message, "OpenGL error 0x%X<br>", (unsigned)g_OpenGLError); \
-        Logger::Message(message, LT_ERROR);  \
+        Logger::Message(message);  \
     }
 
 #define OPENGL_CALL(expression) \
@@ -58,7 +58,7 @@ const string MOBITECH_PLATFORM = "win32";
         { \
             char message[BUFFER_LENGTH]; \
             sprintf_s(message,"OpenGL expression \"" #expression "\" error %d<br>", (int)g_OpenGLError); \
-            Logger::Message(message, LT_ERROR); \
+            Logger::Message(message); \
         } \
     }
 //MOBITECH_DEBUG
@@ -82,8 +82,10 @@ const string LOG_FILE_NAME = "log.html";
 #ifdef MOBITECH_WIN32
 const string ASSETS_ROOT = "..\\..\\Assets\\";
 #else if MOBITECH_ANDROID
-const string ASSETS_ROOT = "Assets\\";
+const string ASSETS_ROOT = "";
 #endif
+
+extern GLuint g_OpenGLError;
 
 enum RESOURCE_TYPE
 {
@@ -146,14 +148,14 @@ protected:
 
     void LOG(string text, LOG_TYPE msg_type = LT_INFO)
     {        
+        #ifdef MOBITECH_WIN32
         if(msg_type == LT_WARNING)
             text = "<font color=\"orange\">" + text + "</font>"+ "<br>";
         else if(msg_type == LT_ERROR)
             text = "<font color=\"red\">" + text + "</font>"+ "<br>";
         else if(msg_type == LT_INFO)
            text = "<font color=\"black\">" + text + "</font>"+ "<br>";
-        
-        #ifdef MOBITECH_WIN32
+
         fprintf(fLog, text.c_str());
         #endif //MOBITECH_WIN32
 

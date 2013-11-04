@@ -361,17 +361,9 @@ class GL2JNIView extends GLSurfaceView {
 				e.printStackTrace();
 				throw new RuntimeException("Unable to locate assets, aborting...");
 			}
+			
 			apkFilePath = appInfo.sourceDir;
-			
-			try{
-			AssetManager aMan = context.getAssets();
-			String[] filelist = aMan.list("");
-			
-			for(int i = 0; i < 100; i++)
-				android.util.Log.v("Mobitech", filelist[i].toString());
-			
-			}catch(Exception e) {}
-			GL2JNILib.initResourceFactory(context.getAssets());
+			GL2JNILib.initResourceFactory(context.getAssets(), apkFilePath);
             GL2JNILib.init(width, height);	
         }
 

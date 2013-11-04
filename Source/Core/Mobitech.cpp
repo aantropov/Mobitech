@@ -33,7 +33,7 @@ void Engine:: OneFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-	Renderer::GetInstance()->drawCalls = 0;
+	Renderer::GetInstance()->draw_calls = 0;
 
     if(current_scene != NULL)
         current_scene->DrawFrame();
@@ -92,7 +92,7 @@ void Engine::Run()
             if (elapsed_time >= 1.0f)
             {
                 char buff[50];
-                sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, Renderer::GetInstance()->drawCalls);
+                sprintf_s(buff, "Mobitech FPS: %u, Draw Calls: %u", fps, Renderer::GetInstance()->draw_calls);
 
                 Window::SetWindowTitle(buff);
                 fps = 0;

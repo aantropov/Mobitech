@@ -11,8 +11,8 @@ bool Window::fullscreen;
 bool Window::running;
 
 #ifdef MOBITECH_WIN32
-HWND Window::g_hWnd = NULL;
-HDC Window::g_hDC = NULL;
+HWND Window::hwnd = NULL;
+HDC Window::hdc = NULL;
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif // MOBITECH_WIN32
@@ -65,14 +65,14 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     };
 #endif //MOBITECH_RELEASE
 
-    g_hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
+    hinstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
     // Window class registration
     memset(&wcx, 0, sizeof(wcx));
     wcx.cbSize        = sizeof(wcx);
     wcx.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wcx.lpfnWndProc   = reinterpret_cast<WNDPROC>(WindowProc);
-    wcx.hInstance     = g_hInstance;
+    wcx.hInstance     = hinstance;
     wcx.lpszClassName = (LPCSTR)WND_CLASS_NAME.c_str();
     wcx.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
     wcx.hCursor       = LoadCursor(NULL, IDC_ARROW);
@@ -102,10 +102,10 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     AdjustWindowRectEx (&rect, style, FALSE, exStyle);
 
     // Create window
-    g_hWnd = CreateWindowEx(exStyle, (LPCSTR)WND_CLASS_NAME.c_str(), (LPCSTR)title.c_str(), style, rect.left, rect.top,
-        rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, g_hInstance, NULL);
+    hwnd = CreateWindowEx(exStyle, (LPCSTR)WND_CLASS_NAME.c_str(), (LPCSTR)title.c_str(), style, rect.left, rect.top,
+        rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hinstance, NULL);
 
-    if (!g_hWnd)
+    if (!hwnd)
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"CreateWindowEx fail (%d)", GetLastError());
@@ -114,9 +114,9 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     }
 
     // ïGet window descriptor
-    g_hDC = GetDC(g_hWnd);
+    hdc = GetDC(hwnd);
 
-    if (!g_hDC)
+    if (!hdc)
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"GetDC fail (%d)", GetLastError());
@@ -134,8 +134,8 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     pfd.cDepthBits = 24;
 
     // Get pixel format for format which is described above
-    format = ChoosePixelFormat(g_hDC, &pfd);
-    if (!format || !SetPixelFormat(g_hDC, format, &pfd))
+    format = ChoosePixelFormat(hdc, &pfd);
+    if (!format || !SetPixelFormat(hdc, format, &pfd))
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"Setting pixel format fail (%d)", GetLastError());
@@ -145,8 +145,8 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
 
     // Create temp rendering context
     // It is neccessary for getting wglCreateContextAttribsARB function
-    hRCTemp = wglCreateContext(g_hDC);
-    if (!hRCTemp || !wglMakeCurrent(g_hDC, hRCTemp))
+    hRCTemp = wglCreateContext(hdc);
+    if (!hRCTemp || !wglMakeCurrent(hdc, hRCTemp))
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"Ñreating temp render context fail (%d)", GetLastError());
@@ -173,15 +173,15 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
         //return false;
 
         // Create context with OpenGL 2 support
-        g_hRC = wglCreateContext(g_hDC);
+        hrc = wglCreateContext(hdc);
     }
     else
     {
         // Create extended context with OpenGL 3 support
-        g_hRC = wglCreateContextAttribsARB(g_hDC, 0, attribs);
+        hrc = wglCreateContextAttribsARB(hdc, 0, attribs);
     }
 
-    if (!g_hRC || !wglMakeCurrent(g_hDC, g_hRC))
+    if (!hrc || !wglMakeCurrent(hdc, hrc))
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"Creating render context fail (%d)", GetLastError());
@@ -203,7 +203,7 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
 #ifdef MOBITECH_WIN32
     RECT    rect;
     DWORD   style, exStyle;
-    DEVMODE devMode;
+    DEVMODE dev_mode;
     LONG    result;
     int     x, y;
 
@@ -219,15 +219,15 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
     // Fullscreen mode
     if (fullscreen)
     {
-        memset(&devMode, 0, sizeof(devMode));
-        devMode.dmSize       = sizeof(devMode);
-        devMode.dmPelsWidth  = width;
-        devMode.dmPelsHeight = height;
-        devMode.dmBitsPerPel = GetDeviceCaps(g_hDC, BITSPIXEL);
-        devMode.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+        memset(&dev_mode, 0, sizeof(dev_mode));
+        dev_mode.dmSize       = sizeof(dev_mode);
+        dev_mode.dmPelsWidth  = width;
+        dev_mode.dmPelsHeight = height;
+        dev_mode.dmBitsPerPel = GetDeviceCaps(hdc, BITSPIXEL);
+        dev_mode.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
         // Try to set fullscreen mode
-        result = ChangeDisplaySettings(&devMode, CDS_FULLSCREEN);
+        result = ChangeDisplaySettings(&dev_mode, CDS_FULLSCREEN);
         if (result != DISP_CHANGE_SUCCESSFUL)
         {
             char message[BUFFER_LENGTH];
@@ -264,33 +264,32 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
     //Setup styles
     AdjustWindowRectEx (&rect, style, FALSE, exStyle);
 
-    SetWindowLong(g_hWnd, GWL_STYLE,   style);
-    SetWindowLong(g_hWnd, GWL_EXSTYLE, exStyle);
+    SetWindowLong(hwnd, GWL_STYLE,   style);
+    SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 
     // Refresh window position
-    SetWindowPos(g_hWnd, HWND_TOP, rect.left, rect.top,
+    SetWindowPos(hwnd, HWND_TOP, rect.left, rect.top,
         rect.right - rect.left, rect.bottom - rect.top,
         SWP_FRAMECHANGED);
 
     // Show
-    ShowWindow(g_hWnd, SW_SHOW);
-    SetForegroundWindow(g_hWnd);
-    SetFocus(g_hWnd);
-    UpdateWindow(g_hWnd);
+    ShowWindow(hwnd, SW_SHOW);
+    SetForegroundWindow(hwnd);
+    SetFocus(hwnd);
+    UpdateWindow(hwnd);
 
     // Get sizes of the window
-    GetClientRect(g_hWnd, &rect);
+    GetClientRect(hwnd, &rect);
     width  = rect.right - rect.left;
     height = rect.bottom - rect.top;
-
-    // Setup viewport on the window
-    OPENGL_CALL(glViewport(0, 0, width, height));
-
+        
     // Centralize cursor in the center of the screen
     SetCursorPos(x + width / 2, y + height / 2);
 
     OPENGL_CHECK_FOR_ERRORS();
 #endif // MOBITECH_WIN32
+
+    OPENGL_CALL(glViewport(0, 0, width, height));
 }
 
 void Window:: Destroy()
@@ -305,23 +304,23 @@ void Window:: Destroy()
     }
 
     // Release renderer`s context 
-    if (g_hRC)
+    if (hrc)
     {
         wglMakeCurrent(NULL, NULL);
-        wglDeleteContext(g_hRC);
+        wglDeleteContext(hrc);
     }
 
     // Release window context
-    if (g_hDC)
-        ReleaseDC(g_hWnd, g_hDC);
+    if (hdc)
+        ReleaseDC(hwnd, hdc);
 
     // Destroy window
-    if (g_hWnd)
-        DestroyWindow(g_hWnd);
+    if (hwnd)
+        DestroyWindow(hwnd);
 
     // Release window class
-    if (g_hInstance)
-        UnregisterClassA((LPCSTR)WND_CLASS_NAME.c_str(), g_hInstance);
+    if (hinstance)
+        UnregisterClassA((LPCSTR)WND_CLASS_NAME.c_str(), hinstance);
 #endif // MOBITECH_WIN32
 }
 
@@ -337,23 +336,23 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
         {
-            int mouseX = (int)LOWORD(lParam);
-            int mouseY = (int)HIWORD(lParam);
+            int mouse_x = (int)LOWORD(lParam);
+            int mouse_y = (int)HIWORD(lParam);
 
             if (msg == WM_LBUTTONDOWN)
-                Input::GetInstance()->OnTouchDown(mouseX, mouseY);
+                Input::GetInstance()->OnTouchDown(mouse_x, mouse_y);
             if (msg == WM_LBUTTONUP)
-                Input::GetInstance()->OnTouchUp(mouseX, mouseY);
+                Input::GetInstance()->OnTouchUp(mouse_x, mouse_y);
 
             return FALSE;
         }
 
     case WM_MOUSEMOVE:
         {
-            int mouseX = (int)LOWORD(lParam);
-            int mouseY = (int)HIWORD(lParam);
+            int mouse_x = (int)LOWORD(lParam);
+            int mouse_y = (int)HIWORD(lParam);
 
-            Input::GetInstance()->Move(mouseX, mouseY);
+            Input::GetInstance()->Move(mouse_x, mouse_y);
             return FALSE;
         }
 
@@ -480,8 +479,8 @@ Renderer* Renderer::GetInstance()
 
 void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
 {
-    mat4 view           = currentCamera.GetView();
-    mat4 viewProjection = currentCamera.GetProjection() * view;
+    mat4 view           = current_camera.GetView();
+    mat4 viewProjection = current_camera.GetProjection() * view;
     mat3 normal         = transpose(mat3(inverse(model)));
     mat4 modelViewProjection = model * viewProjection;
 
@@ -489,17 +488,17 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
     UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
-    Uniform3(shd->uniform_locations.transform_viewPosition, 1, currentCamera.GetPosition().v);
+    Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera.GetPosition().v);
 }
 
 void Renderer:: SetCurrentCamera(Camera cam)
 {
-    currentCamera = cam;
+    current_camera = cam;
 }
 
 Camera Renderer:: GetCurrentCamera()
 {
-    return currentCamera;
+    return current_camera;
 }
 
 void Renderer:: BindTexture(Texture *tex)
@@ -627,13 +626,13 @@ void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertex_count, const
 
 void Renderer:: DrawBuffer(VertexBuffer* vb)
 {    
-    drawCalls++;
+    draw_calls++;
     OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, vb->GetNum()));    
 }
 
 void Renderer:: DrawBuffer(IndexBuffer* ib)
 {    
-    drawCalls++;
+    draw_calls++;
     OPENGL_CALL(glDrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL));    
 }
 
@@ -894,7 +893,7 @@ bool Renderer::Initialize()
         }
     }
 
-    if( !uWnd.Create("Mobitech", width, height, fullscreen))
+    if( !window.Create("Mobitech", width, height, fullscreen))
         return false;
 #endif //MOBITECH_WIN32
 
@@ -920,7 +919,7 @@ bool Renderer::Initialize()
 
 void Renderer::Release()
 {
-    uWnd.Destroy();    
+    window.Destroy();    
 }
 
 void Renderer::PrintDebugInfo()

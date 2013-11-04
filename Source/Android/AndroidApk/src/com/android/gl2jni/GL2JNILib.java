@@ -32,5 +32,5 @@ public class GL2JNILib {
 	 public static native void touchMove(int x, int y);
      public static native void step();
 	 public static native void init(int width, int height);
-	 public static native void initResourceFactory(AssetManager asset_manager);
+	 public static native void initResourceFactory(AssetManager asset_manager, String apk_path);
 }

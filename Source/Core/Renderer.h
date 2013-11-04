@@ -46,11 +46,11 @@ class Window
 {
 
 #ifdef MOBITECH_WIN32
-    HINSTANCE g_hInstance;
-    HGLRC     g_hRC;
+    HINSTANCE hinstance;
+    HGLRC     hrc;
     
-    static HWND      g_hWnd;
-    static HDC       g_hDC;
+    static HWND      hwnd;
+    static HDC       hdc;
 #endif //MOBITECH_WIN32    
 
     static const string WND_CLASS_NAME;
@@ -79,13 +79,13 @@ public:
     static void SetWindowTitle(string title)
     { 
 #ifdef MOBITECH_WIN32 
-        SetWindowText(g_hWnd, title.c_str()); 
+        SetWindowText(hwnd, title.c_str()); 
 #endif //MOBITECH_WIN32
     }
 
 #ifdef MOBITECH_WIN32
-    static HWND GetHWND() { return g_hWnd; }
-    static HDC GetHDC() { return g_hDC; }
+    static HWND GetHWND() { return hwnd; }
+    static HDC GetHDC() { return hdc; }
 #endif //MOBITECH_WIN32
 
     int GetWidth() const { return width; }
@@ -101,7 +101,7 @@ public:
 
 class Renderer: public Singleton<Renderer>
 {
-    Window uWnd;
+    Window window;
     
     bool SetVerticalSynchronization(bool enabled);
     void PrintDebugInfo();
@@ -121,27 +121,27 @@ class Renderer: public Singleton<Renderer>
            
 public:
     
-	unsigned int drawCalls;
+	unsigned int draw_calls;
 
     static Renderer* GetInstance();
 
     Renderer();
     ~Renderer();
 
-    Camera currentCamera;
+    Camera current_camera;
     Camera mainCamera;
     
     bool Initialize();
 
 #ifdef MOBITECH_WIN32
-    HWND GetHWND() const { return uWnd.GetHWND(); }
+    HWND GetHWND() const { return window.GetHWND(); }
 #endif //MOBITECH_WIN32
 
-    int GetWidth() const { return uWnd.GetWidth(); }
-    int GetHeight() const { return uWnd.GetHeight(); }
+    int GetWidth() const { return window.GetWidth(); }
+    int GetHeight() const { return window.GetHeight(); }
 
-    void SetWidth(int w) { uWnd.width = w; }
-    void SetHeight(int h) { uWnd.height = h; }
+    void SetWidth(int w) { window.width = w; }
+    void SetHeight(int h) { window.height = h; }
       
     void Release();
 
