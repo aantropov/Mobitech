@@ -15,7 +15,7 @@ class Camera
     vec3 rotation;
     mat4 projection;
 
-    frustum frustumPlanes;
+    frustum frustum_planes;
 
 public:
 
@@ -23,7 +23,7 @@ public:
 
     vec3 GetPosition() const;
     vec3 GetRotation()  const;
-    const frustum GetFrustum() const { return frustumPlanes; }
+    const frustum GetFrustum() const { return frustum_planes; }
 
     void SetPosition(vec3 p) { position = p; }
     void SetRotation(vec3 r) { rotation = r; }
@@ -91,10 +91,10 @@ public:
     int GetWidth() const { return width; }
     int GetHeight() const { return height; }
 
-    bool Create(string title = "Mobitech", int width = 800, int height = 600, bool isFullScreen = false);
+    bool Create(string title = "Mobitech", int width = 800, int height = 600, bool is_fullScreen = false);
     
     void Destroy();
-    void SetSize(int width, int height, bool isFullScreen = false);
+    void SetSize(int width, int height, bool is_fullScreen = false);
 
     friend class Renderer;
 };
@@ -106,15 +106,15 @@ class Renderer: public Singleton<Renderer>
     bool SetVerticalSynchronization(bool enabled);
     void PrintDebugInfo();
     
-    std::vector<mat4> modelViewMatrixStack;
+    std::vector<mat4> modelview_matrix_stack;
 
     // Optimization
-    ShaderProgram *shaderProgram;
-    unsigned int previousVAO;
-    unsigned int previousIB;
+    ShaderProgram *shader_program;
+    unsigned int previous_vao;
+    unsigned int previous_ib;
     
-    map<unsigned int, map<string, unsigned int> > uniformsCache;
-    map<unsigned int, unsigned int> texChannelsCache;
+    map<unsigned int, map<string, unsigned int> > uniforms_cache;
+    map<unsigned int, unsigned int> tex_channels_cache;
 
     int CacheUniformLocation(string name);
     int CacheUniformLocation(string name, ShaderProgram *sh);
@@ -201,7 +201,7 @@ public:
 
     void DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const;
     void DrawTransform(::transform xf) const;
-    void DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color) const;
+    void DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color) const;
         
     void DrawBuffer(VertexBuffer *vb);
     void DrawBuffer(IndexBuffer* ib);

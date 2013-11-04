@@ -363,7 +363,15 @@ class GL2JNIView extends GLSurfaceView {
 			}
 			apkFilePath = appInfo.sourceDir;
 			
-			GL2JNILib.initResourceFactory(context.getAssets(), apkFilePath);
+			try{
+			AssetManager aMan = context.getAssets();
+			String[] filelist = aMan.list("");
+			
+			for(int i = 0; i < 100; i++)
+				android.util.Log.v("Mobitech", filelist[i].toString());
+			
+			}catch(Exception e) {}
+			GL2JNILib.initResourceFactory(context.getAssets());
             GL2JNILib.init(width, height);	
         }
 

@@ -57,13 +57,13 @@ class Resource
 {    
 public:
 
-    string resourceId;
+    string resource_id;
     ResourceFactory* resource_factory;
 
     virtual bool Load(string path) { return true; }
     virtual void Free() {}
 
-    Resource() : resourceId("") {}
+    Resource() : resource_id("") {}
     virtual ~Resource() {}
 };
 

@@ -27,7 +27,7 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
         return NULL;
 
     temp->resource_factory = this;
-    temp->resourceId = path;
+    temp->resource_id = path;
     resources[path] = temp;
     return temp;  
 }
@@ -40,7 +40,6 @@ FileData ResourceFactory:: GetFileData(const char* relative_path) const
         Logger::Message("Assert manager is not initialized");
     
     AAsset* asset = AAssetManager_open(asset_manager, relative_path, AASSET_MODE_UNKNOWN);
-    Logger::Message("Loading ok");
     assert(asset != NULL);
  
     return (FileData) { AAsset_getLength(asset), AAsset_getBuffer(asset), asset };
@@ -84,7 +83,7 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
     temp->resource_factory = this;
     temp->Load(vp, pp);
     return NULL;
-    temp->resourceId = path;
+    temp->resource_id = path;
     temp->Instantiate();
     resources[path] = temp;
     return temp;
@@ -109,7 +108,7 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
     
     temp->Load(path);
     temp->resource_factory = this;
-    temp->resourceId = path;
+    temp->resource_id = path;
     resources[path] = temp;
     return temp;  
 }
@@ -239,8 +238,9 @@ bool Shader::Load(std::string path)
     }
 #else if MOBITECH_ANDROID
     Logger::Message("LOAD SHADER 1");
-    FileData file = resource_factory->GetFileData(path.c_str());
+  //  FileData file = resource_factory->GetFileData(path.c_str());
     Logger::Message(LT_INFO, "LOAD SHADER 2", path.c_str());
+    
     if (file.data_length <= 0) 
     {
         Logger::Message(LT_ERROR, "Error opening %s from APK", path.c_str());

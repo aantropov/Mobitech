@@ -197,7 +197,7 @@ bool Window:: Create(string title, int width, int height, bool fullScreen)
     return true;
 }
 
-void Window::SetSize(int width, int height, bool isFullScreen)
+void Window::SetSize(int width, int height, bool is_fullScreen)
 {
 
 #ifdef MOBITECH_WIN32
@@ -208,13 +208,13 @@ void Window::SetSize(int width, int height, bool isFullScreen)
     int     x, y;
 
     // If we change from fullscreen mode
-    if (fullscreen && !isFullScreen)
+    if (fullscreen && !is_fullScreen)
     {
         ChangeDisplaySettings(NULL, CDS_RESET);
         ShowCursor(TRUE);
     }
 
-    fullscreen = isFullScreen;
+    fullscreen = is_fullScreen;
 
     // Fullscreen mode
     if (fullscreen)
@@ -421,7 +421,7 @@ mat4 Camera::GetView() const { return GLRotation(rotation.x, rotation.y, rotatio
 
 void Camera::UpdateFrustum()
 {
-    frustumPlanes.extract(GetView(), GetProjection());
+    frustum_planes.extract(GetView(), GetProjection());
 }
 
 void Camera::Create(float x, float y, float z)
@@ -463,8 +463,8 @@ Camera:: ~Camera(void){}
 
 Renderer::Renderer()
 {
-    previousVAO = 0;
-    previousIB = 0;
+    previous_vao = 0;
+    previous_ib = 0;
 }
 
 Renderer::~Renderer()
@@ -509,11 +509,11 @@ void Renderer:: BindTexture(Texture *tex)
 
 void Renderer:: BindTexture(Texture *tex, unsigned int channel)
 {
-    if(texChannelsCache[channel] == tex->GetId())
+    if(tex_channels_cache[channel] == tex->GetId())
         return;
     else
     {
-        texChannelsCache[channel] = tex->GetId();
+        tex_channels_cache[channel] = tex->GetId();
         glActiveTexture(GL_TEXTURE0 + channel);
         glBindTexture(GL_TEXTURE_2D, tex->GetId());
     }
@@ -603,14 +603,14 @@ void Renderer:: DrawTransform(::transform xf) const
     DrawSegment(p1, p2, vec3(0,0,1));*/
 }
 
-void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertexCount, const vec4 color)  const
+void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color)  const
 {
 
     /*GLfloat glverts[24];
     glVertexPointer(3, GL_FLOAT, 0, glverts);
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    for (int i = 0; i < vertexCount; i++) 
+    for (int i = 0; i < vertex_count; i++) 
     {
         glverts[i*3]   = vertices[i].pos.x;
         glverts[i*3+1] = vertices[i].pos.y;
@@ -618,11 +618,11 @@ void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertexCount, const 
     }
 
     glColor4f(color.x, color.y, color.z, 1);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, vertex_count);
     
     glLineWidth(3);
     glColor4f(1, 0, 1, 1 );
-    glDrawArrays(GL_LINE_LOOP, 0, vertexCount);*/
+    glDrawArrays(GL_LINE_LOOP, 0, vertex_count);*/
 }
 
 void Renderer:: DrawBuffer(VertexBuffer* vb)
@@ -644,9 +644,9 @@ void Renderer:: BindBuffer(VertexBuffer *vb) const
 
 void Renderer:: BindBuffer(IndexBuffer *vb)
 {
-    if(previousIB != vb->GetId())
+    if(previous_ib != vb->GetId())
     {
-        previousIB = vb->GetId();
+        previous_ib = vb->GetId();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , vb->GetId());
     }
 }
@@ -675,9 +675,9 @@ void Renderer:: DeleteVAO(VertexArrayObject *vao) const
 
 void Renderer:: BindVAO(VertexBuffer *vb)
 {
-    /*if(previousVAO != vb->GetVAO()->GetId())
+    /*if(previous_vao != vb->GetVAO()->GetId())
     {
-        previousVAO = vb->GetVAO()->GetId();
+        previous_vao = vb->GetVAO()->GetId();
         glBindVertexArray(vb->GetVAO()->GetId());
     }*/
 }
@@ -733,22 +733,22 @@ void Renderer:: DeleteShaderProgram(ShaderProgram *shd) const
 
 void Renderer:: SetShaderProgram(ShaderProgram *sh)
 {
-    if(sh == NULL || (shaderProgram != NULL && sh == shaderProgram))
+    if(sh == NULL || (shader_program != NULL && sh == shader_program))
         return;
 
-    shaderProgram = sh;
+    shader_program = sh;
     OPENGL_CALL(glUseProgram(sh->GetId()));
     OPENGL_CHECK_FOR_ERRORS();
 }
 
 int Renderer:: CacheUniformLocation(string name)
 {
-    return CacheUniformLocation(name, shaderProgram);
+    return CacheUniformLocation(name, shader_program);
 }
 
 int Renderer:: CacheUniformLocation(string name, ShaderProgram *sh)
 {
-    unsigned int *res = &uniformsCache[sh->GetId()][name];
+    unsigned int *res = &uniforms_cache[sh->GetId()][name];
     if(*res == 0)
     {
         unsigned int  loc = glGetUniformLocation(sh->GetId(),  name.c_str());

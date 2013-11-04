@@ -11,7 +11,7 @@ public:
     
     GameScene()
     {  
-        shader = Engine::main_resource_factory.Load("assets/diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");  
+        shader = Engine::main_resource_factory.Load("diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");  
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
