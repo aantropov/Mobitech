@@ -14,11 +14,25 @@
 
 using namespace std;
 
-struct FileData
+class ResourceFactory;
+class AssetFile
 {
-    const long data_length;
-    const void* data;
-    const void* file_handle;
+private:
+	string file_name;
+
+#ifdef MOBITECH_ANDROID
+	AAsset* file;
+	AAssetManager *mgr;
+#else
+	FILE * file;
+#endif
+	
+public:
+    AssetFile(ResourceFactory* rf, const char *file_name);
+    ~AssetFile() { Close(); }
+    
+    int Read(void* buf, int size, int count) const;
+    void Close() const;
 };
 
 struct Vertex
@@ -162,8 +176,8 @@ public:
     ResourceFactory() { unique_id = 0; asset_manager = NULL; }
     ~ResourceFactory() { ReleaseAll(); }
 
-    FileData GetFileData(const char* path) const;
-    void ReleaseFileData(const FileData* file_data) const;
+    //AssetFile GetFileData(const char* path) const;
+    //void ReleaseFileData(const FileData* file_data) const;
 
     zip* GetApkArchive() const { return apk_archive; }
     Resource* Get (string path) const;
@@ -205,7 +219,6 @@ public:
     Buffer(void);
     virtual ~Buffer(void) {}
 };
-
 
 class IndexBuffer : public Buffer
 {

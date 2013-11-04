@@ -8,6 +8,53 @@
 #include <android/asset_manager_jni.h>
 #endif //MOBITECH_ANDROID
 
+void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::string& to)
+{
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
+AssetFile::AssetFile(ResourceFactory* rf, const char *file_name)
+{
+    this->file_name = file_name;
+#ifdef MOBITECH_ANDROID
+    ReplaceAllSubstrings(this->file_name, "\\", "/");
+    this->mgr = rf->asset_manager;
+    if(mgr == NULL)
+        Logger::Message(LT_ERROR, "AssetManager = NULL");
+    file = AAssetManager_open(mgr, this->file_name.c_str(), AASSET_MODE_UNKNOWN);
+#else
+    file = fopen(this->file_name, "rb");
+#endif // MOBITECH_ANDROID
+       	
+	if (file == NULL)
+        Logger::Message(LT_ERROR, (string("_ASSET_NOT_FOUND_  ") + string(file_name)).c_str());
+
+}
+
+int AssetFile::Read(void* buf, int size, int count) const
+{
+#ifdef MOBITECH_ANDROID
+	return AAsset_read(file, buf, size*count);
+#else
+    return fread(&buf, size, count, file);
+#endif // MOBITECH_ANDROID
+}
+
+void AssetFile::Close() const
+{
+#ifdef MOBITECH_ANDROID
+	AAsset_close(file);
+#else
+    fclose(file);
+#endif // MOBITECH_ANDROID
+}
+
 Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 {
     char buffer[BUFFER_LENGTH];
@@ -33,22 +80,12 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
     return temp;  
 }
 
-void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::string& to)
-{
-    if(from.empty())
-        return;
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-    }
-}
-
+/*
 FileData ResourceFactory:: GetFileData(const char* relative_path) const
 {
     string path(relative_path);
 #ifdef MOBITECH_ANDROID    
-    ReplaceAllSubstrings(path, "\\", "/");    
+        
 #endif //MOBITECH_ANDROID
 
     assert(relative_path != NULL);
@@ -68,7 +105,7 @@ void ResourceFactory:: ReleaseFileData(const FileData* file_data) const
     assert(file_data->file_handle != NULL);
     AAsset_close((AAsset*)file_data->file_handle);
 }
-
+*/
 Resource* ResourceFactory:: Get(std::string path) const
 {
     if(resources.find(path) == resources.end())
@@ -232,40 +269,11 @@ bool Shader::Instantiate()
 
 bool Shader::Load(std::string path) 
 {
-#ifdef MOBITECH_WIN32
-    FILE* file;
-    file = fopen(path.c_str() , "rb");
-    if(file == NULL)
-    {
-        Logger::Message("Shader: Can`t open file " + path, LT_ERROR);    
-        return false;
-    }
-
-    while(!feof(file))
-    {
-        char temp = '\0';
-        fread(&temp, 1, 1, file);
-        source.push_back(temp);
-    }    
-        
-    if(file != NULL)
-    {
-        fclose(file);
-    }
-#else if MOBITECH_ANDROID
-
-    FileData file = resource_factory->GetFileData(path.c_str());
-    if (file.data_length <= 0) 
-    {
-        Logger::Message(LT_ERROR, "Error opening %s from APK", path.c_str());
-        return false;
-    }
+    AssetFile file(resource_factory, path.c_str());
     
-    for(int i = 0; i < file.data_length; i++)
-        source.push_back(((char*)file.data)[i]);
-
-    resource_factory->ReleaseFileData(&file);
-#endif //MOBITECH_ANDROID
+    char temp = '\0';
+    while(file.Read(&temp, 1, 1) != 0)
+        source.push_back(temp);
     return true;
 }
 
@@ -368,7 +376,7 @@ bool Texture:: Load(std:: string path)
     return true;
 }
 
-void Texture::   Free()
+void Texture:: Free()
 {
     if(_id != -1)
         Renderer::GetInstance()->DeleteTexture(this);
