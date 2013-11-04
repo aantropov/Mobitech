@@ -43,6 +43,7 @@ using namespace std;
 #include "math\mathgl.h"
 #include "resources.h"
 #include "renderer.h"
+#include <tr1/memory>
 
 extern void GameMain();
 
@@ -57,10 +58,10 @@ class Engine : public Singleton<Engine>
 {
     unsigned int fps;
     float elapsed_time;
-    Scene* current_scene;
+    std::tr1::shared_ptr<Scene> current_scene;
         
     double delta_time, begin_frame_time, fixed_time_step;  
-    Engine(): APK_ROOT("") { current_scene = NULL; }
+    Engine(): APK_ROOT("") { }
 
 public:
   
@@ -76,8 +77,8 @@ public:
     void Stop();
     void Release();
 
-    void SetScene(Scene *scene) { current_scene = scene; }
-    Scene* GetScene() const { return current_scene; }
+    void SetScene(std::tr1::shared_ptr<Scene> scene) { current_scene = scene; }
+    std::tr1::shared_ptr<Scene> GetScene() const { return current_scene; }
 };
 
 #endif //MOBITECH_H

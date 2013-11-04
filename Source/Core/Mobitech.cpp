@@ -35,7 +35,7 @@ void Engine:: OneFrame()
         
 	Renderer::GetInstance()->draw_calls = 0;
 
-    if(current_scene != NULL)
+    if(current_scene.get() != NULL)
         current_scene->DrawFrame();
 
     int currentTick = 0;
@@ -50,7 +50,7 @@ void Engine:: OneFrame()
     
     delta_time +=  currentTick - begin_frame_time;
 
-    if(current_scene != NULL)
+    if(current_scene.get() != NULL)
         current_scene->Update(currentTick - begin_frame_time);
 
     elapsed_time += (float)(currentTick - begin_frame_time)/1000.0f;

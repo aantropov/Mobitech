@@ -61,7 +61,7 @@ void GameMain()
     Engine *engine = Engine::GetInstance();
     engine->Initialize();
     
-    GameScene *gameScene = new GameScene();
+    std::tr1::shared_ptr<GameScene> gameScene(new GameScene());
     engine->SetScene(gameScene);
     
     engine->Run();
