@@ -478,8 +478,8 @@ Renderer* Renderer::GetInstance()
 
 void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
 {
-    mat4 view           = current_camera.GetView();
-    mat4 viewProjection = current_camera.GetProjection() * view;
+    mat4 view           = current_camera->GetView();
+    mat4 viewProjection = current_camera->GetProjection() * view;
     mat3 normal         = transpose(mat3(inverse(model)));
     mat4 modelViewProjection = model * viewProjection;
 
@@ -487,15 +487,15 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
     UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
-    Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera.GetPosition().v);
+    Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera->GetPosition().v);
 }
 
-void Renderer:: SetCurrentCamera(Camera cam)
+void Renderer:: SetCurrentCamera(Camera *cam)
 {
     current_camera = cam;
 }
 
-Camera Renderer:: GetCurrentCamera()
+Camera* Renderer:: GetCurrentCamera() const
 {
     return current_camera;
 }
@@ -531,7 +531,11 @@ int Renderer:: CreateTexture(Texture *tex) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger ( IL_IMAGE_FORMAT ) , tex->GetWidth(), tex->GetHeight(), 0, ilGetInteger ( IL_IMAGE_FORMAT ) , ilGetInteger ( IL_IMAGE_TYPE    ), ilGetData()));
+#ifdef MOBITECH_WIN32
+    OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, 4, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
+#else
     OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
+#endif //MOBITECH_WIN32
     OPENGL_CHECK_FOR_ERRORS();
     return texture;
 }
@@ -910,8 +914,10 @@ bool Renderer::Initialize()
     OPENGL_CHECK_FOR_ERRORS();
 
     float aspectRatio = (float)width / (float)height;
-    mainCamera.Create(0.0f, 1.0f, 0.0f);
-    mainCamera.Ortho(0, width, 0, height, 0.0f, 10.0f);// Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
+    main_camera.Create(0.0f, 1.0f, 0.0f);
+    main_camera.Ortho(0, width, 0, height, 0.0f, 10.0f);// Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
+
+    SetCurrentCamera(&main_camera);
 
     PrintDebugInfo();
     return true;

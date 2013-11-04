@@ -128,8 +128,8 @@ public:
     Renderer();
     ~Renderer();
 
-    Camera current_camera;
-    Camera mainCamera;
+    Camera *current_camera;
+    Camera main_camera;
     
     bool Initialize();
 
@@ -145,8 +145,8 @@ public:
       
     void Release();
 
-    Camera GetCurrentCamera();
-    void SetCurrentCamera(Camera cam);
+    Camera *GetCurrentCamera() const;
+    void SetCurrentCamera(Camera *cam);
     void SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model);
     void SetupCameraForShaderProgram(Camera *cam, ShaderProgram *shd, const mat4 &model);
     void SetupCameraLightForShaderProgram(Camera &camera);
