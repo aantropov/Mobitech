@@ -374,9 +374,10 @@ class GL2JNIView extends GLSurfaceView {
 
 	@Override
     public boolean onTouchEvent(MotionEvent event)
-    {
+    {		
 		// Get the action from the touch screen
         int eventAction = event.getAction();
+		boolean res = false;
 
         int X = (int) event.getX();
         int Y = (int) event.getY();
@@ -385,19 +386,23 @@ class GL2JNIView extends GLSurfaceView {
         if (eventAction == MotionEvent.ACTION_DOWN)
         {
 			GL2JNILib.touchDown(X, Y);
+			res = true;
         }
-		else if (eventAction == MotionEvent.ACTION_UP)
+		
+		if (eventAction == MotionEvent.ACTION_UP)
         {
 			GL2JNILib.touchUp(X, Y);
+			res = true;
         }
-		else if(eventAction == MotionEvent.ACTION_MOVE)
+		
+		if(eventAction == MotionEvent.ACTION_MOVE)
 		{
 			GL2JNILib.touchMove(X, Y);
-		}
+			res = true;
+		}		       
 
-        // Redraw the screen
         invalidate();
 
-        return super.onTouchEvent(event);
+        return res || super.onTouchEvent(event);
     }
 }

@@ -296,10 +296,6 @@ void ShaderProgram:: InitLocations()
     attribute_locations.color = glGetAttribLocation(_id, "color");
     attribute_locations.position = glGetAttribLocation(_id, "position");
     attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");
-
-    char buffer[256];
-    sprintf(buffer, "id:%d Locations: %d %d %d", _id, attribute_locations.color,attribute_locations.position, attribute_locations.texcoords);
-    Logger::Message(buffer);
 }
 
 bool ShaderProgram:: Load(string path)
@@ -310,12 +306,9 @@ bool ShaderProgram:: Load(string path)
 
 bool ShaderProgram:: Instantiate()
 {
-    Logger::Message("Try Instantiate");
     _id = Renderer::GetInstance()->CreateShaderProgram(vertex_sh, pixel_sh);
-    Logger::Message("instantiated");
     InitLocations();
-    Logger::Message("locations inited");
-    return true;
+    return _id > -1;
 }
 
 bool ShaderProgram:: Load(std::string vertexshd_path, std::string pixelshd_path)
