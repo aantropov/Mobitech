@@ -42,8 +42,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Projects\Mobitech\Source\Core\libzip;D:\Projects\Mobitech\Source\Win32\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Projects\Mobitech\Source\Win32\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\Core\libzip;..\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

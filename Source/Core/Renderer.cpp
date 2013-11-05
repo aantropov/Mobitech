@@ -485,7 +485,6 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
     mat4 modelTr = transpose(model);
     view = transpose(view);
     viewProjection = transpose(viewProjection);
-
     //mat3 normal         = transpose(mat3(inverse(model)));
     
     UniformMatrix4(shd->uniform_locations.transform_model,  1, modelTr.m);
