@@ -137,6 +137,8 @@ public:
     HWND GetHWND() const { return window.GetHWND(); }
 #endif //MOBITECH_WIN32
 
+    ShaderProgram* GetCurrentShaderProgram() const { return shader_program; }
+
     int GetWidth() const { return window.GetWidth(); }
     int GetHeight() const { return window.GetHeight(); }
 

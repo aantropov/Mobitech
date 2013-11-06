@@ -2,11 +2,13 @@
 #define MOVINGPART_H
 
 #include <string>
+#include <vector>
 #include "../tinyxml/tinyxml.h"
 #include "../math/math3d.h"
+#include "../Utils.hpp"
 #include "MotionValues.h"
 
-#define fatof(a) static_cast<float>(atof(a))
+using namespace std;
 
 class Animation;
 class MovingPart
@@ -16,7 +18,7 @@ public:
 	~MovingPart();
 	MovingPart(Animation *animation, TiXmlElement * xe, float width, float height);
 
-	void PreDraw(float p, std::vector<Matrix>& stack);
+	void PreDraw(float p, std::vector<mat4>& stack);
 	void Draw();
 
 private:
@@ -36,9 +38,6 @@ private:
 	int _order;
     bool _visible;
 
-	//
-	// Этот блок использует типы движка HGE, подробности в начале файла
-	//
 	void CreateQuad(float width, float height, const std::string &texture);
     GLfloat _quad[16];
 	vec2 _origin[4];

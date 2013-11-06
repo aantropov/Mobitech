@@ -2,6 +2,7 @@
 #include "resources.h"
 #include "renderer.h"
 #include "Utils.hpp"
+#include "2dgameanimation/Animation.h"
 
 #ifdef MOBITECH_ANDROID
 #include "libzip\zip.h"
@@ -79,7 +80,12 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
     memset(buffer, '\0', BUFFER_LENGTH);
     sprintf_s(buffer, "\\memory\\%d%d\\", (int)type, unique_id++);
     std::string path = buffer;
+    return Create(type, path);
+}
 
+
+Resource* ResourceFactory:: Create(RESOURCE_TYPE type, string path)
+{
     Logger::Message("Creating resource: \"" + path + "\"");
 
     Resource* temp;
@@ -174,6 +180,37 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
         temp = new Texture();
     else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
+    else if(type == RT_ANIMATION)
+    {
+        std::string fullFileName = std::string(path);
+        Texture *texture = dynamic_cast<Texture*>(Load((fullFileName.substr(0, fullFileName.length() - 3) + "png").c_str(), RT_TEXTURE));
+
+        if (texture == NULL) 
+            return false;
+
+        TiXmlDocument doc(path.c_str());
+        if (doc.LoadFile(TIXML_ENCODING_UTF8)) 
+        {
+            TiXmlElement *root = doc.RootElement();
+            TiXmlElement *animation = root->FirstChildElement("Animation");
+            while (animation) 
+            {
+                string id = string(animation->Attribute("id"));
+                if (Get(id) == NULL) 
+                {
+                    Animation *animation_resource = dynamic_cast<Animation*>(Create(RT_ANIMATION, id));
+                    temp->resource_factory = this;
+                    animation_resource->resource_id = id;
+                    animation_resource->name = id;
+                    animation_resource->Load(animation, texture);
+                    resources[id] = animation_resource;
+                }
+                animation = animation->NextSiblingElement("Animation");
+            }
+            return Get(root->FirstChildElement("Animation")->Attribute("id"));
+        } 
+        return NULL;    
+    }
     else
         return NULL;
     

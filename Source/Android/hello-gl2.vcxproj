@@ -54,6 +54,8 @@
     <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIView.java" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Core\2dgameanimation\Animation.cpp" />
+    <ClCompile Include="..\Core\2dgameanimation\MovingPart.cpp" />
     <ClCompile Include="..\Core\libzip\mkstemp.c" />
     <ClCompile Include="..\Core\libzip\zip_add.c" />
     <ClCompile Include="..\Core\libzip\zip_add_dir.c" />
@@ -123,6 +125,9 @@
     <ClCompile Include="CppSource\android_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Core\2dgameanimation\Animation.h" />
+    <ClInclude Include="..\Core\2dgameanimation\MotionValues.h" />
+    <ClInclude Include="..\Core\2dgameanimation\MovingPart.h" />
     <ClInclude Include="..\Core\libzip\config.h" />
     <ClInclude Include="..\Core\libzip\zip.h" />
     <ClInclude Include="..\Core\libzip\zipint.h" />

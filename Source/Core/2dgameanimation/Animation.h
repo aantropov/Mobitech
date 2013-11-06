@@ -4,30 +4,38 @@
 #include "../tinyxml/tinyxml.h"
 #include <string>
 #include <map>
-#include "Matrix.h"
 #include "MovingPart.h"
+#include "../Resources.h"
 
 using namespace std;
 
-class Animation
+class Animation : public Resource
 {
 public:
+    string name;
+
+    Animation();
+    virtual ~Animation() { for(unsigned int i = 0; i < _bones.size(); ++i) delete _bones[i]; }
 
     Texture* texture;
 
-	void SetPos(const Point2D &pos, bool mirror);
+	void SetModel(mat4 model, bool mirror);
 	void Draw(float position);
 	float Time()const;
+
+    virtual bool Instantiate() { return true; }
+    virtual void Free() {}
+    virtual bool Load(string path) { return true; }
+    void Load(TiXmlElement *xe, Texture *tex);
 
 private:
     void AddBone(MovingPart *bone);
 	float _time;
-	Point2D _pivotPos;
+	vec2 _pivotPos;
 	std::vector<MovingPart *> _bones;
 	std::vector<MovingPart *> _renderList;
-	Matrix _subPosition;
+	mat4 _subPosition;
     
-	// этот тот самый вектор, который будет выполнять роль стека матриц
 	vector<mat4> _matrixsStack;
     friend class MovingPart;
 };

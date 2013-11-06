@@ -105,21 +105,6 @@ public:
     virtual ~Texture(void);
 };
 
-class Animation :  public Resource
-{
-protected:
-
-public:
-    string name;
-
-    virtual bool Instantiate();
-    virtual void Free();
-    virtual bool Load(string path);
-
-    Animation(void);
-    virtual ~Animation(void);
-};
-
 class Shader : public Resource, public GLObject
 {
     string source;
@@ -205,6 +190,7 @@ public:
     Resource* Load(string path, RESOURCE_TYPE type);
     ShaderProgram* Load(string vp, string pp);
     Resource* Create(RESOURCE_TYPE type);
+    Resource* Create(RESOURCE_TYPE type, string path);
 
     void Release(string path);
     void Release(Resource *resource);

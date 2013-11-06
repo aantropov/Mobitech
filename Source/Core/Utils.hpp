@@ -85,6 +85,8 @@ const string MOBITECH_PLATFORM = "win32";
     }
 #endif //MOBITECH_RELEASE
 
+#define fatof(a) static_cast<float>(atof(a))
+
 const string LOG_FILE_NAME = "log.html";
 
 #ifdef MOBITECH_WIN32
@@ -100,6 +102,7 @@ enum RESOURCE_TYPE
     RT_TEXTURE,
     RT_SHADER,
     RT_SHADER_PROGRAM,
+    RT_ANIMATION,
     RT_AUDIO
 };
 

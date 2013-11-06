@@ -16,7 +16,6 @@ public:
 	};
 
 private:
-
 	Motion _type;
 
 public:
