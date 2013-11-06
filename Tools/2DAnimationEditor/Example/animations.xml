@@ -1,0 +1,249 @@
+<?xml version="3.0" encoding="utf-8" standalone="no" ?>
+<root>
+    <Animation id="banana_level1" time="3" pivotX="93" pivotY="214" markForExport="1">
+        <movingPart name="shadow" order="1" treeOrder="0" texture="tree_banana\banana_p1_sh.png">
+            <pos alpha="1" />
+            <pos time="1" alpha="1" />
+        </movingPart>
+        <movingPart name="1" order="2" treeOrder="0" centerX="92.75" centerY="205.75" texture="tree_banana\banana_p1_03.png">
+            <pos x="93" y="204.5" alpha="1" />
+            <pos time="0.33" x="93" y="206" angle="-0.04" alpha="1" />
+            <pos time="0.66" x="93" y="206" angle="0.04" alpha="1" />
+            <pos time="1" x="93" y="204.5" alpha="1" />
+        </movingPart>
+        <movingPart name="2" order="3" treeOrder="0" centerX="94" centerY="206" texture="tree_banana\banana_p1_04.png">
+            <pos x="94" y="206" alpha="1" />
+            <pos time="0.5" x="94" y="206" angle="0.08" alpha="1" />
+            <pos time="1" x="94" y="206" alpha="1" />
+        </movingPart>
+        <movingPart name="3" order="4" treeOrder="0" centerX="92" centerY="206" texture="tree_banana\banana_p1_05.png">
+            <pos x="92" y="206" alpha="1" />
+            <pos time="0.5" x="92" y="206" angle="-0.08" alpha="1" />
+            <pos time="1" x="92" y="206" alpha="1" />
+        </movingPart>
+        <movingPart name="0" order="5" treeOrder="0" centerX="93" centerY="213.25" texture="tree_banana\banana_p1_01.png">
+            <pos x="92.5" y="213.917" alpha="1" />
+            <pos time="1" x="92.5" y="213.917" alpha="1" />
+        </movingPart>
+    </Animation>
+    <Animation id="banana_level2" time="3" pivotX="93" pivotY="214" markForExport="1">
+        <movingPart name="shadow" order="1" treeOrder="0" texture="tree_banana\banana_p2_sh.png">
+            <pos alpha="1" />
+            <pos time="1" alpha="1" />
+        </movingPart>
+        <movingPart name="1" order="2" treeOrder="0" texture="tree_banana\banana_p2_01.png">
+            <pos alpha="1" />
+            <pos time="1" alpha="1" />
+        </movingPart>
+        <movingPart name="2" order="3" treeOrder="0" centerX="93" centerY="181" texture="tree_banana\banana_p2_03.png">
+            <pos x="93" y="181" alpha="1" />
+            <pos time="0.33" x="93" y="181" angle="-0.04" alpha="1" />
+            <pos time="0.66" x="93" y="181" angle="0.04" alpha="1" />
+            <pos time="1" x="93" y="181" alpha="1" />
+        </movingPart>
+        <movingPart name="3" order="4" treeOrder="0" centerX="95" centerY="190" texture="tree_banana\banana_p2_04.png">
+            <pos x="95" y="190" alpha="1" />
+            <pos time="0.5" x="95" y="190" angle="0.08" alpha="1" />
+            <pos time="1" x="95" y="190" alpha="1" />
+        </movingPart>
+        <movingPart name="4" order="5" treeOrder="0" centerX="92" centerY="189" texture="tree_banana\banana_p2_05.png">
+            <pos x="92" y="189" alpha="1" />
+            <pos time="0.5" x="92" y="189" angle="-0.08" alpha="1" />
+            <pos time="1" x="92" y="189" alpha="1" />
+        </movingPart>
+    </Animation>
+    <Animation id="banana_level3" time="3" pivotX="93" pivotY="214" markForExport="1">
+        <movingPart name="shadow" order="1" treeOrder="0" texture="tree_banana\banana_p3_sh.png">
+            <pos alpha="1" />
+            <pos time="1" alpha="1" />
+        </movingPart>
+        <movingPart name="1" order="2" treeOrder="0" centerX="93" centerY="214" texture="tree_banana\banana_p3_01.png">
+            <pos x="93" y="214" angle="-0.017884" alpha="1" />
+            <pos time="0.5" x="93" y="214" angle="0.0355854" alpha="1" />
+            <pos time="1" x="93" y="214" angle="-0.017884" alpha="1" />
+            <movingPart name="2" order="3" treeOrder="0" centerX="87" centerY="139" texture="tree_banana\banana_p3_03.png">
+                <pos x="86" y="113" alpha="1" />
+                <pos time="0.33" x="85.6667" y="111.667" angle="-0.04" alpha="1" />
+                <pos time="0.66" x="85.3333" y="111.667" angle="0.04" alpha="1" />
+                <pos time="1" x="86" y="113" alpha="1" />
+            </movingPart>
+            <movingPart name="3" order="4" treeOrder="0" centerX="86" centerY="139" texture="tree_banana\banana_p3_04.png">
+                <pos x="87.3333" y="113" alpha="1" />
+                <pos time="0.5" x="86.3333" y="111" angle="0.08" alpha="1" />
+                <pos time="1" x="87.3333" y="113" alpha="1" />
+            </movingPart>
+            <movingPart name="4" order="5" treeOrder="0" centerX="88" centerY="138" texture="tree_banana\banana_p3_05.png">
+                <pos x="85" y="111.333" alpha="1" />
+                <pos time="0.5" x="85.3333" y="111" angle="-0.08" alpha="1" />
+                <pos time="1" x="85" y="111.333" alpha="1" />
+            </movingPart>
+        </movingPart>
+    </Animation>
+    <Animation id="banana_level4" time="3" pivotX="93" pivotY="214" markForExport="1">
+        <movingPart name="shadow" order="1" treeOrder="0" texture="tree_banana\banana_p4_sh.png">
+            <pos alpha="1" />
+            <pos time="1" alpha="1" />
+        </movingPart>
+        <movingPart name="stvol" order="2" treeOrder="0" centerX="93" centerY="214" texture="tree_banana\banana_p4_01.png">
+            <pos x="93" y="214" alpha="1" />
+            <pos time="0.5" x="93" y="214" angle="0.0758433" alpha="1" />
+            <pos time="1" x="93" y="214" alpha="1" />
+            <movingPart name="bananas" order="3" treeOrder="0" centerX="85" centerY="97" texture="tree_banana\banana_p4_02.png">
+                <pos x="85" y="97" angle="-0.04" alpha="1" />
+                <pos time="0.33" x="85" y="97" angle="0.04" alpha="1" />
+                <pos time="0.66" x="85" y="97" alpha="1" />
+                <pos time="1" x="85" y="97" angle="-0.04" alpha="1" />
+            </movingPart>
+            <movingPart name="list1" order="4" treeOrder="0" centerX="88" centerY="97" texture="tree_banana\banana_p4_03.png">
+                <pos x="88" y="97" alpha="1" />
+                <pos time="0.33" x="88" y="97" angle="-0.04" alpha="1" />
+                <pos time="0.66" x="88" y="97" angle="0.04" alpha="1" />
+                <pos time="1" x="88" y="97" alpha="1" />
+            </movingPart>
+            <movingPart name="list2" order="5" treeOrder="0" centerX="84" centerY="88" texture="tree_banana\banana_p4_04.png">
+                <pos x="84" y="88" alpha="1" />
+                <pos time="0.5" x="84" y="88" angle="0.08" alpha="1" />
+                <pos time="1" x="84" y="88" alpha="1" />
+            </movingPart>
+            <movingPart name="list3" order="6" treeOrder="0" centerX="84" centerY="90" texture="tree_banana\banana_p4_05.png">
+                <pos x="84" y="90" alpha="1" />
+                <pos time="0.5" x="84" y="90" angle="-0.06" alpha="1" />
+                <pos time="1" x="84" y="90" alpha="1" />
+            </movingPart>
+        </movingPart>
+    </Animation>
+    <Animation id="little_train" time="1" pivotX="0" pivotY="50">
+        <movingPart name="vagon" moving_type="line" order="1" treeOrder="0" centerX="60" centerY="94" texture="train\vagon.png">
+            <pos x="-66.9524" y="102.286" alpha="1" />
+            <pos time="0.5" x="-66.9524" y="99.6191" angle="0.04" alpha="1" />
+            <pos time="1" x="-66.9524" y="102.286" alpha="1" />
+            <movingPart name="new_bone_3" moving_type="line" order="2" treeOrder="0" centerX="13" centerY="18" texture="train\face.png">
+                <pos x="92.0047" y="59.326" scaleX="-1" alpha="1" />
+                <pos time="0.5" x="89.953" y="58.0737" scaleX="-1" alpha="1" />
+                <pos time="1" x="92.0047" y="59.326" scaleX="-1" alpha="1" />
+            </movingPart>
+            <movingPart name="new_bone_2" moving_type="line" order="3" treeOrder="0" centerX="12" centerY="18" texture="train\face.png">
+                <pos x="61.3382" y="60.6618" scaleX="-1" alpha="1" />
+                <pos time="0.5" x="60.5388" y="57.3578" scaleX="-1" alpha="1" />
+                <pos time="1" x="61.3382" y="60.6618" scaleX="-1" alpha="1" />
+            </movingPart>
+            <movingPart name="new_bone_1" moving_type="line" order="4" treeOrder="0" centerX="14" centerY="17" texture="train\face.png">
+                <pos x="29.3381" y="59.9977" alpha="1" />
+                <pos time="0.5" x="29.951" y="58.6387" alpha="1" />
+                <pos time="1" x="29.3381" y="59.9977" alpha="1" />
+            </movingPart>
+        </movingPart>
+        <movingPart name="new_bone_4" moving_type="line" order="5" treeOrder="0" centerX="16.75" centerY="16.75" texture="train\wheel.png">
+            <pos x="-100" y="107" scaleY="0.9" alpha="1" />
+            <pos time="0.5" x="-100" y="107" alpha="1" />
+            <pos time="1" x="-100" y="107" scaleY="0.9" alpha="1" />
+            <movingPart name="new_bone_4_copy1" moving_type="line" order="6" treeOrder="0" centerX="16.75" centerY="16.75" texture="train\wheel.png">
+                <pos x="16.75" y="16.75" alpha="1" />
+                <pos time="1" x="16.75" y="16.75" angle="6.28" alpha="1" />
+            </movingPart>
+        </movingPart>
+        <movingPart name="new_bone_4_copy2" moving_type="line" order="7" treeOrder="0" centerX="16.75" centerY="16.75" texture="train\wheel.png">
+            <pos x="-30" y="107" alpha="1" />
+            <pos time="0.5" x="-30" y="107" scaleY="0.9" alpha="1" />
+            <pos time="1" x="-30" y="107" alpha="1" />
+            <movingPart name="new_bone_4_copy1" moving_type="line" order="8" treeOrder="0" centerX="16.75" centerY="16.75" texture="train\wheel.png">
+                <pos x="16.75" y="16.75" alpha="1" />
+                <pos time="1" x="16.75" y="16.75" angle="6.28" alpha="1" />
+            </movingPart>
+        </movingPart>
+        <movingPart name="train" moving_type="line" order="9" treeOrder="0" texture="train\train.png">
+            <pos alpha="1" />
+            <pos time="0.5" y="3" alpha="1" />
+            <pos time="1" alpha="1" />
+            <movingPart name="truba" order="10" treeOrder="0" centerX="25" centerY="85" texture="train\truba.png">
+                <pos x="112" y="31.75" alpha="1" />
+                <pos time="0.5" x="112" y="31.75" scaleX="1.17143" scaleY="0.882862" alpha="1" />
+                <pos time="1" x="112" y="31.75" alpha="1" />
+            </movingPart>
+            <movingPart name="trainface" moving_type="line" order="11" treeOrder="0" texture="train\trainface.png">
+                <pos x="126" y="33" alpha="1" />
+                <pos time="1" x="126" y="33" alpha="1" />
+                <movingPart name="brov" moving_type="line" order="12" treeOrder="0" centerX="1" centerY="7" texture="train\brov.png">
+                    <pos x="8.61539" y="19.0769" alpha="1" />
+                    <pos time="0.5" x="8.92309" y="18.4615" angle="-0.212252" alpha="1" />
+                    <pos time="1" x="8.61539" y="19.0769" alpha="1" />
+                </movingPart>
+                <movingPart name="smile" moving_type="line" order="13" treeOrder="0" texture="train\smile.png">
+                    <pos x="7.25274" y="42.6374" alpha="1" />
+                    <pos time="1" x="7.25274" y="42.6374" alpha="1" />
+                </movingPart>
+                <movingPart name="eye" moving_type="line" order="14" treeOrder="0" texture="train\eye.png">
+                    <pos x="9.5" y="20.75" alpha="1" />
+                    <pos time="1" x="9.5" y="20.75" alpha="1" />
+                </movingPart>
+            </movingPart>
+            <movingPart name="wheel" moving_type="line" order="15" treeOrder="0" centerX="19" centerY="17" texture="train\wheel2.png">
+                <pos x="117" y="103" alpha="1" />
+                <pos time="0.5" x="117" y="103" scaleY="0.9" alpha="1" />
+                <pos time="1" x="117" y="103" alpha="1" />
+            </movingPart>
+            <movingPart name="big_wheel" moving_type="line" order="16" treeOrder="0" centerX="41.5" centerY="41.5" texture="train\big_wheel.png">
+                <pos x="47" y="83" alpha="1" />
+                <pos time="0.5" x="47" y="83" scaleY="0.9" alpha="1" />
+                <pos time="1" x="47" y="83" alpha="1" />
+                <movingPart name="big_wheel_copy1" moving_type="line" order="17" treeOrder="0" centerX="41.5" centerY="41.5" texture="train\big_wheel.png">
+                    <pos x="41.5" y="41.5" alpha="1" />
+                    <pos time="1" x="41.5" y="41.5" angle="6.28" alpha="1" />
+                </movingPart>
+            </movingPart>
+        </movingPart>
+    </Animation>
+    <Animation id="peasshooter" time="1.5" pivotX="0" pivotY="0" markForExport="1">
+        <movingPart name="shadow" moving_type="line" order="1" treeOrder="0" centerX="32.4" centerY="14" texture="plants\shadow.png">
+            <pos x="5" y="-3.5" alpha="1" />
+            <pos time="1" x="5" y="-3.5" alpha="1" />
+        </movingPart>
+        <movingPart name="left_leaf_b" moving_type="line" order="3" treeOrder="0" centerX="25" centerY="16" texture="plants\left_leaf_b.png">
+            <pos x="2" y="-8" angle="-0.25242" alpha="1" />
+            <pos time="0.252632" x="2" y="-8" angle="-0.0179501" alpha="1" />
+            <pos time="0.491228" x="2" y="-8" angle="0.025555" alpha="1" />
+            <pos time="0.747368" x="2" y="-8" angle="-0.0179501" alpha="1" />
+            <pos time="1" x="2" y="-8" angle="-0.25242" alpha="1" />
+        </movingPart>
+        <movingPart name="right_leaf" moving_type="line" order="2" treeOrder="0" centerX="1" centerY="16" texture="plants\right_leaf_b.png">
+            <pos x="3.5" y="-8.5" alpha="1" />
+            <pos time="0.252632" x="3.5" y="-8.5" angle="-0.219612" alpha="1" />
+            <pos time="0.505263" x="3.5" y="-8.5" alpha="1" />
+            <pos time="0.740351" x="3.5" y="-8.5" angle="-0.219612" alpha="1" />
+            <pos time="1" x="3.5" y="-8.5" alpha="1" />
+        </movingPart>
+        <movingPart name="stebel" moving_type="line" order="4" treeOrder="0" centerX="15" centerY="47" texture="plants\stebel.png">
+            <pos x="5.5" y="-7.5" scaleY="0.85" angle="-0.124891" alpha="1" />
+            <pos time="0.259649" x="5.5" y="-7.5" alpha="1" />
+            <pos time="0.5" x="5.5" y="-7.5" scaleY="0.85" angle="0.211875" alpha="1" />
+            <pos time="0.745614" x="5.5" y="-7.5" alpha="1" />
+            <pos time="1" x="5.5" y="-7.5" scaleY="0.85" angle="-0.124891" alpha="1" />
+        </movingPart>
+        <movingPart name="head" order="6" treeOrder="0" centerX="29" centerY="49" texture="plants\head.png">
+            <pos x="-4.38889" y="-46.1667" scaleY="0.85" alpha="1" />
+            <pos time="0.25614" x="0.11111" y="-52.6667" alpha="1" />
+            <pos time="0.501754" x="9.44444" y="-45.9444" scaleY="0.85" alpha="1" />
+            <pos time="0.750877" x="-0.0555601" y="-52.4444" alpha="1" />
+            <pos time="1" x="-4.38889" y="-46.1667" scaleY="0.85" alpha="1" />
+            <movingPart name="tail" moving_type="line" order="5" treeOrder="0" centerX="14" centerY="5" texture="plants\tail.png">
+                <pos x="1" y="27" alpha="1" />
+                <pos time="0.487719" x="1" y="27" angle="0.612804" alpha="1" />
+                <pos time="1" x="1" y="27" alpha="1" />
+            </movingPart>
+        </movingPart>
+        <movingPart name="right_leaf" moving_type="line" order="8" treeOrder="0" centerX="2" centerY="20" texture="plants\right_leaf.png">
+            <pos x="7.5" y="-2" alpha="1" />
+            <pos time="0.245614" x="7.5" y="-2" angle="0.0808983" alpha="1" />
+            <pos time="0.480702" x="7.5" y="-2" alpha="1" />
+            <pos time="0.736842" x="7.5" y="-2" scaleX="0.9" angle="0.145117" alpha="1" />
+            <pos time="1" x="7.5" y="-2" alpha="1" />
+        </movingPart>
+        <movingPart name="left_leaf" moving_type="line" order="7" treeOrder="0" centerX="40" centerY="9" texture="plants\left_leaf.png">
+            <pos x="8.5" y="-8.5" alpha="1" />
+            <pos time="0.242105" x="8.5" y="-8.5" scaleX="0.9" angle="-0.142096" alpha="1" />
+            <pos time="0.501754" x="8.5" y="-8.5" alpha="1" />
+            <pos time="0.757895" x="8.5" y="-8.5" scaleY="1.1" angle="-0.039725" alpha="1" />
+            <pos time="1" x="8.5" y="-8.5" alpha="1" />
+        </movingPart>
+    </Animation>
+</root>

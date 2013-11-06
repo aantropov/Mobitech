@@ -105,6 +105,21 @@ public:
     virtual ~Texture(void);
 };
 
+class Animation :  public Resource
+{
+protected:
+
+public:
+    string name;
+
+    virtual bool Instantiate();
+    virtual void Free();
+    virtual bool Load(string path);
+
+    Animation(void);
+    virtual ~Animation(void);
+};
+
 class Shader : public Resource, public GLObject
 {
     string source;

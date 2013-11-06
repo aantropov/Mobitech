@@ -94,6 +94,17 @@ inline quat slerp(float latitude, float longitude, float angle)
 
     return q;
 }
+
+//spline interpolation
+inline float spline_lerp(float x1, float x2, float r1, float r2, float t)
+{
+	float res;
+	float t2 = t * t;
+	float t3 = t2 * t;
+	res = x1*(2.0f * t3 - 3.0f * t2 + 1.0f) + r1*(t3 - 2.0f * t2 + t) + x2*(-2.0f * t3 + 3.0f * t2) + r2*(t3 -t2);
+	return res;    
+}
+
 // random number in [0,1]
 inline float unirand()
 {

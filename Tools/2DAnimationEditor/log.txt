@@ -1,0 +1,23 @@
+HGE Started..
+
+HGE version: 1.80
+Date: 06.11.2013, 17:26:09
+
+Application: 2D Game Animation Editor by Pakholkov Leonid
+OS: Windows 6.1.7601
+Memory: 4194303K total, 4194303K free
+
+D3D Driver: nvd3dum.dll
+Description: NVIDIA GeForce GTS 450   
+Version: 9.18.13.2018
+Can't find appropriate full screen video mode
+Mode: 1280 x 780 x UNKNOWN
+
+Init done.
+
+Can't load resource: 
+
+Finishing..
+The End.
+message : 6
+
