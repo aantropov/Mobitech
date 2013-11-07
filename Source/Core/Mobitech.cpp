@@ -22,12 +22,12 @@ bool Engine::Initialize()
     return Renderer::GetInstance()->Initialize();
 }
 
-void Engine:: Stop()
+void Engine::Stop()
 {
     Window::SetRunning(false);
 }
 
-void Engine:: OneFrame()
+void Engine::OneFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         

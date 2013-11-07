@@ -204,9 +204,12 @@ public:
     void DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const;
     void DrawTransform(::transform xf) const;
     void DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color) const;
-        
+    void DrawArrays(int type, int a, int size);
     void DrawBuffer(VertexBuffer *vb);
     void DrawBuffer(IndexBuffer* ib);
+
+    void EnableBlend(BLEND_TYPE type);
+    void DisableBlend();
 };
 
 

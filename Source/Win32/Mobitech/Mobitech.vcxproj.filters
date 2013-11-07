@@ -24,6 +24,12 @@
     <ClCompile Include="win32_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Core\lodepng\lodepng.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -60,12 +66,6 @@
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -73,6 +73,15 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\libzip\config.h">
       <Filter>Core</Filter>
@@ -135,15 +144,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\Utils.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

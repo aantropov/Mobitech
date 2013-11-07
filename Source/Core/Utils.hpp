@@ -97,6 +97,12 @@ const string ASSETS_ROOT = "";
 
 extern GLuint g_OpenGLError;
 
+enum BLEND_TYPE
+{
+    BT_ADDITIVE,
+    BT_ALPHA_BLEND
+};
+
 enum RESOURCE_TYPE
 {
     RT_TEXTURE,
@@ -143,7 +149,7 @@ public:
 };
 
 template<typename T>
-T* Singleton<T>:: instance = NULL;
+T* Singleton<T>::instance = NULL;
 
 class Logger : public Singleton<Logger>
 {

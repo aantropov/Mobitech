@@ -55,16 +55,24 @@ public:
         Renderer *render = Renderer::GetInstance();
         
         render->BindShaderProgram(shader);
-        //render->BindTexture(test_texture, 0);
+        //
         mat4 model = mat4_identity;
         //model = GLRotationZ(angle);
 
-        test_animation->SetModel(transpose(GLTranslation(-100.0f, 1.0f, 1.0f)), false);
-             
         render->SetupCameraForShaderProgram(shader, mat4_identity);
-        test_animation->Draw(angle);
+        
+        test_animation->GetAnimationClip("banana_level4")->SetModel(GLScale(1.0f, -1.0f, 1.0f), false);
+        test_animation->GetAnimationClip("banana_level4")->Draw(angle);
+            
+        test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-100, 20)), false);
+        test_animation->GetAnimationClip("banana_level2")->Draw(angle);
 
-        /*glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 50)), false);
+        test_animation->GetAnimationClip("banana_level3")->Draw(angle);
+
+        
+        /*render->BindTexture(test_texture, 0);
+        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
         glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
@@ -73,7 +81,8 @@ public:
         glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
      
-        glDrawArrays(GL_TRIANGLES, 0, 3);*/
+        
+        //render->DrawArrays(GL_TRIANGLES, 0, 3);*/
     }
 
     virtual void OnTouchDown(int x, int y) { touch_pressed = true; prev_mouse_pos = vec2(x,y); }

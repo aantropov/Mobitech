@@ -7,7 +7,7 @@
 #include "mat4.h"
 #include "bounds.h"
 
-void frustum:: extract(mat4 modl, mat4 proj)
+void frustum::extract(mat4 modl, mat4 proj)
 {
     mat4 clip = transpose(modl) * transpose(proj);
     float t;

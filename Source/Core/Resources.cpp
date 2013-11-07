@@ -23,7 +23,7 @@ void ReplaceAllSubstrings(std::string& str, const std::string& from, const std::
     }
 }
 
-AssetFile:: AssetFile(ResourceFactory* rf, const char *file_name)
+AssetFile::AssetFile(ResourceFactory* rf, const char *file_name)
 {
     this->file_name = file_name;
 #ifdef MOBITECH_ANDROID
@@ -40,7 +40,7 @@ AssetFile:: AssetFile(ResourceFactory* rf, const char *file_name)
         Logger::Message(LT_ERROR, (string("_ASSET_NOT_FOUND_  ") + string(file_name)).c_str());
 }
 
-unsigned int AssetFile:: Read(void* buf, int size, int count) const
+unsigned int AssetFile::Read(void* buf, int size, int count) const
 {
 #ifdef MOBITECH_ANDROID
 	return AAsset_read(file, buf, size*count);
@@ -58,7 +58,7 @@ void AssetFile::Close() const
 #endif // MOBITECH_ANDROID
 }
 
-unsigned int AssetFile:: GetFileSize() const
+unsigned int AssetFile::GetFileSize() const
 {
 #ifdef MOBITECH_ANDROID
 	return AAsset_getLength (file);
@@ -69,12 +69,12 @@ unsigned int AssetFile:: GetFileSize() const
 #endif // MOBITECH_ANDROID
 }
 
-void* AssetFile:: GetFile() const
+void* AssetFile::GetFile() const
 {
 	return (void*)(file);
 }
 
-Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
+Resource* ResourceFactory::Create(RESOURCE_TYPE type)
 {
     char buffer[BUFFER_LENGTH];
     memset(buffer, '\0', BUFFER_LENGTH);
@@ -84,7 +84,7 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type)
 }
 
 
-Resource* ResourceFactory:: Create(RESOURCE_TYPE type, string path)
+Resource* ResourceFactory::Create(RESOURCE_TYPE type, string path)
 {
     Logger::Message("Creating resource: \"" + path + "\"");
 
@@ -107,7 +107,7 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type, string path)
 }
 
 /*
-FileData ResourceFactory:: GetFileData(const char* relative_path) const
+FileData ResourceFactory::GetFileData(const char* relative_path) const
 {
     string path(relative_path);
 #ifdef MOBITECH_ANDROID    
@@ -125,21 +125,21 @@ FileData ResourceFactory:: GetFileData(const char* relative_path) const
     return (FileData) { AAsset_getLength(asset), AAsset_getBuffer(asset), asset };
 }
  
-void ResourceFactory:: ReleaseFileData(const FileData* file_data) const
+void ResourceFactory::ReleaseFileData(const FileData* file_data) const
 {
     assert(file_data != NULL);
     assert(file_data->file_handle != NULL);
     AAsset_close((AAsset*)file_data->file_handle);
 }
 */
-Resource* ResourceFactory:: Get(std::string path) const
+Resource* ResourceFactory::Get(std::string path) const
 {
     if(resources.find(path) == resources.end())
         return NULL;
     return resources.at(path);
 }
 
-bool ResourceFactory:: Add(std::string path, Resource* resource)
+bool ResourceFactory::Add(std::string path, Resource* resource)
 {
     Resource* res = Get(path);
     if(res != NULL)
@@ -149,7 +149,7 @@ bool ResourceFactory:: Add(std::string path, Resource* resource)
     return true;
 }
 
-ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
+ShaderProgram* ResourceFactory::Load(std::string vp, std::string pp)
 {
     string path = "\\shader_program\\" + vp + "\\" + pp;
 
@@ -168,7 +168,7 @@ ShaderProgram* ResourceFactory:: Load(std::string vp, std::string pp)
     return temp;
 }
 
-Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
+Resource* ResourceFactory::Load(std::string path, RESOURCE_TYPE type)
 {
     Resource* res = Get(path);
     if(res != NULL)
@@ -183,36 +183,7 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
     else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
     else if(type == RT_ANIMATION)
-    {
-        std::string fullFileName = std::string(path);
-        Texture *texture = dynamic_cast<Texture*>(Load((fullFileName.substr(0, fullFileName.length() - 3) + "png").c_str(), RT_TEXTURE));
-
-        if (texture == NULL) 
-            return false;
-
-        TiXmlDocument doc(path.c_str());
-        if (doc.LoadFile(TIXML_ENCODING_UTF8)) 
-        {
-            TiXmlElement *root = doc.RootElement();
-            TiXmlElement *animation = root->FirstChildElement("Animation");
-            while (animation) 
-            {
-                string id = string(animation->Attribute("id"));
-                if (Get(id) == NULL) 
-                {
-                    Animation *animation_resource = dynamic_cast<Animation*>(Create(RT_ANIMATION, id));
-                    animation_resource->resource_factory = this;
-                    animation_resource->resource_id = id;
-                    animation_resource->name = id;
-                    animation_resource->Load(animation, texture);
-                    resources[id] = animation_resource;
-                }
-                animation = animation->NextSiblingElement("Animation");
-            }
-            return Get(root->FirstChildElement("Animation")->Attribute("id"));
-        } 
-        return NULL;    
-    }
+        temp = new Animation();    
     else
         return NULL;
     
@@ -231,36 +202,43 @@ void ResourceFactory::Release(std::string path)
 
 void ResourceFactory::Release(Resource *resource)
 {
-    //not implemented
+    for (std::map<string, Resource*>::iterator it = resources.begin(); it != resources.end(); ++it)
+        if (it->second == resource)
+        {
+            delete resource;
+            resources.erase(it->first);
+        }
 }    
 
 void ResourceFactory::ReleaseAll()
 {
-    //not implemented
+    for (std::map<string, Resource*>::iterator it = resources.begin(); it != resources.end(); ++it)
+        delete it->second;
+    resources.clear();
 }
 
-void* VertexBuffer:: GetPointer() const 
+void* VertexBuffer::GetPointer() const 
 { 
     return (void*)vertices; 
 }
 
-unsigned int VertexBuffer:: GetNum() const 
+unsigned int VertexBuffer::GetNum() const 
 {
     return num_vertices; 
 }
 
-void VertexBuffer:: Create(int num_vertices) 
+void VertexBuffer::Create(int num_vertices) 
 { 
     this->num_vertices = num_vertices; 
     vertices = new Vertex[num_vertices](); 
 }
 
-VertexArrayObject* VertexBuffer:: GetVAO() const 
+VertexArrayObject* VertexBuffer::GetVAO() const 
 { 
     return vao; 
 }
 
-bool VertexBuffer:: Instantiate()
+bool VertexBuffer::Instantiate()
 {
     vao = new VertexArrayObject();
     vao->Instantiate();
@@ -273,7 +251,7 @@ bool VertexBuffer:: Instantiate()
     return (_id != -1) && (vao->GetId() != -1);
 }
 
-void VertexBuffer:: Free()
+void VertexBuffer::Free()
 {
     if(_id != -1)
     Renderer::GetInstance()->DeleteVBO(this);
@@ -283,7 +261,7 @@ void VertexBuffer:: Free()
     delete vao;
 }
 
-void* VertexBuffer:: Lock() const
+void* VertexBuffer::Lock() const
 {
 #ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
@@ -295,7 +273,7 @@ void* VertexBuffer:: Lock() const
     return NULL;
 }
 
-void VertexBuffer:: Unlock() const
+void VertexBuffer::Unlock() const
 {
 #ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
@@ -304,14 +282,14 @@ void VertexBuffer:: Unlock() const
 #endif //MOBITECH_WIN32
 }
 
-bool VertexArrayObject:: Instantiate()
+bool VertexArrayObject::Instantiate()
 {
     _id = -1;    
     _id = Renderer::GetInstance()->CreateVAO();
     return (_id != -1);
 }
 
-void VertexArrayObject::  Free()
+void VertexArrayObject::Free()
 {
     if(_id != -1)
         Renderer::GetInstance()->DeleteVAO(this);
@@ -348,7 +326,7 @@ void ShaderProgram::Free()
     _id = -1;
 }
 
-void ShaderProgram:: InitLocations()
+void ShaderProgram::InitLocations()
 {
     uniform_locations.transform_model = glGetUniformLocation(_id, "transform.model");
     uniform_locations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection");
@@ -361,20 +339,20 @@ void ShaderProgram:: InitLocations()
     attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");
 }
 
-bool ShaderProgram:: Load(string path)
+bool ShaderProgram::Load(string path)
 {
     //not implemented yet
     return false;
 }
 
-bool ShaderProgram:: Instantiate()
+bool ShaderProgram::Instantiate()
 {
     _id = Renderer::GetInstance()->CreateShaderProgram(vertex_sh, pixel_sh);
     InitLocations();
     return _id > -1;
 }
 
-bool ShaderProgram:: Load(std::string vertexshd_path, std::string pixelshd_path)
+bool ShaderProgram::Load(std::string vertexshd_path, std::string pixelshd_path)
 {
     Shader *vs = dynamic_cast<Shader*>(resource_factory->Get(vertexshd_path));
     Shader *ps = dynamic_cast<Shader*>(resource_factory->Get(pixelshd_path));
@@ -416,12 +394,12 @@ Texture::~Texture(void)
     Free();
 }
 
-bool Texture:: Instantiate()
+bool Texture::Instantiate()
 {
     return Renderer::GetInstance()->CreateTexture(this);
 }
 
-bool Texture:: Load(std::string path)
+bool Texture::Load(std::string path)
 {   
     AssetFile png_file(resource_factory, path.c_str());
     
@@ -453,7 +431,7 @@ bool Texture:: Load(std::string path)
     return res;
 }
 
-void Texture:: Free()
+void Texture::Free()
 {
     if(data != NULL)
         delete[] data;

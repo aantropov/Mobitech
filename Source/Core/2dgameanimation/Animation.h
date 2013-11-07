@@ -10,23 +10,19 @@
 using namespace std;
 
 class MovingPart;
-class Animation : public Resource
+class AnimationClip
 {
 public:
     string name;
 
-    Animation() {}
-    virtual ~Animation() { for(unsigned int i = 0; i < _bones.size(); ++i) delete _bones[i]; }
+    AnimationClip() {}
+    virtual ~AnimationClip() { for(unsigned int i = 0; i < _bones.size(); ++i) delete _bones[i]; }
 
     Texture* texture;
 
 	void SetModel(mat4 model, bool mirror);
 	void Draw(float position);
 	float Time()const;
-
-    virtual bool Instantiate() { return true; }
-    virtual void Free() {}
-    virtual bool Load(string path) { return true; }
     void Load(TiXmlElement *xe, Texture *tex);
 
 private:
@@ -41,5 +37,28 @@ private:
 	vector<mat3> _matrixsStack;
     friend class MovingPart;
 };
+
+class Animation: public Resource
+{
+    map<string, AnimationClip*> animation_clips;
+
+public:
+
+    Animation() {}
+    virtual ~Animation() {}
+
+    AnimationClip *GetAnimationClip(string name) const { return animation_clips.at(name); }
+
+    virtual bool Instantiate() { return true; }
+    virtual void Free() 
+    {  
+        for (std::map<string, AnimationClip*>::iterator it = animation_clips.begin(); it != animation_clips.end(); ++it)
+            delete it->second;
+        animation_clips.clear();
+    }
+
+    virtual bool Load(string path);
+};
+
 
 #endif//ANIMATION_H

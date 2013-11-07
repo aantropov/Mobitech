@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-void Animation:: Load(TiXmlElement *xe, Texture *tex)
+void AnimationClip::Load(TiXmlElement *xe, Texture *tex)
 {
     texture = tex;
     _time = fatof(xe->Attribute("time"));
@@ -28,7 +28,7 @@ void Animation:: Load(TiXmlElement *xe, Texture *tex)
     std::sort(_renderList.begin(), _renderList.end(), CmpBoneOrder);
 }
 
-void Animation::SetModel(mat4 model, bool mirror) 
+void AnimationClip::SetModel(mat4 model, bool mirror) 
 {
     _subPosition = mat4_identity;
     _subPosition *= GLTranslation(-_pivotPos.x, -_pivotPos.y, 0.0f);
@@ -39,7 +39,7 @@ void Animation::SetModel(mat4 model, bool mirror)
     _subPosition *= model;
 }
 
-void Animation::Draw(float position) 
+void AnimationClip::Draw(float position) 
 {
     Renderer::GetInstance()->BindTexture(texture, 0);
 
@@ -57,12 +57,46 @@ void Animation::Draw(float position)
     //glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-float Animation::Time() const 
+float AnimationClip::Time() const 
 {
     return _time;
 }
 
-void Animation::AddBone(MovingPart *bone) 
+void AnimationClip::AddBone(MovingPart *bone) 
 {
     _renderList.push_back(bone);
+}
+
+
+bool Animation::Load(string path)
+{
+    Texture *texture = dynamic_cast<Texture*>(resource_factory->Load((path.substr(0, path.length() - 3) + "png").c_str(), RT_TEXTURE));
+    
+    if (texture == NULL)
+    {
+        Logger::Message(LT_ERROR, "Cannot find animation atlas texture");
+        return false;
+    }
+    texture->name = "texture";
+
+    TiXmlDocument doc(path.c_str());
+    if (doc.LoadFile(TIXML_ENCODING_UTF8)) 
+    {
+        TiXmlElement *root = doc.RootElement();
+        TiXmlElement *animation = root->FirstChildElement("Animation");
+        while(animation)
+        {
+            string id = string(animation->Attribute("id"));
+            if(animation_clips.find(id) == animation_clips.end()) 
+            {
+                AnimationClip *animation_clip = new AnimationClip();
+                animation_clip->name = id;
+                animation_clip->Load(animation, texture);
+                animation_clips[id] = animation_clip;
+            }
+            animation = animation->NextSiblingElement("Animation");
+        }
+        return true;
+     }
+    return false;
 }

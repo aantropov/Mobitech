@@ -2,7 +2,7 @@
 #include "Mobitech.h"
 #include "Utils.hpp"
 
-const string Window:: WND_CLASS_NAME = "MobitechWindow";
+const string Window::WND_CLASS_NAME = "MobitechWindow";
 
 GLenum g_OpenGLError = GL_NO_ERROR;
 
@@ -28,7 +28,7 @@ Window::~Window()
 {
 }
 
-bool Window:: Create(string title, int width, int height, bool fullScreen)
+bool Window::Create(string title, int width, int height, bool fullScreen)
 {
     Window::width = width;
     Window::height = height;
@@ -291,7 +291,7 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
     OPENGL_CALL(glViewport(0, 0, width, height));
 }
 
-void Window:: Destroy()
+void Window::Destroy()
 {
  #ifdef MOBITECH_WIN32   
     
@@ -457,7 +457,7 @@ void Camera::LookAt(const vec3 &position, const vec3 &center, const vec3 &up)
 }
 
 Camera::Camera(void){ rotation = vec3_zero; }
-Camera:: ~Camera(void){}
+Camera::~Camera(void){}
 
 Renderer::Renderer()
 {
@@ -476,7 +476,7 @@ Renderer* Renderer::GetInstance()
     return instance;
 }
 
-void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model)
+void Renderer::SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model)
 {
     mat4 view           = current_camera->GetView();
     mat4 viewProjection = current_camera->GetProjection() * view;
@@ -494,22 +494,22 @@ void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model
     //UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
 }
 
-void Renderer:: SetCurrentCamera(Camera *cam)
+void Renderer::SetCurrentCamera(Camera *cam)
 {
     current_camera = cam;
 }
 
-Camera* Renderer:: GetCurrentCamera() const
+Camera* Renderer::GetCurrentCamera() const
 {
     return current_camera;
 }
 
-void Renderer:: BindTexture(Texture *tex)
+void Renderer::BindTexture(Texture *tex)
 {
     BindTexture(tex, 0);
 }
 
-void Renderer:: BindTexture(Texture *tex, unsigned int channel)
+void Renderer::BindTexture(Texture *tex, unsigned int channel)
 {
     if(tex_channels_cache[channel] == tex->GetId())
         return;
@@ -522,7 +522,7 @@ void Renderer:: BindTexture(Texture *tex, unsigned int channel)
     }
 }
 
-int Renderer:: CreateTexture(Texture *tex) const
+int Renderer::CreateTexture(Texture *tex) const
 {
     GLuint texture = tex->GetId();
 
@@ -544,7 +544,7 @@ int Renderer:: CreateTexture(Texture *tex) const
     return texture;
 }
 
-void Renderer:: DeleteTexture(Texture *tex) const
+void Renderer::DeleteTexture(Texture *tex) const
 {
     GLuint t = tex->GetId();
     OPENGL_CALL(glDeleteTextures(1, &t));
@@ -562,7 +562,7 @@ int Renderer::CreateVBO(VertexBuffer *vb, BUFFER_TYPE state) const
     return vbo;
 }
 
-int Renderer:: CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const
+int Renderer::CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const
 {
     int size = ib->GetNum()*sizeof(unsigned int);
 
@@ -574,13 +574,13 @@ int Renderer:: CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const
     return vbo;
 }
 
-void Renderer:: DeleteVBO(Buffer *vb) const
+void Renderer::DeleteVBO(Buffer *vb) const
 {
     GLuint vbo =  vb->GetId();
     OPENGL_CALL(glDeleteBuffers(1, &vbo));
 }
 
-void Renderer:: DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const
+void Renderer::DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const
 {    /*
     glColor4f(color.x, color.y, color.z, 1);    
     GLfloat glVertices[] = 
@@ -592,7 +592,7 @@ void Renderer:: DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) c
     glDrawArrays(GL_LINES, 0, 2);*/
 }
 
-void Renderer:: DrawTransform(::transform xf) const
+void Renderer::DrawTransform(::transform xf) const
 {
     /*
     vec3 p1 = xf.position;
@@ -610,7 +610,7 @@ void Renderer:: DrawTransform(::transform xf) const
     DrawSegment(p1, p2, vec3(0,0,1));*/
 }
 
-void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color)  const
+void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color)  const
 {
 
     /*GLfloat glverts[24];
@@ -632,24 +632,30 @@ void Renderer:: DrawSolidPolygon(const Vertex* vertices, int vertex_count, const
     glDrawArrays(GL_LINE_LOOP, 0, vertex_count);*/
 }
 
-void Renderer:: DrawBuffer(VertexBuffer* vb)
+void Renderer::DrawArrays(int type, int a, int b)
+{
+    draw_calls++;    
+    OPENGL_CALL(glDrawArrays(type, a, b));
+}
+
+void Renderer::DrawBuffer(VertexBuffer* vb)
 {    
     draw_calls++;
     OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, vb->GetNum()));    
 }
 
-void Renderer:: DrawBuffer(IndexBuffer* ib)
+void Renderer::DrawBuffer(IndexBuffer* ib)
 {    
     draw_calls++;
     OPENGL_CALL(glDrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL));    
 }
 
-void Renderer:: BindBuffer(VertexBuffer *vb) const
+void Renderer::BindBuffer(VertexBuffer *vb) const
 {    
     glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());    
 }
 
-void Renderer:: BindBuffer(IndexBuffer *vb)
+void Renderer::BindBuffer(IndexBuffer *vb)
 {
     if(previous_ib != vb->GetId())
     {
@@ -658,7 +664,7 @@ void Renderer:: BindBuffer(IndexBuffer *vb)
     }
 }
 
-void Renderer:: UnbindBuffer(bool vertex_buffer) const
+void Renderer::UnbindBuffer(bool vertex_buffer) const
 {
     if(vertex_buffer)
         glBindBuffer ( GL_ARRAY_BUFFER , 0 ); 
@@ -666,7 +672,7 @@ void Renderer:: UnbindBuffer(bool vertex_buffer) const
         glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER , 0 ); 
 }    
 
-int Renderer:: CreateVAO() const
+int Renderer::CreateVAO() const
 {
     GLuint vao;
     //OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
@@ -674,13 +680,13 @@ int Renderer:: CreateVAO() const
     return vao;
 }
 
-void Renderer:: DeleteVAO(VertexArrayObject *vao) const
+void Renderer::DeleteVAO(VertexArrayObject *vao) const
 {
     //GLuint id =  vao->GetId();
     //OPENGL_CALL(glDeleteVertexArrays(1, &id));
 }
 
-void Renderer:: BindVAO(VertexBuffer *vb)
+void Renderer::BindVAO(VertexBuffer *vb)
 {
     /*if(previous_vao != vb->GetVAO()->GetId())
     {
@@ -689,12 +695,12 @@ void Renderer:: BindVAO(VertexBuffer *vb)
     }*/
 }
 
-void Renderer:: UnbindVAO() const
+void Renderer::UnbindVAO() const
 {
     //glBindVertexArray(0);    
 }
 
-int Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
+int Renderer::CompileShader(std::string source, SHADER_TYPE st) const
 {
     GLuint shd;
     GLchar *strings = (GLchar*)source.c_str();
@@ -719,12 +725,12 @@ int Renderer:: CompileShader(std::string source, SHADER_TYPE st) const
     return shd;
 }
 
-void Renderer:: DeleteShader(Shader *shd) const
+void Renderer::DeleteShader(Shader *shd) const
 {
     OPENGL_CALL(glDeleteShader(shd->GetId()));
 }
 
-int Renderer:: CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const
+int Renderer::CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const
 {
     GLuint sh_pr_id = glCreateProgram();
     OPENGL_CALL(glAttachShader(sh_pr_id, vertex_sh->GetId()));
@@ -733,12 +739,12 @@ int Renderer:: CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const
     return sh_pr_id;
 }
 
-void Renderer:: DeleteShaderProgram(ShaderProgram *shd) const
+void Renderer::DeleteShaderProgram(ShaderProgram *shd) const
 {
     OPENGL_CALL(glDeleteProgram(shd->GetId()));
 }
 
-void Renderer:: BindShaderProgram(ShaderProgram *sh)
+void Renderer::BindShaderProgram(ShaderProgram *sh)
 {
     if(sh == NULL || (shader_program != NULL && sh == shader_program))
         return;
@@ -748,12 +754,12 @@ void Renderer:: BindShaderProgram(ShaderProgram *sh)
     OPENGL_CHECK_FOR_ERRORS();
 }
 
-int Renderer:: CacheUniformLocation(string name)
+int Renderer::CacheUniformLocation(string name)
 {
     return CacheUniformLocation(name, shader_program);
 }
 
-int Renderer:: CacheUniformLocation(string name, ShaderProgram *sh)
+int Renderer::CacheUniformLocation(string name, ShaderProgram *sh)
 {
     unsigned int *res = &uniforms_cache[sh->GetId()][name];
     if(*res == 0)
@@ -767,98 +773,113 @@ int Renderer:: CacheUniformLocation(string name, ShaderProgram *sh)
     return *res;
 }
 
-void Renderer:: CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
 {
     Uniform4(CacheUniformLocation(name, sh),  num, variable);
 }
 
-void Renderer:: CacheUniform4(std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform4(std::string name, unsigned int num , float *variable)
 {
     Uniform4(CacheUniformLocation(name),  num, variable);
 }
 
-void Renderer:: CacheUniformMatrix4(std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniformMatrix4(std::string name, unsigned int num , float *variable)
 {    
     UniformMatrix4(CacheUniformLocation(name), num, variable);
 }
 
-void Renderer:: CacheUniformMatrix3(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniformMatrix3(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
 {    
     UniformMatrix3(CacheUniformLocation(name, sh), num, variable);
 }
 
-void Renderer:: CacheUniformMatrix4(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniformMatrix4(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
 {    
     UniformMatrix4(CacheUniformLocation(name, sh), num, variable);
 }
 
-void Renderer:: CacheUniformMatrix3(std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniformMatrix3(std::string name, unsigned int num , float *variable)
 {    
     UniformMatrix3(CacheUniformLocation(name), num, variable);
 }
 
-void Renderer:: CacheUniform1(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform1(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
 {
     Uniform1(CacheUniformLocation(name, sh),  num, variable);
 }
 
-void Renderer:: CacheUniform1(std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform1(std::string name, unsigned int num , float *variable)
 {
     Uniform1(CacheUniformLocation(name),  num, variable);
 }
 
-void Renderer:: CacheUniform1(std::string name, int value)
+void Renderer::CacheUniform1(std::string name, int value)
 {
     Uniform1(CacheUniformLocation(name), value);
 }
 
-void Renderer:: CacheUniform3(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform3(ShaderProgram *sh, std::string name, unsigned int num , float *variable)
 {
     Uniform3(CacheUniformLocation(name, sh),  num, variable);
 }
 
-void Renderer:: CacheUniform3(std::string name, unsigned int num , float *variable)
+void Renderer::CacheUniform3(std::string name, unsigned int num , float *variable)
 {
     Uniform3(CacheUniformLocation(name),  num, variable);
 }
 
-void Renderer:: Uniform4(unsigned int location, unsigned int num , float *variable) const
+void Renderer::Uniform4(unsigned int location, unsigned int num , float *variable) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniform4fv(location,  num, variable);
 }
 
-void Renderer:: UniformMatrix4(unsigned int location, unsigned int num , float *variable) const
+void Renderer::UniformMatrix4(unsigned int location, unsigned int num , float *variable) const
 {    
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniformMatrix4fv(location, num, GL_FALSE, variable);
 }
 
-void Renderer:: UniformMatrix3(unsigned int location, unsigned int num , float *variable) const
+void Renderer::UniformMatrix3(unsigned int location, unsigned int num , float *variable) const
 {    
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniformMatrix3fv(location, num, GL_FALSE, variable);
 }
 
-void Renderer:: Uniform1(unsigned int location, unsigned int num , float *variable) const
+void Renderer::Uniform1(unsigned int location, unsigned int num , float *variable) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniform1fv(location,  num, variable);
 }
 
-void Renderer:: Uniform1(unsigned int location, int value) const
+void Renderer::Uniform1(unsigned int location, int value) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniform1i(location, value);
 }
 
-void Renderer:: Uniform3(unsigned int location, unsigned int num , float *variable) const
+void Renderer::Uniform3(unsigned int location, unsigned int num , float *variable) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
         glUniform3fv(location,  num, variable);
 }
 
-bool Renderer:: SetVerticalSynchronization(bool bEnabled)
+void Renderer::EnableBlend(BLEND_TYPE type)
+{
+    if(type == BT_ADDITIVE)
+        glBlendFunc(GL_ONE, GL_ONE);
+    else
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glEnable(GL_BLEND);
+}
+
+void Renderer::DisableBlend()
+{
+    glDisable(GL_BLEND);
+}
+
+bool Renderer::SetVerticalSynchronization(bool bEnabled)
 {
 #ifdef MOBITECH_WIN32
     if(!wglSwapIntervalEXT)

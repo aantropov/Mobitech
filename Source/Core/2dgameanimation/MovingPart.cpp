@@ -50,7 +50,7 @@ MovingPart::~MovingPart() {
 		delete _bones[i];
 }
 
-MovingPart::MovingPart(Animation *animation, TiXmlElement *xe, float width, float height) : _visible(false)
+MovingPart::MovingPart(AnimationClip *animation, TiXmlElement *xe, float width, float height) : _visible(false)
 {
     animation->AddBone(this);
 
@@ -66,8 +66,11 @@ MovingPart::MovingPart(Animation *animation, TiXmlElement *xe, float width, floa
 	
     _order = atoi(xe->Attribute("order"));
     
-    _center.x = fatof(xe->Attribute("centerX"));
-	_center.y = fatof(xe->Attribute("centerY"));
+    const char* cX = xe->Attribute("centerX");
+    const char* cY = xe->Attribute("centerY");
+
+    _center.x = cX != NULL ? fatof(cX) : 0;
+	_center.y = cY != NULL ? fatof(cY) : 0;
 	std::string texture = xe->Attribute("texture"); 
 
 	CreateQuad(width, height, texture);
@@ -159,10 +162,13 @@ void MovingPart::Draw()
 	if (_visible) 
     {
         Renderer* render = Renderer::GetInstance();
-        ShaderProgram* shader = render->GetCurrentShaderProgram();        
+        ShaderProgram* shader = render->GetCurrentShaderProgram();
 
-        glBlendFunc(GL_ONE, GL_ONE);
-        glEnable(GL_BLEND);
+        render->EnableBlend(BT_ALPHA_BLEND);
+        // No culling of back faces
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+
         const int m = 4;
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_TRUE,  m * sizeof(GLfloat), _quad);
         glEnableVertexAttribArray(shader->attribute_locations.position);
@@ -170,8 +176,11 @@ void MovingPart::Draw()
         glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, m * sizeof(GLfloat), &(_quad[2]));
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        glDisable(GL_BLEND);
+        render->DrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        render->DisableBlend();
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+
     }
 }
 

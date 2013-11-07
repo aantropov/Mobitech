@@ -10,13 +10,13 @@
 
 using namespace std;
 
-class Animation;
+class AnimationClip;
 class MovingPart
 {
 public:
 
 	~MovingPart();
-	MovingPart(Animation *animation, TiXmlElement * xe, float width, float height);
+	MovingPart(AnimationClip *animation, TiXmlElement * xe, float width, float height);
 
 	void PreDraw(float p, std::vector<mat3>& stack);
 	void Draw();
@@ -42,7 +42,7 @@ private:
     GLfloat _quad[16];
 	vec2 _origin[4];
     friend bool CmpBoneOrder(MovingPart *one, MovingPart *two);
-    friend class Animation;
+    friend class AnimationClip;
 
 };
 
