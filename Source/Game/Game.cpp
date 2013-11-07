@@ -12,13 +12,14 @@ class GameScene : public Scene, IInputListener
     vec2 prev_mouse_pos;
     Camera camera;
     float angle;
+    Animation *test_animation;
 public:
     
     GameScene()
     {  
         angle = 0.0f;
         Renderer *render = Renderer::GetInstance();
-        camera.Create(-350.0f, -250.0f, 0.0f);
+        camera.Create(0.0f, 0.0f, 0.0f);
         camera.Ortho(0.0f, 800, 0.0f, 600, 0.0f, 1000.0f);
 
         touch_pressed = false;
@@ -26,6 +27,7 @@ public:
         test_texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\Noise.png", RT_TEXTURE));
         test_texture->name = "text";
 
+        test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -42,7 +44,10 @@ public:
 
     virtual void Update(float dt)
     {
-        angle += dt * 0.05f;
+        angle += dt * 0.0005f;
+
+        if(angle >= 1.0f)
+            angle = 0.0f;
     }
 
     virtual void DrawFrame()
@@ -50,13 +55,16 @@ public:
         Renderer *render = Renderer::GetInstance();
         
         render->BindShaderProgram(shader);
-        render->BindTexture(test_texture, 0);
+        //render->BindTexture(test_texture, 0);
         mat4 model = mat4_identity;
         //model = GLRotationZ(angle);
 
-        render->SetupCameraForShaderProgram(shader, model);
+        test_animation->SetModel(transpose(GLTranslation(-100.0f, 1.0f, 1.0f)), false);
+             
+        render->SetupCameraForShaderProgram(shader, mat4_identity);
+        test_animation->Draw(angle);
 
-        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        /*glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
         glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
@@ -65,7 +73,7 @@ public:
         glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
      
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);*/
     }
 
     virtual void OnTouchDown(int x, int y) { touch_pressed = true; prev_mouse_pos = vec2(x,y); }

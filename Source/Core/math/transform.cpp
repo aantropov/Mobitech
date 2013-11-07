@@ -22,7 +22,7 @@ const transform transform:: operator* (transform parent) const
 
 const vec3 transform:: operator*(const vec3& vertex_pos) const
 {
-    return GLScale(scale) * (rotate(rotation, vertex_pos) + position);
+    return GLScale(vec3(scale)) * (rotate(rotation, vertex_pos) + position);
 }
 
 const mat4 transform:: matrix() const
@@ -34,7 +34,7 @@ const mat4 transform:: matrix() const
     res.r2[3] = position.y;
     res.r3[3] = position.z;
         
-    res *= GLScale(scale);
+    res *= GLScale(vec3(scale));
     return res;
 }
     

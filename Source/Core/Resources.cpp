@@ -95,6 +95,8 @@ Resource* ResourceFactory:: Create(RESOURCE_TYPE type, string path)
         temp = new Texture();
     else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
+    else if(type == RT_ANIMATION)
+        temp = new Animation();
     else
         return NULL;
 
@@ -199,7 +201,7 @@ Resource* ResourceFactory:: Load(std::string path, RESOURCE_TYPE type)
                 if (Get(id) == NULL) 
                 {
                     Animation *animation_resource = dynamic_cast<Animation*>(Create(RT_ANIMATION, id));
-                    temp->resource_factory = this;
+                    animation_resource->resource_factory = this;
                     animation_resource->resource_id = id;
                     animation_resource->name = id;
                     animation_resource->Load(animation, texture);

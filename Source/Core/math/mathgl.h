@@ -184,4 +184,30 @@ inline const mat4 GLLookAt(const vec3 &position, const vec3 &center, const vec3 
                 0, 0, 0, 1);
 }
 
+// mat3
+inline const mat3 GLRotation(float angle) 
+{
+        angle *= math_radians;
+		return mat3(cos(angle), sin(angle), 0.f,
+                   -sin(angle), cos(angle), 0.f,
+		            0.f, 0.f, 1.f);
+}
+
+inline const mat3 GLScale(float scx, float scy) 
+{
+		return mat3(scx, 0.f, 0.f,
+		            0.f, scy, 0.f,
+		            0.f, 0.f, 1.f);
+}
+
+inline const mat3 GLTranslation(float x, float y) 
+{
+		return mat3(1.f, 0.f, 0.f,
+		            0.f, 1.f, 0.f,
+		            x, y, 1.f);
+}
+
+inline const mat3 GLTranslation(vec2 pos) { return GLTranslation(pos.x, pos.y); }
+inline const mat3 GLScale(vec2 scale) { return GLScale(scale.x, scale.y); }
+
 #endif 

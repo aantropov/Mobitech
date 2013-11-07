@@ -42,6 +42,7 @@ using namespace std;
 #include "math\mathgl.h"
 #include "resources.h"
 #include "renderer.h"
+#include "2dgameanimation\Animation.h"
 
 #ifdef MOBITECH_ANDROID
 #include <tr1/memory>

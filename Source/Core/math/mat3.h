@@ -133,6 +133,15 @@ struct mat3
             m[6] * M[2] + m[7] * M[5] + m[8] * M[8]);
         return *this;
     }
+
+    /*vec2 operator*(const vec2 v) const
+    {
+        vec2 res;
+		res.x = r1[0] * v.x + r2[0] * v.y + r3[0];
+		res.y = r1[1] * v.x + r2[1] * v.y + r3[1];
+        return res;
+	}*/
+
     mat3& operator*=(float f)
     {
         m[0] *= f; m[1] *= f; m[2] *= f;

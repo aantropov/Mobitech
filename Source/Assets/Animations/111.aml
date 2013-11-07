@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<root>
+    <Animation id="peasshooter" time="1.5" pivotX="0" pivotY="0" markForExport="1">
+        <movingPart name="left_leaf_b" moving_type="line" order="3" treeOrder="0" centerX="25" centerY="16" texture="80:55:27:18:0:0">
+            <pos x="2" y="-8" angle="-0.25242" alpha="1" />
+            <pos time="0.252632" x="2" y="-8" angle="-0.0179501" alpha="1" />
+            <pos time="0.491228" x="2" y="-8" angle="0.025555" alpha="1" />
+            <pos time="0.747368" x="2" y="-8" angle="-0.0179501" alpha="1" />
+            <pos time="1" x="2" y="-8" angle="-0.25242" alpha="1" />
+        </movingPart>
+        <movingPart name="right_leaf" moving_type="line" order="2" treeOrder="0" centerX="1" centerY="16" texture="1:82:30:18:0:0">
+            <pos x="3.5" y="-8.5" alpha="1" />
+            <pos time="0.252632" x="3.5" y="-8.5" angle="-0.219612" alpha="1" />
+            <pos time="0.505263" x="3.5" y="-8.5" alpha="1" />
+            <pos time="0.740351" x="3.5" y="-8.5" angle="-0.219612" alpha="1" />
+            <pos time="1" x="3.5" y="-8.5" alpha="1" />
+        </movingPart>
+        <movingPart name="stebel" moving_type="line" order="4" treeOrder="0" centerX="15" centerY="47" texture="80:1:20:49:0:0">
+            <pos x="5.5" y="-7.5" scaleY="0.85" angle="-0.124891" alpha="1" />
+            <pos time="0.259649" x="5.5" y="-7.5" alpha="1" />
+            <pos time="0.5" x="5.5" y="-7.5" scaleY="0.85" angle="0.211875" alpha="1" />
+            <pos time="0.745614" x="5.5" y="-7.5" alpha="1" />
+            <pos time="1" x="5.5" y="-7.5" scaleY="0.85" angle="-0.124891" alpha="1" />
+        </movingPart>
+        <movingPart name="head" order="6" treeOrder="0" centerX="29" centerY="49" texture="1:1:78:53:0:0">
+            <pos x="-4.38889" y="-46.1667" scaleY="0.85" alpha="1" />
+            <pos time="0.25614" x="0.11111" y="-52.6667" alpha="1" />
+            <pos time="0.501754" x="9.44444" y="-45.9444" scaleY="0.85" alpha="1" />
+            <pos time="0.750877" x="-0.0555601" y="-52.4444" alpha="1" />
+            <pos time="1" x="-4.38889" y="-46.1667" scaleY="0.85" alpha="1" />
+            <movingPart name="tail" moving_type="line" order="5" treeOrder="0" centerX="14" centerY="5" texture="108:55:16:18:0:0">
+                <pos x="1" y="27" alpha="1" />
+                <pos time="0.487719" x="1" y="27" angle="0.612804" alpha="1" />
+                <pos time="1" x="1" y="27" alpha="1" />
+            </movingPart>
+        </movingPart>
+        <movingPart name="right_leaf" moving_type="line" order="8" treeOrder="0" centerX="2" centerY="20" texture="1:55:36:26:0:0">
+            <pos x="7.5" y="-2" alpha="1" />
+            <pos time="0.245614" x="7.5" y="-2" angle="0.0808983" alpha="1" />
+            <pos time="0.480702" x="7.5" y="-2" alpha="1" />
+            <pos time="0.736842" x="7.5" y="-2" scaleX="0.9" angle="0.145117" alpha="1" />
+            <pos time="1" x="7.5" y="-2" alpha="1" />
+        </movingPart>
+        <movingPart name="left_leaf" moving_type="line" order="7" treeOrder="0" centerX="40" centerY="9" texture="38:55:41:23:0:0">
+            <pos x="8.5" y="-8.5" alpha="1" />
+            <pos time="0.242105" x="8.5" y="-8.5" scaleX="0.9" angle="-0.142096" alpha="1" />
+            <pos time="0.501754" x="8.5" y="-8.5" alpha="1" />
+            <pos time="0.757895" x="8.5" y="-8.5" scaleY="1.1" angle="-0.039725" alpha="1" />
+            <pos time="1" x="8.5" y="-8.5" alpha="1" />
+        </movingPart>
+    </Animation>
+</root>

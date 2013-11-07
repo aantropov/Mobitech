@@ -11,6 +11,7 @@ using namespace std;
 
 void Animation:: Load(TiXmlElement *xe, Texture *tex)
 {
+    texture = tex;
     _time = fatof(xe->Attribute("time"));
     _pivotPos.x = fatof(xe->Attribute("pivotX"));
     _pivotPos.y = fatof(xe->Attribute("pivotY"));
@@ -23,8 +24,6 @@ void Animation:: Load(TiXmlElement *xe, Texture *tex)
     }
     _subPosition = mat4_identity;
     _subPosition *= GLTranslation(-_pivotPos.x, -_pivotPos.y, 0.0f);
-
-    texture = tex;
 
     std::sort(_renderList.begin(), _renderList.end(), CmpBoneOrder);
 }
@@ -55,7 +54,7 @@ void Animation::Draw(float position)
     for(unsigned int i = 0; i < _renderList.size();i++)
         _renderList[i]->Draw();
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    //glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 float Animation::Time() const 

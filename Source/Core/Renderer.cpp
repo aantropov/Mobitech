@@ -476,7 +476,7 @@ Renderer* Renderer::GetInstance()
     return instance;
 }
 
-void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, mat4 &model)
+void Renderer:: SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model)
 {
     mat4 view           = current_camera->GetView();
     mat4 viewProjection = current_camera->GetProjection() * view;

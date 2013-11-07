@@ -18,7 +18,7 @@ public:
 	~MovingPart();
 	MovingPart(Animation *animation, TiXmlElement * xe, float width, float height);
 
-	void PreDraw(float p, std::vector<mat4>& stack);
+	void PreDraw(float p, std::vector<mat3>& stack);
 	void Draw();
 
 private:

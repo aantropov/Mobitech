@@ -65,7 +65,8 @@ MovingPart::MovingPart(Animation *animation, TiXmlElement *xe, float width, floa
 		_movingType = MotionValues::M_DISCONTINUOUS;
 	
     _order = atoi(xe->Attribute("order"));
-	_center.x = fatof(xe->Attribute("centerX"));
+    
+    _center.x = fatof(xe->Attribute("centerX"));
 	_center.y = fatof(xe->Attribute("centerY"));
 	std::string texture = xe->Attribute("texture"); 
 
@@ -112,33 +113,37 @@ MovingPart::MovingPart(Animation *animation, TiXmlElement *xe, float width, floa
 	}
 }
 
-void MovingPart::PreDraw(float p, std::vector<mat4> &stack) {
+void MovingPart::PreDraw(float p, std::vector<mat3> &stack) {
 	
 	float localT;
 	int index = _x.Value(p, localT);
     const int m = 4;
 	if (_visible = (index >= 0)) 
     {
-		stack.push_back(stack.back());
-        stack.back() *= GLTranslation(_x.GetFrame(index, localT), _y.GetFrame(index, localT), 0.0f);
-        stack.back() *= GLRotationZ(math_degrees * _angle.GetFrame(index, localT));
-		stack.back() *= GLScale(_scaleX.GetFrame(index, localT), _scaleY.GetFrame(index, localT), 1.0f);
+        mat3 transform = stack.back();
 
-		stack.back() *= GLTranslation(-_center.x, -_center.y, 1.0f);
+        transform = GLTranslation(_x.GetFrame(index, localT), _y.GetFrame(index, localT)) * transform;
+        transform = GLRotation(math_degrees * _angle.GetFrame(index, localT)) * transform;
+		transform = GLScale(_scaleX.GetFrame(index, localT), _scaleY.GetFrame(index, localT)) * transform;
 
-		vec4 quad_temp = stack.back() * vec4(_origin[0].x, _origin[0].y, 0.0f, 0.0f); 
+		transform = GLTranslation(-_center.x, -_center.y) * transform;
+        stack.push_back(transform);
+
+        transform = transpose(transform);
+
+		vec2 quad_temp = transform * _origin[0]; 
         _quad[m * 0] = quad_temp.x;
         _quad[m * 0 + 1] = quad_temp.y;
 		
-        quad_temp = stack.back() * vec4(_origin[1].x, _origin[1].y, 0.0f, 0.0f); 
+        quad_temp = transform * _origin[1];
         _quad[m * 1] = quad_temp.x;
         _quad[m * 1 + 1] = quad_temp.y;
 
-        quad_temp = stack.back() * vec4(_origin[2].x, _origin[2].y, 0.0f, 0.0f); 
+        quad_temp = transform * _origin[2];
         _quad[m * 2] = quad_temp.x;
         _quad[m * 2 + 1] = quad_temp.y;
 
-        quad_temp = stack.back() * vec4(_origin[3].x, _origin[3].y, 0.0f, 0.0f); 
+        quad_temp = transform * _origin[3];
         _quad[m * 3] = quad_temp.x;
         _quad[m * 3 + 1] = quad_temp.y;
 
@@ -154,16 +159,19 @@ void MovingPart::Draw()
 	if (_visible) 
     {
         Renderer* render = Renderer::GetInstance();
-        ShaderProgram* shader = render->GetCurrentShaderProgram();
+        ShaderProgram* shader = render->GetCurrentShaderProgram();        
 
+        glBlendFunc(GL_ONE, GL_ONE);
+        glEnable(GL_BLEND);
         const int m = 4;
-        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE,  m * sizeof(GLfloat), _quad);
+        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_TRUE,  m * sizeof(GLfloat), _quad);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
         glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, m * sizeof(GLfloat), &(_quad[2]));
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        glDisable(GL_BLEND);
     }
 }
 

@@ -9,12 +9,13 @@
 
 using namespace std;
 
+class MovingPart;
 class Animation : public Resource
 {
 public:
     string name;
 
-    Animation();
+    Animation() {}
     virtual ~Animation() { for(unsigned int i = 0; i < _bones.size(); ++i) delete _bones[i]; }
 
     Texture* texture;
@@ -29,6 +30,7 @@ public:
     void Load(TiXmlElement *xe, Texture *tex);
 
 private:
+
     void AddBone(MovingPart *bone);
 	float _time;
 	vec2 _pivotPos;
@@ -36,7 +38,7 @@ private:
 	std::vector<MovingPart *> _renderList;
 	mat4 _subPosition;
     
-	vector<mat4> _matrixsStack;
+	vector<mat3> _matrixsStack;
     friend class MovingPart;
 };
 

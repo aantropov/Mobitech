@@ -79,6 +79,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp" />
+    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp" />
     <ClCompile Include="..\..\Core\lodepng\lodepng.cpp" />
     <ClCompile Include="..\..\Core\math\bounds.cpp" />
     <ClCompile Include="..\..\Core\math\frustum.cpp" />
@@ -95,6 +97,9 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h" />
+    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h" />
+    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h" />
     <ClInclude Include="..\..\Core\libzip\config.h" />
     <ClInclude Include="..\..\Core\lodepng\lodepng.h" />
     <ClInclude Include="..\..\Core\math\bounds.h" />
