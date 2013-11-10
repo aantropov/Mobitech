@@ -68,7 +68,7 @@ void AnimationClip::AddBone(MovingPart *bone)
 }
 
 
-bool Animation::Load(string path)
+bool Animation::Load(const string path)
 {
     Texture *texture = dynamic_cast<Texture*>(resource_factory->Load((path.substr(0, path.length() - 3) + "png").c_str(), RT_TEXTURE));
     
@@ -78,9 +78,20 @@ bool Animation::Load(string path)
         return false;
     }
     texture->name = "texture";
+    
+    AssetFile file(resource_factory, path.c_str());
 
-    TiXmlDocument doc(path.c_str());
-    if (doc.LoadFile(TIXML_ENCODING_UTF8)) 
+    unsigned int file_size = file.GetFileSize();
+    char* buffer = new char[file_size];
+    file.Read(buffer, sizeof(char), file_size);
+    file.Close();
+    
+    TiXmlDocument doc;
+    doc.Parse(buffer, 0, TIXML_ENCODING_UTF8);
+
+    delete[] buffer;
+
+    if (file_size > 0) 
     {
         TiXmlElement *root = doc.RootElement();
         TiXmlElement *animation = root->FirstChildElement("Animation");
@@ -95,7 +106,7 @@ bool Animation::Load(string path)
                 animation_clips[id] = animation_clip;
             }
             animation = animation->NextSiblingElement("Animation");
-        }
+        }        
         return true;
      }
     return false;

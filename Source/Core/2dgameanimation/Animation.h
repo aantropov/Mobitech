@@ -22,7 +22,7 @@ public:
 
 	void SetModel(mat4 model, bool mirror);
 	void Draw(float position);
-	float Time()const;
+	float Time() const;
     void Load(TiXmlElement *xe, Texture *tex);
 
 private:
@@ -57,7 +57,7 @@ public:
         animation_clips.clear();
     }
 
-    virtual bool Load(string path);
+    virtual bool Load(const string path);
 };
 
 

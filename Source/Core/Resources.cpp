@@ -74,7 +74,7 @@ void* AssetFile::GetFile() const
 	return (void*)(file);
 }
 
-Resource* ResourceFactory::Create(RESOURCE_TYPE type)
+Resource* ResourceFactory::Create(const RESOURCE_TYPE type)
 {
     char buffer[BUFFER_LENGTH];
     memset(buffer, '\0', BUFFER_LENGTH);
@@ -84,7 +84,7 @@ Resource* ResourceFactory::Create(RESOURCE_TYPE type)
 }
 
 
-Resource* ResourceFactory::Create(RESOURCE_TYPE type, string path)
+Resource* ResourceFactory::Create(const RESOURCE_TYPE type, const string path)
 {
     Logger::Message("Creating resource: \"" + path + "\"");
 
@@ -132,14 +132,14 @@ void ResourceFactory::ReleaseFileData(const FileData* file_data) const
     AAsset_close((AAsset*)file_data->file_handle);
 }
 */
-Resource* ResourceFactory::Get(std::string path) const
+Resource* ResourceFactory::Get(const std::string path) const
 {
     if(resources.find(path) == resources.end())
         return NULL;
     return resources.at(path);
 }
 
-bool ResourceFactory::Add(std::string path, Resource* resource)
+bool ResourceFactory::Add(const std::string path, const Resource* resource)
 {
     Resource* res = Get(path);
     if(res != NULL)
@@ -149,7 +149,7 @@ bool ResourceFactory::Add(std::string path, Resource* resource)
     return true;
 }
 
-ShaderProgram* ResourceFactory::Load(std::string vp, std::string pp)
+ShaderProgram* ResourceFactory::Load(const std::string vp, const std::string pp)
 {
     string path = "\\shader_program\\" + vp + "\\" + pp;
 
@@ -168,7 +168,7 @@ ShaderProgram* ResourceFactory::Load(std::string vp, std::string pp)
     return temp;
 }
 
-Resource* ResourceFactory::Load(std::string path, RESOURCE_TYPE type)
+Resource* ResourceFactory::Load(const std::string path, const RESOURCE_TYPE type)
 {
     Resource* res = Get(path);
     if(res != NULL)
@@ -188,13 +188,13 @@ Resource* ResourceFactory::Load(std::string path, RESOURCE_TYPE type)
         return NULL;
     
     temp->resource_factory = this;
-    temp->Load(path);    
+    temp->Load(path);
     temp->resource_id = path;
     resources[path] = temp;
     return temp;  
 }
 
-void ResourceFactory::Release(std::string path)
+void ResourceFactory::Release(const std::string path)
 {
     delete resources[path];
     resources.erase(path);
@@ -302,7 +302,7 @@ bool Shader::Instantiate()
     return _id > -1;
 }
 
-bool Shader::Load(std::string path) 
+bool Shader::Load(const std::string path) 
 {
     AssetFile file(resource_factory, path.c_str());
     char temp = '\0';
@@ -339,7 +339,7 @@ void ShaderProgram::InitLocations()
     attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");
 }
 
-bool ShaderProgram::Load(string path)
+bool ShaderProgram::Load(const string path)
 {
     //not implemented yet
     return false;
@@ -352,7 +352,7 @@ bool ShaderProgram::Instantiate()
     return _id > -1;
 }
 
-bool ShaderProgram::Load(std::string vertexshd_path, std::string pixelshd_path)
+bool ShaderProgram::Load(const std::string vertexshd_path, const std::string pixelshd_path)
 {
     Shader *vs = dynamic_cast<Shader*>(resource_factory->Get(vertexshd_path));
     Shader *ps = dynamic_cast<Shader*>(resource_factory->Get(pixelshd_path));
@@ -399,7 +399,7 @@ bool Texture::Instantiate()
     return Renderer::GetInstance()->CreateTexture(this);
 }
 
-bool Texture::Load(std::string path)
+bool Texture::Load(const std::string path)
 {   
     AssetFile png_file(resource_factory, path.c_str());
     

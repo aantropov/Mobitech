@@ -76,7 +76,7 @@ public:
     string resource_id;
     ResourceFactory* resource_factory;
 
-    virtual bool Load(string path) { return true; }
+    virtual bool Load(const string path) { return true; }
     virtual void Free() {}
 
     Resource() : resource_id("") {}
@@ -99,7 +99,7 @@ public:
     
     virtual bool Instantiate();
     virtual void Free();
-    virtual bool Load(string path);
+    virtual bool Load(const string path);
 
     Texture(void);
     virtual ~Texture(void);
@@ -114,7 +114,7 @@ public:
 
     string GetSource() const { return source; }
     virtual bool Instantiate();
-    virtual bool Load(string path);
+    virtual bool Load(const string path);
     void Free();
     Shader(void){}
     virtual ~Shader(void) { Free(); }
@@ -149,8 +149,8 @@ public:
     void InitLocations();
 
     virtual bool Instantiate();
-    virtual bool Load(string path);
-    bool Load(std::string vertexshd_path, std::string pixelshd_path);
+    virtual bool Load(const  string path);
+    bool Load(const std::string vertexshd_path, const std::string pixelshd_path);
 
     virtual void Free();
 
@@ -185,14 +185,14 @@ public:
 
     ~ResourceFactory() { ReleaseAll(); }
 
-    Resource* Get (string path) const;
-    bool Add(string path, Resource* res);
-    Resource* Load(string path, RESOURCE_TYPE type);
-    ShaderProgram* Load(string vp, string pp);
-    Resource* Create(RESOURCE_TYPE type);
-    Resource* Create(RESOURCE_TYPE type, string path);
+    Resource* Get (const string path) const;
+    bool Add(const string path, const Resource* res);
+    Resource* Load(const string path, const RESOURCE_TYPE type);
+    ShaderProgram* Load(const string vp, const string pp);
+    Resource* Create(const RESOURCE_TYPE type);
+    Resource* Create(const RESOURCE_TYPE type, const string path);
 
-    void Release(string path);
+    void Release(const string path);
     void Release(Resource *resource);
     void ReleaseAll();
 };

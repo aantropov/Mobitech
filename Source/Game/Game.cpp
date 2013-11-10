@@ -19,7 +19,7 @@ public:
     {  
         angle = 0.0f;
         Renderer *render = Renderer::GetInstance();
-        camera.Create(0.0f, 0.0f, 0.0f);
+        camera.Create(-400.0f, -200.0f, 0.0f);
         camera.Ortho(0.0f, 800, 0.0f, 600, 0.0f, 1000.0f);
 
         touch_pressed = false;
@@ -28,6 +28,8 @@ public:
         test_texture->name = "text";
 
         test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
+        
+        Logger::Message("Animation loaded");
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -52,6 +54,7 @@ public:
 
     virtual void DrawFrame()
     {
+        return;
         Renderer *render = Renderer::GetInstance();
         
         render->BindShaderProgram(shader);
@@ -64,10 +67,10 @@ public:
         test_animation->GetAnimationClip("banana_level4")->SetModel(GLScale(1.0f, -1.0f, 1.0f), false);
         test_animation->GetAnimationClip("banana_level4")->Draw(angle);
             
-        test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-100, 20)), false);
+        test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-100, 120)), false);
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
 
-        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 50)), false);
+        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);
 
         

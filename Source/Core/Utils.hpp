@@ -163,8 +163,9 @@ protected:
         #endif //MOBITECH_WIN32
     }
 
-    void LOG(string text, LOG_TYPE msg_type = LT_INFO)
-    {        
+    void LOG(const string msg, LOG_TYPE msg_type = LT_INFO)
+    {   
+        string text = msg;
         #ifdef MOBITECH_WIN32
         if(msg_type == LT_WARNING)
             text = "<font color=\"orange\">" + text + "</font>"+ "<br>";
@@ -195,7 +196,7 @@ public:
         return instance;
     }
     
-    static void Message(string text, LOG_TYPE msg_type = LT_INFO)
+    static void Message(const string text, LOG_TYPE msg_type = LT_INFO)
     {
         GetInstance()->LOG(text, msg_type);
     }

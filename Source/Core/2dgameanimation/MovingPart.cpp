@@ -3,7 +3,8 @@
 #include "../Utils.hpp"
 #include "../Renderer.h"
 
-float Read(TiXmlElement *xe, const char *name, const float defaultValue) {
+float Read(TiXmlElement *xe, const char *name, const float defaultValue) 
+{
 	const char *tmp = xe->Attribute(name);
 	return (tmp ? fatof(tmp) : defaultValue);
 }

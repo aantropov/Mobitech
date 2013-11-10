@@ -43,7 +43,6 @@ private:
 	vec2 _origin[4];
     friend bool CmpBoneOrder(MovingPart *one, MovingPart *two);
     friend class AnimationClip;
-
 };
 
 bool CmpBoneOrder(MovingPart *one, MovingPart *two);
