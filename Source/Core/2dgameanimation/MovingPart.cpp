@@ -174,6 +174,10 @@ void MovingPart::Draw()
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_TRUE,  m * sizeof(GLfloat), _quad);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
+        const float colors[] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+        glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_TRUE,  0, colors);
+        glEnableVertexAttribArray(shader->attribute_locations.color);
+
         glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, m * sizeof(GLfloat), &(_quad[2]));
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
 
@@ -181,7 +185,6 @@ void MovingPart::Draw()
         render->DisableBlend();
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
-
     }
 }
 

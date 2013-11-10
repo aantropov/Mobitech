@@ -49,13 +49,16 @@ unsigned int AssetFile::Read(void* buf, int size, int count) const
 #endif // MOBITECH_ANDROID
 }
 
-void AssetFile::Close() const
+void AssetFile::Close()
 {
 #ifdef MOBITECH_ANDROID
-	AAsset_close(file);
+    if(file != NULL)
+	    AAsset_close(file);
 #else
-    fclose(file);
+    if(file != NULL)
+        fclose(file);
 #endif // MOBITECH_ANDROID
+    file = NULL;
 }
 
 unsigned int AssetFile::GetFileSize() const
@@ -139,7 +142,7 @@ Resource* ResourceFactory::Get(const std::string path) const
     return resources.at(path);
 }
 
-bool ResourceFactory::Add(const std::string path, const Resource* resource)
+bool ResourceFactory::Add(const std::string path, Resource* resource)
 {
     Resource* res = Get(path);
     if(res != NULL)
@@ -396,6 +399,9 @@ Texture::~Texture(void)
 
 bool Texture::Instantiate()
 {
+    if(_id != -1)
+        Renderer::GetInstance()->DeleteTexture(this);
+    glGenTextures(1, (GLuint*)&_id);
     return Renderer::GetInstance()->CreateTexture(this);
 }
 

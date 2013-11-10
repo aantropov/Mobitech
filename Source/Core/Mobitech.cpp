@@ -43,10 +43,10 @@ void Engine::OneFrame()
 #else if MOBITECH_ANDROID
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC,&ts);
-    currentTick = ts.tv_nsec;
+    currentTick = ts.tv_nsec * NANOSEC_TO_MILLISEC;
 #endif //MOBITECH_WIN32    
     
-    delta_time +=  currentTick - begin_frame_time;
+    delta_time += currentTick - begin_frame_time;
 
     if(current_scene.get() != NULL)
         current_scene->Update(currentTick - begin_frame_time);
@@ -102,6 +102,12 @@ void Engine::Run()
     Window::SetActive(false);
     Window::SetRunning(false);
     #endif //MOBITECH_WIN32
+
+#ifdef MOBITECH_ANDROID
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC,&ts);
+    begin_frame_time = ts.tv_nsec * NANOSEC_TO_MILLISEC;
+#endif // MOBITECH_ANDROID
 }
 
 void Engine::Release()

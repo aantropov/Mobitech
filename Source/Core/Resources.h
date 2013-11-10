@@ -32,7 +32,7 @@ public:
     ~AssetFile() { Close(); }
     
     unsigned int Read(void* buf, int size, int count) const;
-    void Close() const;
+    void Close();
     unsigned int GetFileSize() const;
     void* GetFile() const;
 };
@@ -92,7 +92,7 @@ protected:
 public:
 
     string name;
-
+        
     unsigned int GetWidth() const { return width; }
     unsigned int GetHeight() const { return height; }
     const unsigned char* GetData() const { return data; }
@@ -186,7 +186,7 @@ public:
     ~ResourceFactory() { ReleaseAll(); }
 
     Resource* Get (const string path) const;
-    bool Add(const string path, const Resource* res);
+    bool Add(const string path, Resource* res);
     Resource* Load(const string path, const RESOURCE_TYPE type);
     ShaderProgram* Load(const string vp, const string pp);
     Resource* Create(const RESOURCE_TYPE type);

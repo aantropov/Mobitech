@@ -35,6 +35,7 @@ using namespace std;
 
 #define MAX_UNIFORM_LOCATIONS 1000
 #define BUFFER_LENGTH 1000
+#define NANOSEC_TO_MILLISEC 0.0001f
 
 #ifdef MOBITECH_ANDROID
 const string MOBITECH_PLATFORM = "android";

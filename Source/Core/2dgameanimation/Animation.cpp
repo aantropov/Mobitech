@@ -88,7 +88,7 @@ bool Animation::Load(const string path)
     
     TiXmlDocument doc;
     doc.Parse(buffer, 0, TIXML_ENCODING_UTF8);
-
+    
     delete[] buffer;
 
     if (file_size > 0) 
@@ -106,8 +106,8 @@ bool Animation::Load(const string path)
                 animation_clips[id] = animation_clip;
             }
             animation = animation->NextSiblingElement("Animation");
-        }        
+        }
         return true;
-     }
+    }
     return false;
 }

@@ -281,7 +281,7 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
     GetClientRect(hwnd, &rect);
     width  = rect.right - rect.left;
     height = rect.bottom - rect.top;
-        
+
     // Centralize cursor in the center of the screen
     SetCursorPos(x + width / 2, y + height / 2);
 
@@ -293,8 +293,8 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
 
 void Window::Destroy()
 {
- #ifdef MOBITECH_WIN32   
-    
+#ifdef MOBITECH_WIN32   
+
     // Restore window size
     if (fullscreen)
     {
@@ -359,7 +359,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYDOWN:
         {
             //if (wParam < 256 && (lParam & 0x40000000) == 0)
-                //g_input.keyState[wParam] = UINPUT_PRESSED;
+            //g_input.keyState[wParam] = UINPUT_PRESSED;
 
             return FALSE;
         }
@@ -367,7 +367,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYUP:
         {
             //if (wParam < 256)
-                //g_input.keyState[wParam] = UINPUT_UP;
+            //g_input.keyState[wParam] = UINPUT_UP;
 
             return FALSE;
         }
@@ -481,12 +481,12 @@ void Renderer::SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model)
     mat4 view           = current_camera->GetView();
     mat4 viewProjection = current_camera->GetProjection() * view;
     mat4 modelViewProjection = transpose(model * viewProjection);
-    
+
     mat4 modelTr = transpose(model);
     view = transpose(view);
     viewProjection = transpose(viewProjection);
     //mat3 normal         = transpose(mat3(inverse(model)));
-    
+
     UniformMatrix4(shd->uniform_locations.transform_model,  1, modelTr.m);
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
@@ -523,9 +523,9 @@ void Renderer::BindTexture(Texture *tex, unsigned int channel)
 }
 
 int Renderer::CreateTexture(Texture *tex) const
-{
+{    
     GLuint texture = tex->GetId();
-
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -541,6 +541,8 @@ int Renderer::CreateTexture(Texture *tex) const
     OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
 #endif //MOBITECH_WIN32
     OPENGL_CHECK_FOR_ERRORS();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
     return texture;
 }
 
@@ -582,14 +584,14 @@ void Renderer::DeleteVBO(Buffer *vb) const
 
 void Renderer::DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const
 {    /*
-    glColor4f(color.x, color.y, color.z, 1);    
-    GLfloat glVertices[] = 
-    {
-        p1.x, p1.y, p1.z, p2.x, p2.y, p2.z
-    };
+     glColor4f(color.x, color.y, color.z, 1);    
+     GLfloat glVertices[] = 
+     {
+     p1.x, p1.y, p1.z, p2.x, p2.y, p2.z
+     };
 
-    glVertexPointer(3, GL_FLOAT, 0, glVertices);
-    glDrawArrays(GL_LINES, 0, 2);*/
+     glVertexPointer(3, GL_FLOAT, 0, glVertices);
+     glDrawArrays(GL_LINES, 0, 2);*/
 }
 
 void Renderer::DrawTransform(::transform xf) const
@@ -619,14 +621,14 @@ void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const 
 
     for (int i = 0; i < vertex_count; i++) 
     {
-        glverts[i*3]   = vertices[i].pos.x;
-        glverts[i*3+1] = vertices[i].pos.y;
-        glverts[i*3+2] = vertices[i].pos.z;
+    glverts[i*3]   = vertices[i].pos.x;
+    glverts[i*3+1] = vertices[i].pos.y;
+    glverts[i*3+2] = vertices[i].pos.z;
     }
 
     glColor4f(color.x, color.y, color.z, 1);
     glDrawArrays(GL_TRIANGLE_FAN, 0, vertex_count);
-    
+
     glLineWidth(3);
     glColor4f(1, 0, 1, 1 );
     glDrawArrays(GL_LINE_LOOP, 0, vertex_count);*/
@@ -635,13 +637,13 @@ void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const 
 void Renderer::DrawArrays(int type, int a, int b)
 {
     draw_calls++;    
-    OPENGL_CALL(glDrawArrays(type, a, b));
+    glDrawArrays(type, a, b);
 }
 
 void Renderer::DrawBuffer(VertexBuffer* vb)
 {    
     draw_calls++;
-    OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, vb->GetNum()));    
+    glDrawArrays(GL_TRIANGLES, 0, vb->GetNum());
 }
 
 void Renderer::DrawBuffer(IndexBuffer* ib)
@@ -690,8 +692,8 @@ void Renderer::BindVAO(VertexBuffer *vb)
 {
     /*if(previous_vao != vb->GetVAO()->GetId())
     {
-        previous_vao = vb->GetVAO()->GetId();
-        glBindVertexArray(vb->GetVAO()->GetId());
+    previous_vao = vb->GetVAO()->GetId();
+    glBindVertexArray(vb->GetVAO()->GetId());
     }*/
 }
 
@@ -870,7 +872,7 @@ void Renderer::EnableBlend(BLEND_TYPE type)
         glBlendFunc(GL_ONE, GL_ONE);
     else
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     glEnable(GL_BLEND);
 }
 

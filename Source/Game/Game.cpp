@@ -23,13 +23,13 @@ public:
         camera.Ortho(0.0f, 800, 0.0f, 600, 0.0f, 1000.0f);
 
         touch_pressed = false;
+        
+        test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
+       
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         test_texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\Noise.png", RT_TEXTURE));
         test_texture->name = "text";
 
-        test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
-        
-        Logger::Message("Animation loaded");
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -46,6 +46,12 @@ public:
 
     virtual void Update(float dt)
     {
+        if(dt < 10.0f)
+            return;
+
+        char b[BUFFER_LENGTH];
+        sprintf(b, "%f", dt);
+
         angle += dt * 0.0005f;
 
         if(angle >= 1.0f)
@@ -54,27 +60,27 @@ public:
 
     virtual void DrawFrame()
     {
-        return;
         Renderer *render = Renderer::GetInstance();
         
         render->BindShaderProgram(shader);
         //
         mat4 model = mat4_identity;
         //model = GLRotationZ(angle);
+        angle = clamp(angle, 0.0f, 1.0f);
 
         render->SetupCameraForShaderProgram(shader, mat4_identity);
         
         test_animation->GetAnimationClip("banana_level4")->SetModel(GLScale(1.0f, -1.0f, 1.0f), false);
         test_animation->GetAnimationClip("banana_level4")->Draw(angle);
-            
+       
         test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-100, 120)), false);
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
-
+ 
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);
-
         
-        /*render->BindTexture(test_texture, 0);
+        /*
+        render->BindTexture(test_texture, 0);
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
@@ -85,7 +91,7 @@ public:
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
      
         
-        //render->DrawArrays(GL_TRIANGLES, 0, 3);*/
+        render->DrawArrays(GL_TRIANGLES, 0, 3);*/
     }
 
     virtual void OnTouchDown(int x, int y) { touch_pressed = true; prev_mouse_pos = vec2(x,y); }
