@@ -8,7 +8,6 @@
 #include "Utils.hpp"
 
 #ifdef MOBITECH_ANDROID
-#include "libzip\zip.h"
 #include <android/asset_manager_jni.h>
 #endif //MOBITECH_ANDROID
 
@@ -171,8 +170,8 @@ public:
 #ifdef MOBITECH_ANDROID
     AAssetManager* asset_manager;
     AAssetManager* GetAssetManagerArchive() const { return asset_manager; }
-    zip* apk_archive;
-    zip* GetApkArchive() const { return apk_archive; }
+    //zip* apk_archive;
+    //zip* GetApkArchive() const { return apk_archive; }
 #endif// MOBITECH_ANDROID      
 
     ResourceFactory() 

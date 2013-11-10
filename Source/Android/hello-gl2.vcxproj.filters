@@ -19,9 +19,6 @@
     <Filter Include="CppSource\Core\lodepng">
       <UniqueIdentifier>{b8eef51f-22d1-4af1-a3fd-7f9524630e53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CppSource\Core\libzip">
-      <UniqueIdentifier>{f0b2019f-907b-483e-bbce-a840184e0bd7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CppSource\Core\tinyxml">
       <UniqueIdentifier>{38b9cf1b-2b33-4cc8-9d33-726c3165a8d4}</UniqueIdentifier>
     </Filter>
@@ -58,168 +55,6 @@
   <ItemGroup>
     <ClCompile Include="CppSource\android_main.cpp">
       <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\mkstemp.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_add.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_add_dir.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_close.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_delete.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_dirent.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_entry_free.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_entry_new.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_err_str.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error_clear.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error_get.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error_get_sys_type.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error_strerror.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_error_to_str.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_fclose.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_file_error_clear.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_file_error_get.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_file_get_offset.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_file_strerror.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_filerange_crc.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_fopen.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_fopen_index.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_fread.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_free.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_get_archive_comment.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_get_archive_flag.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_get_file_comment.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_get_name.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_get_num_files.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_memdup.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_name_locate.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_new.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_open.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_rename.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_replace.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_set_archive_comment.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_set_archive_flag.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_set_file_comment.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_set_name.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_buffer.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_file.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_filep.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_free.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_function.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_source_zip.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_stat.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_stat_index.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_stat_init.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_strerror.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_unchange.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_unchange_all.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_unchange_archive.c">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\libzip\zip_unchange_data.c">
-      <Filter>CppSource\Core\libzip</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\lodepng\lodepng.cpp">
       <Filter>CppSource\Core\lodepng</Filter>
@@ -265,15 +100,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Core\libzip\config.h">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\libzip\zip.h">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\libzip\zipint.h">
-      <Filter>CppSource\Core\libzip</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\lodepng\lodepng.h">
       <Filter>CppSource\Core\lodepng</Filter>
     </ClInclude>

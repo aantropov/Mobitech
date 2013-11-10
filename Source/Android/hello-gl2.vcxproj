@@ -16,6 +16,9 @@
     <ProjectName>Mobitech-Android</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Android'">
+    <AndroidAPILevel>android-9</AndroidAPILevel>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -43,6 +46,10 @@
     <Link>
       <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>MOBITECH_RELEASE; MOBITECH_ANDROID;</PreprocessorDefinitions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml" />
@@ -56,60 +63,6 @@
   <ItemGroup>
     <ClCompile Include="..\Core\2dgameanimation\Animation.cpp" />
     <ClCompile Include="..\Core\2dgameanimation\MovingPart.cpp" />
-    <ClCompile Include="..\Core\libzip\mkstemp.c" />
-    <ClCompile Include="..\Core\libzip\zip_add.c" />
-    <ClCompile Include="..\Core\libzip\zip_add_dir.c" />
-    <ClCompile Include="..\Core\libzip\zip_close.c" />
-    <ClCompile Include="..\Core\libzip\zip_delete.c" />
-    <ClCompile Include="..\Core\libzip\zip_dirent.c" />
-    <ClCompile Include="..\Core\libzip\zip_entry_free.c" />
-    <ClCompile Include="..\Core\libzip\zip_entry_new.c" />
-    <ClCompile Include="..\Core\libzip\zip_error.c" />
-    <ClCompile Include="..\Core\libzip\zip_error_clear.c" />
-    <ClCompile Include="..\Core\libzip\zip_error_get.c" />
-    <ClCompile Include="..\Core\libzip\zip_error_get_sys_type.c" />
-    <ClCompile Include="..\Core\libzip\zip_error_strerror.c" />
-    <ClCompile Include="..\Core\libzip\zip_error_to_str.c" />
-    <ClCompile Include="..\Core\libzip\zip_err_str.c" />
-    <ClCompile Include="..\Core\libzip\zip_fclose.c" />
-    <ClCompile Include="..\Core\libzip\zip_filerange_crc.c" />
-    <ClCompile Include="..\Core\libzip\zip_file_error_clear.c" />
-    <ClCompile Include="..\Core\libzip\zip_file_error_get.c" />
-    <ClCompile Include="..\Core\libzip\zip_file_get_offset.c" />
-    <ClCompile Include="..\Core\libzip\zip_file_strerror.c" />
-    <ClCompile Include="..\Core\libzip\zip_fopen.c" />
-    <ClCompile Include="..\Core\libzip\zip_fopen_index.c" />
-    <ClCompile Include="..\Core\libzip\zip_fread.c" />
-    <ClCompile Include="..\Core\libzip\zip_free.c" />
-    <ClCompile Include="..\Core\libzip\zip_get_archive_comment.c" />
-    <ClCompile Include="..\Core\libzip\zip_get_archive_flag.c" />
-    <ClCompile Include="..\Core\libzip\zip_get_file_comment.c" />
-    <ClCompile Include="..\Core\libzip\zip_get_name.c" />
-    <ClCompile Include="..\Core\libzip\zip_get_num_files.c" />
-    <ClCompile Include="..\Core\libzip\zip_memdup.c" />
-    <ClCompile Include="..\Core\libzip\zip_name_locate.c" />
-    <ClCompile Include="..\Core\libzip\zip_new.c" />
-    <ClCompile Include="..\Core\libzip\zip_open.c" />
-    <ClCompile Include="..\Core\libzip\zip_rename.c" />
-    <ClCompile Include="..\Core\libzip\zip_replace.c" />
-    <ClCompile Include="..\Core\libzip\zip_set_archive_comment.c" />
-    <ClCompile Include="..\Core\libzip\zip_set_archive_flag.c" />
-    <ClCompile Include="..\Core\libzip\zip_set_file_comment.c" />
-    <ClCompile Include="..\Core\libzip\zip_set_name.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_buffer.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_file.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_filep.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_free.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_function.c" />
-    <ClCompile Include="..\Core\libzip\zip_source_zip.c" />
-    <ClCompile Include="..\Core\libzip\zip_stat.c" />
-    <ClCompile Include="..\Core\libzip\zip_stat_index.c" />
-    <ClCompile Include="..\Core\libzip\zip_stat_init.c" />
-    <ClCompile Include="..\Core\libzip\zip_strerror.c" />
-    <ClCompile Include="..\Core\libzip\zip_unchange.c" />
-    <ClCompile Include="..\Core\libzip\zip_unchange_all.c" />
-    <ClCompile Include="..\Core\libzip\zip_unchange_archive.c" />
-    <ClCompile Include="..\Core\libzip\zip_unchange_data.c" />
     <ClCompile Include="..\Core\lodepng\lodepng.cpp" />
     <ClCompile Include="..\Core\math\bounds.cpp" />
     <ClCompile Include="..\Core\math\frustum.cpp" />
@@ -128,9 +81,6 @@
     <ClInclude Include="..\Core\2dgameanimation\Animation.h" />
     <ClInclude Include="..\Core\2dgameanimation\MotionValues.h" />
     <ClInclude Include="..\Core\2dgameanimation\MovingPart.h" />
-    <ClInclude Include="..\Core\libzip\config.h" />
-    <ClInclude Include="..\Core\libzip\zip.h" />
-    <ClInclude Include="..\Core\libzip\zipint.h" />
     <ClInclude Include="..\Core\lodepng\lodepng.h" />
     <ClInclude Include="..\Core\math\bounds.h" />
     <ClInclude Include="..\Core\math\frustum.h" />

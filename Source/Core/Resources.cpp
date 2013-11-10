@@ -5,7 +5,6 @@
 #include "2dgameanimation/Animation.h"
 
 #ifdef MOBITECH_ANDROID
-#include "libzip\zip.h"
 #include <android/asset_manager_jni.h>
 #else
 #include <sys/types.h>
@@ -407,14 +406,12 @@ bool Texture::Instantiate()
 
 bool Texture::Load(const std::string path)
 {   
+    Free();
     AssetFile png_file(resource_factory, path.c_str());
     
     unsigned int size = png_file.GetFileSize();
     unsigned char *png_buffer = new unsigned char[size];
     
-    if(data != NULL)
-        delete[] data;
-
     data = new unsigned char[size];
     png_file.Read(png_buffer, 1, size);
 
@@ -432,15 +429,20 @@ bool Texture::Load(const std::string path)
     bool res = Instantiate();
     
     if(data != NULL)
+    {        
         delete[] data;
-
+        data = NULL;
+    }
     return res;
 }
 
 void Texture::Free()
 {
     if(data != NULL)
+    {
         delete[] data;
+        data = NULL;
+    }
 
     if(_id != -1)
         Renderer::GetInstance()->DeleteTexture(this);

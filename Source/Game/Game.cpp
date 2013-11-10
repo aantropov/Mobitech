@@ -78,8 +78,7 @@ public:
  
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);
-        
-        /*
+        return;
         render->BindTexture(test_texture, 0);
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attribute_locations.position);
@@ -91,7 +90,7 @@ public:
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
      
         
-        render->DrawArrays(GL_TRIANGLES, 0, 3);*/
+        render->DrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     virtual void OnTouchDown(int x, int y) { touch_pressed = true; prev_mouse_pos = vec2(x,y); }
