@@ -27,9 +27,9 @@ public class GL2JNILib {
 		 System.loadLibrary("Mobitech-Android");
      }
 
-	 public static native void touchDown(int x, int y);
-	 public static native void touchUp(int x, int y);
-	 public static native void touchMove(int x, int y);
+	 public static native void touchDown(int x, int y, int touch_id);
+	 public static native void touchUp(int x, int y, int touch_id);
+	 public static native void touchMove(int x, int y, int touch_id);
      public static native void step();
 	 public static native void init(int width, int height);
 	 public static native void initResourceFactory(AssetManager asset_manager, String apk_path);

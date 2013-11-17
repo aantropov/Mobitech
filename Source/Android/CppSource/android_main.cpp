@@ -4,9 +4,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height);
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_initResourceFactory(JNIEnv * env, jclass jclazz, jobject java_asset_manager, jstring apk_path);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchDown(JNIEnv * env, jobject obj, jint x, jint y);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchUp(JNIEnv * env, jobject obj, jint x, jint y);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchMove(JNIEnv * env, jobject obj, jint x, jint y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchDown(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchUp(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchMove(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id);
 };
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_initResourceFactory(JNIEnv * env, jclass jclazz, jobject java_asset_manager, jstring apk_path)
@@ -30,19 +30,19 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobj
     Engine::GetInstance()->OneFrame();
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchDown(JNIEnv * env, jobject obj, jint x, jint y)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchDown(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id)
 {
-    Input::GetInstance()->OnTouchDown(x,y);
+    Input::GetInstance()->OnTouchDown(x, y, touch_id);
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchUp(JNIEnv * env, jobject obj, jint x, jint y)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchUp(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id)
 {
-    Input::GetInstance()->OnTouchUp(x,y);
+    Input::GetInstance()->OnTouchUp(x, y, touch_id);
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchMove(JNIEnv * env, jobject obj, jint x, jint y)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_touchMove(JNIEnv * env, jobject obj, jint x, jint y, jint touch_id)
 {    
-    Input::GetInstance()->OnTouchMove(x,y);
+    Input::GetInstance()->OnTouchMove(x, y, touch_id);
 }
 
 

@@ -379,28 +379,33 @@ class GL2JNIView extends GLSurfaceView {
         int eventAction = event.getAction();
 		boolean res = false;
 
-        int X = (int) event.getX();
-        int Y = (int) event.getY();
-
-        // If the user presses on the screen....
-        if (eventAction == MotionEvent.ACTION_DOWN)
-        {
-			GL2JNILib.touchDown(X, Y);
-			res = true;
-        }
+        //int pointerId = m.getPointerId(0);
+		int pointerCount = event.getPointerCount();
 		
-		if (eventAction == MotionEvent.ACTION_UP)
-        {
-			GL2JNILib.touchUp(X, Y);
-			res = true;
-        }
-		
-		if(eventAction == MotionEvent.ACTION_MOVE)
+		for(int i = 0; i < pointerCount; i++)
 		{
-			GL2JNILib.touchMove(X, Y);
-			res = true;
-		}		       
-
+			int X = (int) event.getX(i);
+			int Y = (int) event.getY(i);
+		
+			// If the user presses on the screen....
+			if (eventAction == MotionEvent.ACTION_DOWN)
+			{
+				GL2JNILib.touchDown(X, Y, i);
+				res = true;
+			}
+		
+			if (eventAction == MotionEvent.ACTION_UP)
+			{
+				GL2JNILib.touchUp(X, Y, i);
+				res = true;
+			}
+		
+			if(eventAction == MotionEvent.ACTION_MOVE)
+			{
+				GL2JNILib.touchMove(X, Y, i);
+				res = true;
+			}
+		}
         invalidate();
 
         return res || super.onTouchEvent(event);

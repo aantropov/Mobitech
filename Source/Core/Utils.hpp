@@ -92,7 +92,9 @@ const string LOG_FILE_NAME = "log.html";
 
 #ifdef MOBITECH_WIN32
 const string ASSETS_ROOT = "..\\..\\Assets\\";
-#else if MOBITECH_ANDROID
+#endif
+
+#ifdef MOBITECH_ANDROID
 const string ASSETS_ROOT = "";
 #endif
 
@@ -218,9 +220,9 @@ public:
 class IInputListener
 {
 public:
-    virtual void OnTouchDown(int x, int y) = 0;
-    virtual void OnTouchUp(int x, int y) = 0;
-    virtual void OnMove(int x, int y) = 0;
+    virtual void OnTouchDown(int x, int y, unsigned int touch_id) = 0;
+    virtual void OnTouchUp(int x, int y, unsigned int touch_id) = 0;
+    virtual void OnMove(int x, int y, unsigned int touch_id) = 0;
 };
 
 class Input: public Singleton<Input>
@@ -251,22 +253,22 @@ public:
         GetInstance()->listeners.remove(listener);
     }
 
-    void OnTouchMove(int x, int y)
+    void OnTouchMove(int x, int y, unsigned int touch_id = 0)
     {
         for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
-            (*i)->OnMove(x, y);
+            (*i)->OnMove(x, y, touch_id);
     }
 
-    void OnTouchUp(int x, int y)
+    void OnTouchUp(int x, int y, unsigned int touch_id = 0)
     {
        for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
-            (*i)->OnTouchUp(x, y);
+            (*i)->OnTouchUp(x, y, touch_id);
     }
 
-    void OnTouchDown(int x, int y)
+    void OnTouchDown(int x, int y, unsigned int touch_id = 0)
     {
         for(std::list<IInputListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
-            (*i)->OnTouchDown(x, y);
+            (*i)->OnTouchDown(x, y, touch_id);
     }
 
     ~Input() {}
