@@ -15,32 +15,33 @@ class MovingPart
 {
 public:
 
+    string bone_name;
+	mat3 transform;
+
 	~MovingPart();
 	MovingPart(AnimationClip *animation, TiXmlElement * xe, float width, float height);
 
-	void PreDraw(float p, std::vector<mat3>& stack);
-	void Draw();
+	void ComputeTransform(float interpolation, std::vector<mat3>& stack);
+	void ApplyTransform();
+    void Draw();
 
 private:
-
-	std::string boneName;
-	typedef std::vector<MovingPart *> List;
 	
-	vec2 _center;
+    vec2 _center;
 	MotionValues _x;
 	MotionValues _y;
 	MotionValues _angle;
 	MotionValues _scaleX;
 	MotionValues _scaleY;
-	MotionValues::Motion _movingType;
+	MotionValues::Motion interpolation_type;
 
-	List _bones;
-	int _order;
-    bool _visible;
+	std::vector<MovingPart*> bones;
+	int order;
+    bool visible;
 
 	void CreateQuad(float width, float height, const std::string &texture);
-    GLfloat _quad[16];
-	vec2 _origin[4];
+    float quad_data[16];
+	vec2 origin[4];
     friend bool CmpBoneOrder(MovingPart *one, MovingPart *two);
     friend class AnimationClip;
 };

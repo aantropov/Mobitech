@@ -12,59 +12,88 @@ using namespace std;
 void AnimationClip::Load(TiXmlElement *xe, Texture *tex)
 {
     texture = tex;
-    _time = fatof(xe->Attribute("time"));
-    _pivotPos.x = fatof(xe->Attribute("pivotX"));
-    _pivotPos.y = fatof(xe->Attribute("pivotY"));
+    time = fatof(xe->Attribute("time"));
+    pivot_pos.x = fatof(xe->Attribute("pivotX"));
+    pivot_pos.y = fatof(xe->Attribute("pivotY"));
 
     TiXmlElement *element = xe->FirstChildElement();
     while (element) 
     {
-        _bones.push_back(new MovingPart(this, element, texture->GetWidth(), texture->GetHeight()));
+        bones.push_back(new MovingPart(this, element, texture->GetWidth(), texture->GetHeight()));
         element = element->NextSiblingElement();
     }
-    _subPosition = mat4_identity;
-    _subPosition *= GLTranslation(-_pivotPos.x, -_pivotPos.y, 0.0f);
+    sub_position = mat4_identity;
+    sub_position *= GLTranslation(-pivot_pos.x, -pivot_pos.y, 0.0f);
 
-    std::sort(_renderList.begin(), _renderList.end(), CmpBoneOrder);
+    std::sort(render_list.begin(), render_list.end(), CmpBoneOrder);
 }
 
 void AnimationClip::SetModel(mat4 model, bool mirror) 
 {
-    _subPosition = mat4_identity;
-    _subPosition *= GLTranslation(-_pivotPos.x, -_pivotPos.y, 0.0f);
+    sub_position = mat4_identity;
+    sub_position *= GLTranslation(-pivot_pos.x, -pivot_pos.y, 0.0f);
     if (mirror) 
     {
-        _subPosition*= GLScale(-1.0f, 1.0f, 0.0f);
+        sub_position*= GLScale(-1.0f, 1.0f, 0.0f);
     }
-    _subPosition *= model;
+    sub_position *= model;
 }
 
 void AnimationClip::Draw(float position) 
 {
     Renderer::GetInstance()->BindTexture(texture, 0);
 
-    _matrixsStack.clear();
-    for(unsigned int i = 0; i < _renderList.size();i++) 
-        _renderList[i]->_visible = false;
+    matrix_stack.clear();
+    for(unsigned int i = 0; i < render_list.size();i++) 
+        render_list[i]->visible = false;
 
-    _matrixsStack.push_back(_subPosition);
-    for(unsigned int i = 0; i < _bones.size();i++)
-        _bones[i]->PreDraw(position, _matrixsStack);
+    matrix_stack.push_back(sub_position);
+    for(unsigned int i = 0; i < bones.size();i++)
+        bones[i]->ComputeTransform(position, matrix_stack);
 
-    for(unsigned int i = 0; i < _renderList.size();i++)
-        _renderList[i]->Draw();
+    for(unsigned int i = 0; i < render_list.size();i++)
+    {
+        render_list[i]->ApplyTransform();
+        render_list[i]->Draw();
+    }
+    //glBindTexture(GL_TEXTURE_2D, 0);
+}
 
+void AnimationClip::Draw(float position, float weight, AnimationState blend_clip)
+{
+    Renderer::GetInstance()->BindTexture(texture, 0);
+
+    matrix_stack.clear();
+    blend_clip.clip->matrix_stack.clear();
+
+    for(unsigned int i = 0; i < render_list.size();i++) 
+        render_list[i]->visible = false;
+    
+    matrix_stack.push_back(sub_position);
+    blend_clip.clip->matrix_stack.push_back(sub_position);
+    for(unsigned int i = 0; i < bones.size(); i++)
+    {
+        bones[i]->ComputeTransform(position, matrix_stack);
+        blend_clip.clip->bones[i]->ComputeTransform(blend_clip.progress, blend_clip.clip->matrix_stack);
+    }
+
+    for(unsigned int i = 0; i < render_list.size();i++)
+    {
+        render_list[i]->transform = render_list[i]->transform * weight + blend_clip.clip->render_list[i]->transform * (1.0f - weight);
+        render_list[i]->ApplyTransform();
+        render_list[i]->Draw();
+    }
     //glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 float AnimationClip::Time() const 
 {
-    return _time;
+    return time;
 }
 
 void AnimationClip::AddBone(MovingPart *bone) 
 {
-    _renderList.push_back(bone);
+    render_list.push_back(bone);
 }
 
 

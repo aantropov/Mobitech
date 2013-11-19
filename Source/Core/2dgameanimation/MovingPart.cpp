@@ -29,43 +29,51 @@ void MovingPart::CreateQuad(float width, float height, const std::string &textur
 	start = end + 1;
 	float offY = fatof(texture.substr(start).c_str());
     
-    memset(_quad, 0, sizeof(_quad));
+    memset(quad_data, 0, sizeof(quad_data));
     
-    const int m = 4;    
-	_quad[m * 0 + 2] = x / width;       _quad[m * 0 + 3] = y / height;
-	_quad[m * 1 + 2] = (x + w) / width; _quad[m * 1 + 3] = y / height;
-    _quad[m * 2 + 2] = (x + w) / width; _quad[m * 2 + 3] = (y + h) / height;
-    _quad[m * 3 + 2] = x / width;       _quad[m * 3 + 3] = (y + h) / height;
+	quad_data[2] = x / width;       
+    quad_data[3] = y / height;
+	quad_data[6] = (x + w) / width; 
+    quad_data[7] = y / height;
+    quad_data[10] = (x + w) / width; 
+    quad_data[11] = (y + h) / height;
+    quad_data[14] = x / width;       
+    quad_data[15] = (y + h) / height;
 
 	x = offX;
 	y = offY;
 	
-    _origin[0].x = x;     _origin[0].y = y;
-	_origin[1].x = x + w;     _origin[1].y = y;
-	_origin[2].x = x + w; _origin[2].y = y + h;
-	_origin[3].x = x; _origin[3].y = y + h;
+    origin[0].x = x;     
+    origin[0].y = y;
+	origin[1].x = x + w;     
+    origin[1].y = y;
+	origin[2].x = x + w; 
+    origin[2].y = y + h;
+	origin[3].x = x; 
+    origin[3].y = y + h;
 }
 
-MovingPart::~MovingPart() {
-	for (unsigned int i = 0; i < _bones.size(); ++i) 
-		delete _bones[i];
+MovingPart::~MovingPart() 
+{
+	for (unsigned int i = 0; i < bones.size(); ++i) 
+		delete bones[i];
 }
 
-MovingPart::MovingPart(AnimationClip *animation, TiXmlElement *xe, float width, float height) : _visible(false)
+MovingPart::MovingPart(AnimationClip *animation, TiXmlElement *xe, float width, float height) : visible(false)
 {
     animation->AddBone(this);
 
-	boneName =  xe->Attribute("name");
+	bone_name =  xe->Attribute("name");
 
 	const char *tmp = xe->Attribute("moving_type");
 	if (tmp == NULL || strcmp(tmp, "spline") == 0)
-		_movingType = MotionValues::M_SLINE;
+		interpolation_type = MotionValues::M_SLINE;
 	else if (strcmp(tmp, "line") == 0)
-		_movingType = MotionValues::M_LINE;
+		interpolation_type = MotionValues::M_LINE;
 	else
-		_movingType = MotionValues::M_DISCONTINUOUS;
+		interpolation_type = MotionValues::M_DISCONTINUOUS;
 	
-    _order = atoi(xe->Attribute("order"));
+    order = atoi(xe->Attribute("order"));
     
     const char* cX = xe->Attribute("centerX");
     const char* cY = xe->Attribute("centerY");
@@ -98,11 +106,11 @@ MovingPart::MovingPart(AnimationClip *animation, TiXmlElement *xe, float width, 
 		pos = pos->NextSiblingElement("pos");
 	}
 
-	_x.SetType(_movingType);
-	_y.SetType(_movingType);	
-	_scaleX.SetType(_movingType);
-	_scaleY.SetType(_movingType);
-	_angle.SetType(_movingType);
+	_x.SetType(interpolation_type);
+	_y.SetType(interpolation_type);	
+	_scaleX.SetType(interpolation_type);
+	_scaleY.SetType(interpolation_type);
+	_angle.SetType(interpolation_type);
 
 	TiXmlElement *element = xe->FirstChildElement();
 	while (element) 
@@ -111,20 +119,38 @@ MovingPart::MovingPart(AnimationClip *animation, TiXmlElement *xe, float width, 
 		
         if (name == "movingPart") 
         {
-			_bones.push_back( new MovingPart(animation, element, width, height) );
+			bones.push_back(new MovingPart(animation, element, width, height));
 		}
 		element = element->NextSiblingElement();
 	}
 }
 
-void MovingPart::PreDraw(float p, std::vector<mat3> &stack) {
-	
+void MovingPart::ApplyTransform()
+{
+    vec2 quad_temp = transform * origin[0]; 
+    quad_data[0] = quad_temp.x;
+    quad_data[1] = quad_temp.y;
+		
+    quad_temp = transform * origin[1];
+    quad_data[4] = quad_temp.x;
+    quad_data[5] = quad_temp.y;
+
+    quad_temp = transform * origin[2];
+    quad_data[8] = quad_temp.x;
+    quad_data[9] = quad_temp.y;
+
+    quad_temp = transform * origin[3];
+    quad_data[12] = quad_temp.x;
+    quad_data[13] = quad_temp.y;
+}
+
+void MovingPart::ComputeTransform(float p, std::vector<mat3> &stack) 
+{	
 	float localT;
 	int index = _x.Value(p, localT);
-    const int m = 4;
-	if (_visible = (index >= 0)) 
+	if (visible = (index >= 0)) 
     {
-        mat3 transform = stack.back();
+        transform = stack.back();
 
         transform = GLTranslation(_x.GetFrame(index, localT), _y.GetFrame(index, localT)) * transform;
         transform = GLRotation(math_degrees * _angle.GetFrame(index, localT)) * transform;
@@ -133,26 +159,10 @@ void MovingPart::PreDraw(float p, std::vector<mat3> &stack) {
 		transform = GLTranslation(-_center.x, -_center.y) * transform;
         stack.push_back(transform);
 
-        transform = transpose(transform);
+        transform = transpose(transform);	
 
-		vec2 quad_temp = transform * _origin[0]; 
-        _quad[m * 0] = quad_temp.x;
-        _quad[m * 0 + 1] = quad_temp.y;
-		
-        quad_temp = transform * _origin[1];
-        _quad[m * 1] = quad_temp.x;
-        _quad[m * 1 + 1] = quad_temp.y;
-
-        quad_temp = transform * _origin[2];
-        _quad[m * 2] = quad_temp.x;
-        _quad[m * 2 + 1] = quad_temp.y;
-
-        quad_temp = transform * _origin[3];
-        _quad[m * 3] = quad_temp.x;
-        _quad[m * 3 + 1] = quad_temp.y;
-
-		for (unsigned int i = 0; i < _bones.size(); ++i)
-			_bones[i]->PreDraw(p, stack);
+		for (unsigned int i = 0; i < bones.size(); ++i)
+			bones[i]->ComputeTransform(p, stack);
 		
 		stack.pop_back();
 	}
@@ -160,7 +170,7 @@ void MovingPart::PreDraw(float p, std::vector<mat3> &stack) {
 
 void MovingPart::Draw() 
 {
-	if (_visible) 
+	if (visible) 
     {
         Renderer* render = Renderer::GetInstance();
         ShaderProgram* shader = render->GetCurrentShaderProgram();
@@ -170,15 +180,14 @@ void MovingPart::Draw()
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
 
-        const int m = 4;
-        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_TRUE,  m * sizeof(GLfloat), _quad);
+        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_TRUE,  4 * sizeof(GLfloat), quad_data);
         glEnableVertexAttribArray(shader->attribute_locations.position);
         
         const float colors[] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
         glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_TRUE,  0, colors);
         glEnableVertexAttribArray(shader->attribute_locations.color);
 
-        glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, m * sizeof(GLfloat), &(_quad[2]));
+        glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), &(quad_data[2]));
         glEnableVertexAttribArray(shader->attribute_locations.texcoords);
 
         render->DrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -190,5 +199,5 @@ void MovingPart::Draw()
 
 bool CmpBoneOrder(MovingPart *one, MovingPart *two) 
 {
-    return one->_order < two->_order;
+    return one->order < two->order;
 }

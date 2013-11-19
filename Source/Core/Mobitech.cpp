@@ -27,6 +27,19 @@ void Engine::Stop()
     Window::SetRunning(false);
 }
 
+double Engine::GetTime()
+{
+#ifdef MOBITECH_WIN32
+    return GetTickCount();
+#endif
+
+#ifdef MOBITECH_ANDROID
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC,&ts);
+    return ts.tv_nsec * NANOSEC_TO_MILLISEC;
+#endif //MOBITECH_WIN32    
+}
+
 void Engine::OneFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -39,13 +52,9 @@ void Engine::OneFrame()
     int currentTick = 0;
 #ifdef MOBITECH_WIN32
     SwapBuffers(Window::GetHDC());
-    currentTick = GetTickCount();
-#else if MOBITECH_ANDROID
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC,&ts);
-    currentTick = ts.tv_nsec * NANOSEC_TO_MILLISEC;
-#endif //MOBITECH_WIN32    
-    
+#endif //MOBITECH_WIN32
+
+    currentTick = GetTime();
     delta_time += currentTick - begin_frame_time;
 
     if(current_scene.get() != NULL)
@@ -78,7 +87,7 @@ void Engine::Run()
             DispatchMessage(&msg);
         }
         
-        begin_frame_time = GetTickCount();
+        begin_frame_time = GetTime();
 
         //if (Input::IsKeyPressed(VK_ESCAPE))
           //  this->Stop();
@@ -104,9 +113,7 @@ void Engine::Run()
     #endif //MOBITECH_WIN32
 
 #ifdef MOBITECH_ANDROID
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC,&ts);
-    begin_frame_time = ts.tv_nsec * NANOSEC_TO_MILLISEC;
+    begin_frame_time= GetTime();
 #endif // MOBITECH_ANDROID
 }
 

@@ -72,9 +72,9 @@ class Engine : public Singleton<Engine>
 public:
   
     string APK_ROOT;
-    static ResourceFactory  main_resource_factory;
+    static ResourceFactory main_resource_factory;
     static Engine* GetInstance();
-
+    static double GetTime();
     string GetApkRoot() const { return APK_ROOT; }
 
     bool Initialize();
