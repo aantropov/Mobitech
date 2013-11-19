@@ -2,6 +2,7 @@
 #include "../Resources.h"
 #include "../Utils.hpp"
 #include "../math/math3d.h"
+#include "../Mobitech.h"
 
 #include <algorithm>
 #include <functional>
@@ -139,4 +140,19 @@ bool Animation::Load(const string path)
         return true;
     }
     return false;
+}
+
+void Animation::Play(string name) 
+{
+    animation_states.clear();
+        
+    AnimationState state;
+    state.name = name;
+    state.progress = 0.0f;
+    state.speed = 1.0f;
+    state.start_time = Engine::GetTime();
+    state.weight = 1.0f;
+    state.clip = GetAnimationClip(name);
+
+    animation_states.push_back(state);
 }

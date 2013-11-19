@@ -63,26 +63,12 @@ public:
 
     AnimationClip *GetAnimationClip(string name) const { return animation_clips.at(name); }
 
-    void Play(string name) 
-    {
-        animation_states.clear();
-        
-        AnimationState state;
-        state.name = name;
-        state.progress = 0.0f;
-        state.speed = 1.0f;
-        state.start_time = Engine::GetTime();
-        state.weight = 1.0f;
-        state.clip = GetAnimationClip(name);
-
-        animation_states.push_back(state);
-    }
-
+    void Play(string name);
     void Update()
     {
         for(int i = 0; i < animation_states.size(); i++)
         {
-            //animation_states[i].
+//            animation_states[i].name = "sd";
         }
     }
 
