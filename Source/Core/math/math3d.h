@@ -137,6 +137,7 @@ const vec2 vec2_zero(0, 0);
 const vec2 vec2_x(1, 0);
 const vec2 vec2_y(0, 1);
 
+const vec3 vec3_one(1, 1, 1);
 const vec3 vec3_zero(0, 0, 0);
 const vec3 vec3_x(1, 0, 0);
 const vec3 vec3_y(0, 1, 0);

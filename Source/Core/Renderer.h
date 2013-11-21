@@ -13,6 +13,7 @@ class Camera
 {
     vec3 position;
     vec3 rotation;
+    vec3 scale;
     mat4 projection;
 
     frustum frustum_planes;
@@ -23,10 +24,12 @@ public:
 
     vec3 GetPosition() const;
     vec3 GetRotation()  const;
+    vec3 GetScale()  const;
     const frustum GetFrustum() const { return frustum_planes; }
 
     void SetPosition(vec3 p) { position = p; }
     void SetRotation(vec3 r) { rotation = r; }
+    void SetScale(vec3 s) { scale = s; }
     
     mat4 GetProjection()  const;
     mat4 GetView()  const;

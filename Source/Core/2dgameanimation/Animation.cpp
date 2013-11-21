@@ -150,7 +150,7 @@ void Animation::Play(string name)
     state.name = name;
     state.progress = 0.0f;
     state.speed = 1.0f;
-    state.start_time = Engine::GetTime();
+    state.start_time = Engine::GetTimeMS();
     state.weight = 1.0f;
     state.clip = GetAnimationClip(name);
 

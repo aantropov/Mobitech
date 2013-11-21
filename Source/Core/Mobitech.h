@@ -57,7 +57,7 @@ class Scene
 {
 public:
     virtual void DrawFrame() = 0;
-    virtual void Update(float delta) = 0;
+    virtual void Update(double delta_seconds) = 0;
 };
 
 class Engine : public Singleton<Engine>
@@ -74,7 +74,7 @@ public:
     string APK_ROOT;
     static ResourceFactory main_resource_factory;
     static Engine* GetInstance();
-    static double GetTime();
+    static long long GetTimeMS();
     string GetApkRoot() const { return APK_ROOT; }
 
     bool Initialize();

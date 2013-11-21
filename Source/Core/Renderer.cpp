@@ -413,9 +413,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 vec3 Camera::GetPosition() const { return position; }
 vec3 Camera::GetRotation() const { return rotation; }
+vec3 Camera::GetScale() const { return scale; }
 
 mat4 Camera::GetProjection() const { return projection; }
-mat4 Camera::GetView() const { return GLRotation(rotation.x, rotation.y, rotation.z) * GLTranslation(-position); }
+mat4 Camera::GetView() const { return GLScale(scale) * GLRotation(rotation.x, rotation.y, rotation.z) * GLTranslation(-position); }
 
 void Camera::UpdateFrustum()
 {
@@ -456,7 +457,7 @@ void Camera::LookAt(const vec3 &position, const vec3 &center, const vec3 &up)
     this->position = position;
 }
 
-Camera::Camera(void){ rotation = vec3_zero; }
+Camera::Camera(void){ rotation = vec3_zero; scale = vec3_one; }
 Camera::~Camera(void){}
 
 Renderer::Renderer()
@@ -896,7 +897,7 @@ bool Renderer::SetVerticalSynchronization(bool bEnabled)
 }
 
 bool Renderer::Initialize()
-{
+{   
     int width = 320;
     int height = 240;
     bool fullscreen = false;
@@ -923,16 +924,17 @@ bool Renderer::Initialize()
             break;
         }
     }
-
-    if( !window.Create("Mobitech", width, height, fullscreen))
-        return false;
+    
 #endif //MOBITECH_WIN32
+    
+    if(!window.Create("Mobitech", GetWidth(), GetHeight(), fullscreen))
+        return false;
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
-    OPENGL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    OPENGL_CALL(glClearColor(0.5f, 0.5f, 0.5f, 1.0f));
     //OPENGL_CALL(glClearDepth(1.0f));
-    OPENGL_CALL(glEnable(GL_DEPTH_TEST));
-    OPENGL_CALL(glEnable(GL_CULL_FACE));
+    //OPENGL_CALL(glEnable(GL_DEPTH_TEST));
+    //OPENGL_CALL(glEnable(GL_CULL_FACE));
 
 #ifdef MOBITECH_WIN32
     SetVerticalSynchronization(vsync);

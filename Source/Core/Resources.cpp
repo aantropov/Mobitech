@@ -330,11 +330,11 @@ void ShaderProgram::Free()
 
 void ShaderProgram::InitLocations()
 {
-    uniform_locations.transform_model = glGetUniformLocation(_id, "transform.model");
-    uniform_locations.transform_viewProjection = glGetUniformLocation(_id, "transform.viewProjection");
-    uniform_locations.transform_normal = glGetUniformLocation(_id, "transform.normal");
-    uniform_locations.transform_modelViewProjection = glGetUniformLocation(_id, "transform.modelViewProjection");
-    uniform_locations.transform_viewPosition = glGetUniformLocation(_id, "transform.viewPosition");
+    uniform_locations.transform_model = glGetUniformLocation(_id, "model");
+    uniform_locations.transform_viewProjection = glGetUniformLocation(_id, "viewProjection");
+    uniform_locations.transform_normal = glGetUniformLocation(_id, "normal");
+    uniform_locations.transform_modelViewProjection = glGetUniformLocation(_id, "modelViewProjection");
+    uniform_locations.transform_viewPosition = glGetUniformLocation(_id, "viewPosition");
     
     attribute_locations.color = glGetAttribLocation(_id, "color");
     attribute_locations.position = glGetAttribLocation(_id, "position");
