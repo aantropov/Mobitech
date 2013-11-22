@@ -927,7 +927,9 @@ bool Renderer::Initialize()
     
 #endif //MOBITECH_WIN32
     
-    if(!window.Create("Mobitech", GetWidth(), GetHeight(), fullscreen))
+    SetWidth(width);
+    SetHeight(height);
+    if(!window.Create("Mobitech", width, height, fullscreen))
         return false;
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
