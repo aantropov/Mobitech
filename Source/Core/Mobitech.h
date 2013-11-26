@@ -66,7 +66,7 @@ class Engine : public Singleton<Engine>
     float elapsed_time;
     std::tr1::shared_ptr<Scene> current_scene;
         
-    double delta_time, begin_frame_time, fixed_time_step;  
+    unsigned long long delta_time, begin_frame_time, fixed_time_step;  
     Engine(): APK_ROOT("") { }
 
 public:
@@ -74,7 +74,7 @@ public:
     string APK_ROOT;
     static ResourceFactory main_resource_factory;
     static Engine* GetInstance();
-    static long long GetTimeMS();
+    static unsigned long long GetTimeMS();
     string GetApkRoot() const { return APK_ROOT; }
 
     bool Initialize();

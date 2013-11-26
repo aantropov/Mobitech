@@ -33,7 +33,7 @@ void Engine::Stop()
     Window::SetRunning(false);
 }
 
-long long Engine::GetTimeMS()
+unsigned long long Engine::GetTimeMS()
 {
 
 #ifdef MOBITECH_WIN32
@@ -43,9 +43,13 @@ long long Engine::GetTimeMS()
 #endif
 
 #ifdef MOBITECH_ANDROID
-    struct timeval tv;
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return ((unsigned long long)now.tv_sec)*1000LL + ((unsigned long long)now.tv_nsec)/1000000LL;
+    
+    /*struct timeval tv;
     gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000LL + tv.tv_usec / 1000;
+    return tv.tv_sec * 1000LL + tv.tv_usec / 1000LL;*/
 #endif //MOBITECH_WIN32    
 }
 
@@ -60,18 +64,18 @@ void Engine::OneFrame()
     if(current_scene.get() != NULL)
         current_scene->DrawFrame();
 
-    double currentTick = 0;
+    unsigned long long current_tick = 0;
 #ifdef MOBITECH_WIN32
     SwapBuffers(Window::GetHDC());
 #endif //MOBITECH_WIN32
 
-    currentTick = GetTimeMS();
-    delta_time += currentTick - begin_frame_time;
+    current_tick = GetTimeMS();
+    delta_time += current_tick - begin_frame_time;
 
     if(current_scene.get() != NULL)
-        current_scene->Update((currentTick - begin_frame_time)/1000);
+        current_scene->Update(((double)(current_tick - begin_frame_time))/1000.0);
 
-    elapsed_time += (float)(currentTick - begin_frame_time)/1000.0f;
+    elapsed_time += ((float)(current_tick - begin_frame_time))/1000.0f;
     ++fps;
 }
 
