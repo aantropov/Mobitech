@@ -1,6 +1,6 @@
 #include "../Core/Mobitech.h"
-float vertices[] = { 0.0f, 100.5f, -100.0f, -0.0f, 0.0f, -0.0f };
-float texcoords[] = { 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f };
+float vertices[] = { 0.0f, 1000.5f, -1000.0f, -0.0f, 0.0f, -0.0f };
+float texcoords[] = { 0.5, 1.0f, 0.0f, 0.0f, 0.5f, 0.0f };
 
 class GameScene : public Scene, IInputListener
 {
@@ -47,7 +47,7 @@ public:
 
         render->SetCurrentCamera(&camera);
 
-        rt.Initialize(16, 16, "text");
+        rt.Initialize(256, 256, "text");
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -77,7 +77,7 @@ public:
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
 
         rt.Begin();
-        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(3.0f, -3.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
+        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
         rt.End();
         

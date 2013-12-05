@@ -975,11 +975,11 @@ bool Renderer::Initialize()
         }
     }
     
-#endif //MOBITECH_WIN32
-    
     SetWidth(width);
     SetHeight(height);
-    if(!window.Create("Mobitech", width, height, fullscreen))
+#endif //MOBITECH_WIN32
+    
+    if(!window.Create("Mobitech", GetWidth(), GetHeight(), fullscreen))
         return false;
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
@@ -1121,8 +1121,16 @@ FrameBufferObject::FrameBufferObject(void)
 {
 }
 
+void FrameBufferObject::Free()
+{
+    if(_id != -1)
+    Renderer::GetInstance()->DeleteFBO(this);
+    _id = -1;
+}
+
 FrameBufferObject::~FrameBufferObject(void)
 {
+    Free();
 }
 
 bool FrameBufferObject::Instantiate()
@@ -1146,6 +1154,14 @@ RenderBuffer::RenderBuffer(void)
 
 RenderBuffer::~RenderBuffer(void)
 {
+    Free();
+}
+
+void RenderBuffer::Free()
+{
+    if(_id != -1)
+    Renderer::GetInstance()->DeleteRB(this);
+    _id = -1;
 }
 
 bool RenderBuffer::Instantiate()
@@ -1178,7 +1194,7 @@ bool RenderTexture::Initialize(unsigned int width, unsigned int height, const st
     fbo.BindTexture(res, FB_ATTACHMENT_COLOR0);
     Renderer::GetInstance()->BindRB(&rb);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.GetId());
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.GetId());
     Renderer::GetInstance()->UnbindFBO();
     Renderer::GetInstance()->UnbindRB();
 
