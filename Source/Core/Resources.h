@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "Utils.hpp"
+#include "Renderer.h"
 
 #ifdef MOBITECH_ANDROID
 #include <android/asset_manager_jni.h>
@@ -34,37 +35,6 @@ public:
     void Close();
     unsigned int GetFileSize() const;
     void* GetFile() const;
-};
-
-struct Vertex
-{
-    static const int offsetPos = sizeof(vec3) + sizeof(vec3) + sizeof(vec3) + sizeof(vec2);
-
-    vec3 pos;
-    vec3 normal;
-    vec3 color;
-    vec2 texcoord;
-
-    Vertex(): pos(vec3_zero), normal(vec3_zero), texcoord(vec2_zero) {}
-    Vertex(vec3 p): pos(p), normal(vec3_zero), texcoord(vec2_zero) {}
-    Vertex(vec3 p, vec3 n): pos(p), normal(n), texcoord(vec2_zero) {}
-    Vertex(vec3 p, vec3 n, vec2 tc): pos(p), normal(n), texcoord(tc) {}
-    Vertex(vec3 p, vec3 n, vec3 c, vec2 tc): pos(p), normal(n), texcoord(tc), color(c) {}
-};
-
-class GLObject
-{
-protected:
-    int _id;
-
-public:
-
-    int GetId() const { return _id; }
-    bool IsInitialized() const { return _id > 0;}
-    virtual bool Instantiate() = 0;
-
-    GLObject(void) { _id = -1; }
-    virtual ~GLObject(void) { _id = -1; } 
 };
 
 class ResourceFactory;
@@ -194,78 +164,6 @@ public:
     void Release(const string path);
     void Release(Resource *resource);
     void ReleaseAll();
-};
-
-class VertexArrayObject: public GLObject
-{
-public:
-
-    virtual bool Instantiate();
-    void Free();
-    VertexArrayObject(void){ _id = -1; }
-    virtual ~VertexArrayObject(void) { Free(); }
-};
-
-class Buffer: public GLObject
-{
-    BUFFER_TYPE type;
-
-public:
-
-    virtual void* Lock() const = 0;
-    virtual void Unlock() const = 0;
-
-    virtual void* GetPointer() const = 0;
-    virtual unsigned int GetNum() = 0;
-    virtual void Create(int num) = 0;
-    virtual bool Instantiate() = 0;
-    virtual void Free() = 0;
-
-    Buffer(void);
-    virtual ~Buffer(void) {}
-};
-
-class IndexBuffer : public Buffer
-{
-    unsigned int num_indices;  
-    unsigned int *indices;
-
-public:
-
-    virtual void* GetPointer() const { return (void*)indices; }
-    virtual unsigned int GetNum() const { return num_indices; }
-
-    virtual void Create(int num_faces);
-    virtual bool Instantiate();
-    virtual void Free();
-
-    void* Lock() const;
-    void Unlock() const;
-
-    IndexBuffer(void);
-    virtual ~IndexBuffer(void);
-};
-
-
-class VertexBuffer : public Buffer
-{    
-    int num_vertices;
-    void *vertices;    
-    VertexArrayObject* vao;
-
-public:
-
-    virtual void* GetPointer() const;
-    virtual unsigned int GetNum() const;
-    virtual void Create(int num_vertices);
-    VertexArrayObject* GetVAO() const;
-    virtual bool Instantiate();
-    virtual void Free();
-    void* Lock() const;
-    void Unlock() const;
-
-    VertexBuffer(void);
-    virtual ~VertexBuffer(void) {}
 };
 
 #endif //_RESOURCES_H

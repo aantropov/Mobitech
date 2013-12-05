@@ -91,7 +91,7 @@ public:
         //glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2(x,y); }
+    virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2((float)x, (float)y); }
     virtual void OnTouchUp(int x, int y, unsigned int touch_id = 0) { touch_pressed = false; }
 
     virtual void OnMove(int x, int y, unsigned int touch_id = 0)
@@ -108,7 +108,7 @@ public:
         else
             camera.SetPosition(vec3(pos.x, pos.y, 0.0f));
 
-        prev_mouse_pos = vec2(x,y);
+        prev_mouse_pos = vec2((float)x, (float)y);
 
         Renderer* renderer = Renderer::GetInstance();
         float t = (float)x / renderer->GetWidth();

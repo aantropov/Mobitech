@@ -85,7 +85,6 @@ Resource* ResourceFactory::Create(const RESOURCE_TYPE type)
     return Create(type, path);
 }
 
-
 Resource* ResourceFactory::Create(const RESOURCE_TYPE type, const string path)
 {
     Logger::Message("Creating resource: \"" + path + "\"");
@@ -217,85 +216,6 @@ void ResourceFactory::ReleaseAll()
     for (std::map<string, Resource*>::iterator it = resources.begin(); it != resources.end(); ++it)
         delete it->second;
     resources.clear();
-}
-
-void* VertexBuffer::GetPointer() const 
-{ 
-    return (void*)vertices; 
-}
-
-unsigned int VertexBuffer::GetNum() const 
-{
-    return num_vertices; 
-}
-
-void VertexBuffer::Create(int num_vertices) 
-{ 
-    this->num_vertices = num_vertices; 
-    vertices = new Vertex[num_vertices](); 
-}
-
-VertexArrayObject* VertexBuffer::GetVAO() const 
-{ 
-    return vao; 
-}
-
-bool VertexBuffer::Instantiate()
-{
-    vao = new VertexArrayObject();
-    vao->Instantiate();
-    
-    Renderer::GetInstance()->BindVAO(this);
-
-    _id = -1;
-    _id = Renderer::GetInstance()->CreateVBO(this, STATIC);
-
-    return (_id != -1) && (vao->GetId() != -1);
-}
-
-void VertexBuffer::Free()
-{
-    if(_id != -1)
-    Renderer::GetInstance()->DeleteVBO(this);
-    _id = -1;
-
-    delete[] (Vertex*)vertices;
-    delete vao;
-}
-
-void* VertexBuffer::Lock() const
-{
-#ifdef MOBITECH_WIN32
-    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
-    glBufferData(GL_ARRAY_BUFFER, num_vertices * sizeof(Vertex), 0, GL_STREAM_DRAW_ARB);
-    Vertex* pBuffer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    return pBuffer;
-#endif //MOBITECH_WIN32
-    return NULL;
-}
-
-void VertexBuffer::Unlock() const
-{
-#ifdef MOBITECH_WIN32
-    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
-    GLboolean result = glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-#endif //MOBITECH_WIN32
-}
-
-bool VertexArrayObject::Instantiate()
-{
-    _id = -1;    
-    _id = Renderer::GetInstance()->CreateVAO();
-    return (_id != -1);
-}
-
-void VertexArrayObject::Free()
-{
-    if(_id != -1)
-        Renderer::GetInstance()->DeleteVAO(this);
-    _id = -1;
 }
 
 bool Shader::Instantiate()

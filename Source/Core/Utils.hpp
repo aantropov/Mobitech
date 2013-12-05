@@ -100,6 +100,18 @@ const string ASSETS_ROOT = "";
 
 extern GLuint g_OpenGLError;
 
+enum FRAMEBUFFER_ATTACHMENT 
+{
+    FB_ATTACHMENT_DEPTH = 0x8D00,
+    FB_ATTACHMENT_COLOR0 = 0x8CE0,
+    FB_ATTACHMENT_COLOR1 = 0x8CE1,
+    FB_ATTACHMENT_COLOR2 = 0x8CE2,
+    FB_ATTACHMENT_COLOR3 = 0x8CE3,
+    FB_ATTACHMENT_COLOR4 = 0x8CE4,
+    FB_ATTACHMENT_COLOR5 = 0x8CE5,
+    FB_ATTACHMENT_COLOR6 = 0x8CE6
+};
+
 enum BLEND_TYPE
 {
     BT_ADDITIVE,
@@ -272,6 +284,56 @@ public:
     }
 
     ~Input() {}
+};
+
+struct Vertex
+{
+    static const int offsetPos = sizeof(vec3) + sizeof(vec3) + sizeof(vec3) + sizeof(vec2);
+
+    vec3 pos;
+    vec3 normal;
+    vec3 color;
+    vec2 texcoord;
+
+    Vertex(): pos(vec3_zero), normal(vec3_zero), texcoord(vec2_zero) {}
+    Vertex(vec3 p): pos(p), normal(vec3_zero), texcoord(vec2_zero) {}
+    Vertex(vec3 p, vec3 n): pos(p), normal(n), texcoord(vec2_zero) {}
+    Vertex(vec3 p, vec3 n, vec2 tc): pos(p), normal(n), texcoord(tc) {}
+    Vertex(vec3 p, vec3 n, vec3 c, vec2 tc): pos(p), normal(n), texcoord(tc), color(c) {}
+};
+
+class GLObject
+{
+protected:
+    int _id;
+
+public:
+
+    int GetId() const { return _id; }
+    bool IsInitialized() const { return _id > 0;}
+    virtual bool Instantiate() = 0;
+
+    GLObject(void) { _id = -1; }
+    virtual ~GLObject(void) { _id = -1; } 
+};
+
+class Buffer: public GLObject
+{
+    BUFFER_TYPE type;
+
+public:
+
+    virtual void* Lock() const = 0;
+    virtual void Unlock() const = 0;
+
+    virtual void* GetPointer() const = 0;
+    virtual unsigned int GetNum() = 0;
+    virtual void Create(int num) = 0;
+    virtual bool Instantiate() = 0;
+    virtual void Free() = 0;
+
+    Buffer(void);
+    virtual ~Buffer(void) {}
 };
 
 #endif //_UTILS_H_

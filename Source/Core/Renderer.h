@@ -1,16 +1,83 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
-#include "Utils.hpp"
 #include "Resources.h"
 #include "math\mathgl.h"
 //#include <hash_map>
 #include <map>
+#include "Utils.hpp"
 
 using namespace std;
 
+class VertexArrayObject: public GLObject
+{
+public:
+
+    virtual bool Instantiate();
+    void Free();
+    VertexArrayObject(void){ _id = -1; }
+    virtual ~VertexArrayObject(void) { Free(); }
+};
+
+class IndexBuffer : public Buffer
+{
+    unsigned int num_indices;  
+    unsigned int *indices;
+
+public:
+
+    virtual void* GetPointer() const { return (void*)indices; }
+    virtual unsigned int GetNum() const { return num_indices; }
+
+    virtual void Create(int num_faces);
+    virtual bool Instantiate();
+    virtual void Free();
+
+    void* Lock() const;
+    void Unlock() const;
+
+    IndexBuffer(void);
+    virtual ~IndexBuffer(void);
+};
+
+class VertexBuffer : public Buffer
+{    
+    int num_vertices;
+    void *vertices;    
+    VertexArrayObject* vao;
+
+public:
+
+    virtual void* GetPointer() const;
+    virtual unsigned int GetNum() const;
+    virtual void Create(int num_vertices);
+    VertexArrayObject* GetVAO() const;
+    virtual bool Instantiate();
+    virtual void Free();
+    void* Lock() const;
+    void Unlock() const;
+
+    VertexBuffer(void);
+    virtual ~VertexBuffer(void) {}
+};
+
+class Texture;
+class FrameBufferObject : public GLObject
+{
+public:
+
+    virtual bool Instantiate();
+    void Free();
+
+    void BindTexture(Texture *tex, FRAMEBUFFER_ATTACHMENT type);
+
+    FrameBufferObject(void);
+    virtual ~FrameBufferObject(void);
+};
+
 class Camera
 {
+protected:
     vec3 position;
     vec3 rotation;
     vec3 scale;
@@ -43,6 +110,18 @@ public:
         
     Camera(void);
     ~Camera(void);
+};
+
+class Texture;
+class RenderCamera: public Camera
+{
+protected:
+    FrameBufferObject fbo;
+    Texture *res;
+
+public:
+    bool Initialize();
+
 };
 
 class Window
@@ -102,6 +181,9 @@ public:
     friend class Renderer;
 };
 
+class ShaderProgram;
+class Texture;
+class Shader;
 class Renderer: public Singleton<Renderer>
 {
     Window window;
@@ -119,8 +201,8 @@ class Renderer: public Singleton<Renderer>
     map<unsigned int, map<string, unsigned int> > uniforms_cache;
     map<unsigned int, unsigned int> tex_channels_cache;
 
-    int CacheUniformLocation(string name);
-    int CacheUniformLocation(string name, ShaderProgram *sh);
+    int CacheUniformLocation(const string name);
+    int CacheUniformLocation(const string name, const ShaderProgram *sh);
            
 public:
     
@@ -152,50 +234,55 @@ public:
 
     Camera *GetCurrentCamera() const;
     void SetCurrentCamera(Camera *cam);
-    void SetupCameraForShaderProgram(ShaderProgram *shd, const mat4 model);
-    void SetupCameraForShaderProgram(Camera *cam, ShaderProgram *shd, const mat4 model);
-    void SetupCameraLightForShaderProgram(Camera &camera);
+    void SetupCameraForShaderProgram(const ShaderProgram *shd, const mat4 model);
+    void SetupCameraForShaderProgram(Camera *cam, const ShaderProgram *shd, const mat4 model);
+    void SetupCameraLightForShaderProgram(const Camera &camera);
 
-    int CreateTexture(Texture *tex) const;
-    void BindTexture(Texture *tex);
-    void DeleteTexture(Texture *tex) const;
-    void BindTexture(Texture *tex, unsigned int channel);
+    int CreateTexture(const Texture *tex) const;
+    void BindTexture(const Texture *tex);
+    void DeleteTexture(const Texture *tex) const;
+    void BindTexture(const Texture *tex, unsigned int channel);
 
-    void BindBuffer(VertexBuffer *vb) const;
-    void BindBuffer(IndexBuffer *ib);
+    void BindBuffer(const VertexBuffer *vb) const;
+    void BindBuffer(const IndexBuffer *ib);
     void UnbindBuffer(bool is_vertex_buffer) const;
     
-    int CreateVBO(VertexBuffer *vb, BUFFER_TYPE state) const;
-    int CreateVBO(IndexBuffer *ib, BUFFER_TYPE state) const;    
-    void DeleteVBO(Buffer *vb) const;
+    int CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const;
+    int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const;    
+    void DeleteVBO(const Buffer *vb) const;
 
     void BindVAO(VertexBuffer *vb);
     void UnbindVAO() const;    
     int CreateVAO() const;
     void DeleteVAO(VertexArrayObject *vao) const;
 
-    int CompileShader(string source, SHADER_TYPE st) const;
-    void DeleteShader(Shader* shd) const;
+    int CompileShader(const string source, SHADER_TYPE st) const;
+    void DeleteShader(const Shader* shd) const;
 
-    int CreateShaderProgram(Shader *vertex_sh, Shader *pixel_sh) const;
+    int CreateShaderProgram(const Shader *vertex_sh, const Shader *pixel_sh) const;
     void BindShaderProgram(ShaderProgram *sh);
-    void DeleteShaderProgram(ShaderProgram *sh) const;
+    void DeleteShaderProgram(const ShaderProgram *sh) const;
 
-    void CacheUniform4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
-    void CacheUniform4(std::string name, unsigned int num , float *variable);
+    int CreateFBO() const;
+    void DeleteFBO(const FrameBufferObject *fb) const;
+    void BindFBO(const FrameBufferObject *fb) const;
+    void UnbindFBO() const;
+
+    void CacheUniform4(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
+    void CacheUniform4(const std::string name, unsigned int num , float *variable);
     
-    void CacheUniform1(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
-    void CacheUniform1(std::string name, unsigned int num , float *variable);
-    void CacheUniform1(std::string name, int value);
+    void CacheUniform1(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
+    void CacheUniform1(const std::string name, unsigned int num , float *variable);
+    void CacheUniform1(const std::string name, int value);
 
-    void CacheUniform3(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
-    void CacheUniform3(std::string name, unsigned int num , float *variable);
+    void CacheUniform3(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
+    void CacheUniform3(const std::string name, unsigned int num , float *variable);
 
-    void CacheUniformMatrix4(std::string name, unsigned int num , float *variable);
-    void CacheUniformMatrix3(std::string name, unsigned int num , float *variable);
+    void CacheUniformMatrix4(const std::string name, unsigned int num , float *variable);
+    void CacheUniformMatrix3(const std::string name, unsigned int num , float *variable);
 
-    void CacheUniformMatrix4(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
-    void CacheUniformMatrix3(ShaderProgram *sh, std::string name, unsigned int num , float *variable);
+    void CacheUniformMatrix4(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
+    void CacheUniformMatrix3(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
 
     void Uniform4(unsigned int location, unsigned int num , float *variable) const;
     void Uniform1(unsigned int location, unsigned int num , float *variable) const;
@@ -208,8 +295,8 @@ public:
     void DrawTransform(::transform xf) const;
     void DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color) const;
     void DrawArrays(int type, int a, int size);
-    void DrawBuffer(VertexBuffer *vb);
-    void DrawBuffer(IndexBuffer* ib);
+    void DrawBuffer(const VertexBuffer *vb);
+    void DrawBuffer(const IndexBuffer* ib);
 
     void EnableBlend(BLEND_TYPE type);
     void DisableBlend();

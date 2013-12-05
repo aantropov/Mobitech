@@ -13,8 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Core">
-      <UniqueIdentifier>{81cfe8b2-eb6e-4af5-8672-5e039e5d0cc2}</UniqueIdentifier>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{da0959ad-5922-4f87-bfd9-ce5182867bcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\math">
+      <UniqueIdentifier>{d38c7ce4-81f5-4769-b9a3-409a0cd8073c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\lodepng">
+      <UniqueIdentifier>{cb871c06-0022-42b0-9d4c-61715d4fb0a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\tinyxml">
+      <UniqueIdentifier>{aebc028f-fd96-4d92-a4ae-f7a0cfc9cfe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\2dgameanimation">
+      <UniqueIdentifier>{0dee2f96-7d50-45d7-9b92-18dcb06401c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{5b9ddaf4-7524-4365-a608-7bb539595daf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,47 +39,47 @@
     <ClCompile Include="win32_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\lodepng\lodepng.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\math\bounds.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\math\frustum.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\math\transform.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Core\Mobitech.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\Renderer.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\Resources.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\math\bounds.cpp">
+      <Filter>Source Files\Core\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\math\frustum.cpp">
+      <Filter>Source Files\Core\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\math\transform.cpp">
+      <Filter>Source Files\Core\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\lodepng\lodepng.cpp">
+      <Filter>Source Files\Core\lodepng</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinystr.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core\tinyxml</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinyxml.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core\tinyxml</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinyxmlerror.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core\tinyxml</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinyxmlparser.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp">
+      <Filter>Source Files\Core\2dgameanimation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp">
+      <Filter>Source Files\Core\2dgameanimation</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Game\Game.cpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,77 +89,71 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\libzip\config.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\lodepng\lodepng.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\bounds.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\frustum.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\mat2.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\mat3.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\mat4.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\math3d.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\mathgl.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\quat.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\transform.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\UMath.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\vec2.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\vec3.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\math\vec4.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Core\Mobitech.h">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\Renderer.h">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\Resources.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\tinyxml\tinystr.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\tinyxml\tinyxml.h">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\Utils.hpp">
-      <Filter>Core</Filter>
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\bounds.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\frustum.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\mat2.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\mat3.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\mat4.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\math3d.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\mathgl.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\quat.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\transform.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\vec2.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\vec3.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\math\vec4.h">
+      <Filter>Source Files\Core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\lodepng\lodepng.h">
+      <Filter>Source Files\Core\lodepng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\tinyxml\tinystr.h">
+      <Filter>Source Files\Core\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\tinyxml\tinyxml.h">
+      <Filter>Source Files\Core\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h">
+      <Filter>Source Files\Core\2dgameanimation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h">
+      <Filter>Source Files\Core\2dgameanimation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
+      <Filter>Source Files\Core\2dgameanimation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -28,7 +28,6 @@ public:
     void Load(TiXmlElement *xe, Texture *tex);
 
 private:
-
     void AddBone(MovingPart *bone);
 	float time;
 	vec2 pivot_pos;
@@ -40,8 +39,9 @@ private:
     friend class MovingPart;
 };
 
-struct AnimationState
+class AnimationState
 {
+public:
     string name;
     AnimationClip* clip;
     float speed;
