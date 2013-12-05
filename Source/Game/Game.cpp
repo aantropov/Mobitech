@@ -1,5 +1,5 @@
 #include "../Core/Mobitech.h"
-float vertices[] = { 0.0f, 1000.5f, -1000.0f, -0.0f, 0.0f, -0.0f };
+float vertices[] = { 0.0f, 100.5f, -100.0f, -0.0f, 0.0f, -0.0f };
 float texcoords[] = { 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f };
 
 class GameScene : public Scene, IInputListener
@@ -13,6 +13,7 @@ class GameScene : public Scene, IInputListener
     Camera camera;
     float angle;
     Animation *test_animation;
+    RenderTexture rt;
 
 public:
 
@@ -45,6 +46,8 @@ public:
         colors[2] = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
         render->SetCurrentCamera(&camera);
+
+        rt.Initialize(16, 16, "text");
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -73,12 +76,14 @@ public:
         test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-400, 200)), false);
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
 
-        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
+        rt.Begin();
+        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(3.0f, -3.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
-
+        rt.End();
+        
         render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, mat4_identity);
-        render->BindTexture(test_texture, 0);
+        render->BindTexture(rt.GetTexture(), 0);
 
         glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
         glEnableVertexAttribArray(shader->attribute_locations.color);
@@ -88,7 +93,7 @@ public:
         
         glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader->attribute_locations.position);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2((float)x, (float)y); }

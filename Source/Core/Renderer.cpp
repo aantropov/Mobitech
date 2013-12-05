@@ -783,6 +783,30 @@ void Renderer:: DeleteFBO(const FrameBufferObject *fb) const
     OPENGL_CALL(glDeleteBuffers(1, &fbo));
 }
 
+int Renderer:: CreateRB() const
+{
+    GLuint depthRB = 0;
+    glGenRenderbuffers(1, &depthRB);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRB);
+    return depthRB;
+}
+
+void Renderer:: DeleteRB(const RenderBuffer *rb) const
+{
+    GLuint rbuffer =  rb->GetId();
+    glDeleteRenderbuffers(1, &rbuffer);
+}
+
+void Renderer:: BindRB(const RenderBuffer *rb) const
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, rb->GetId());
+}
+
+void Renderer:: UnbindRB() const
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
 int Renderer::CacheUniformLocation(string name)
 {
     return CacheUniformLocation(name, shader_program);
@@ -1104,14 +1128,75 @@ FrameBufferObject::~FrameBufferObject(void)
 bool FrameBufferObject::Instantiate()
 {
     _id = -1;    
-    _id = Renderer::GetInstance()->CreateFBO();
+    _id = Renderer::GetInstance()->CreateFBO();    
     Renderer::GetInstance()->UnbindFBO();
 
     return (_id != -1);
 }
 
-void FrameBufferObject::BindTexture(Texture *tex, FRAMEBUFFER_ATTACHMENT type)
+void FrameBufferObject::BindTexture(const Texture *tex, FRAMEBUFFER_ATTACHMENT type)
 {
     Renderer::GetInstance()->BindFBO(this);
-    glFramebufferTexture(GL_FRAMEBUFFER, type, tex->GetId(), 0);
+    OPENGL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, type, GL_TEXTURE_2D, tex->GetId(), 0));
+}
+
+RenderBuffer::RenderBuffer(void)
+{
+}
+
+RenderBuffer::~RenderBuffer(void)
+{
+}
+
+bool RenderBuffer::Instantiate()
+{
+    _id = -1;    
+    _id = Renderer::GetInstance()->CreateRB();
+    Renderer::GetInstance()->UnbindRB();
+
+    return (_id != -1);
+}
+
+bool RenderTexture::Initialize(unsigned int width, unsigned int height, const std::string name)
+{
+    this->width = width;
+    this->height = height;
+
+    if(!fbo.Instantiate())
+       return false;
+       
+    if(!rb.Instantiate())
+       return false;
+
+    res = dynamic_cast<Texture*>(Engine::main_resource_factory.Create(RT_TEXTURE));
+    res->name = name;
+    res->Initialize(width, height);
+        
+    if(!res->Instantiate())
+        return false;             
+        OPENGL_CHECK_FOR_ERRORS();
+    fbo.BindTexture(res, FB_ATTACHMENT_COLOR0);
+    Renderer::GetInstance()->BindRB(&rb);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.GetId());
+    Renderer::GetInstance()->UnbindFBO();
+    Renderer::GetInstance()->UnbindRB();
+
+    return true;
+}
+
+void RenderTexture::Begin() const
+{
+    Renderer *render = Renderer::GetInstance();
+    render->BindFBO(&fbo);
+           
+    glViewport(0,0, width, height);
+        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void RenderTexture::End() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, Renderer::GetInstance()->GetWidth(), Renderer::GetInstance()->GetHeight());
 }

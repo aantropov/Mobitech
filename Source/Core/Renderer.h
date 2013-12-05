@@ -61,15 +61,23 @@ public:
     virtual ~VertexBuffer(void) {}
 };
 
-class Texture;
-class FrameBufferObject : public GLObject
+class RenderBuffer : public GLObject
 {
 public:
+    virtual bool Instantiate();
+    void Free();
+    RenderBuffer(void);
+    virtual ~RenderBuffer(void);
+};
 
+class Texture;
+class FrameBufferObject : public GLObject
+{   
+public:
     virtual bool Instantiate();
     void Free();
 
-    void BindTexture(Texture *tex, FRAMEBUFFER_ATTACHMENT type);
+    void BindTexture(const Texture *tex, FRAMEBUFFER_ATTACHMENT type);
 
     FrameBufferObject(void);
     virtual ~FrameBufferObject(void);
@@ -113,15 +121,20 @@ public:
 };
 
 class Texture;
-class RenderCamera: public Camera
+class RenderTexture
 {
 protected:
+    RenderBuffer rb;
     FrameBufferObject fbo;
     Texture *res;
+    unsigned int width;
+    unsigned int height;
 
 public:
-    bool Initialize();
-
+    Texture* GetTexture() const { return res; }
+    bool Initialize(unsigned int width, unsigned int height, const std::string name);
+    void Begin() const;
+    void End() const;
 };
 
 class Window
@@ -267,6 +280,11 @@ public:
     void DeleteFBO(const FrameBufferObject *fb) const;
     void BindFBO(const FrameBufferObject *fb) const;
     void UnbindFBO() const;
+
+    int CreateRB() const;
+    void DeleteRB(const RenderBuffer *rb) const;
+    void BindRB(const RenderBuffer *rb) const;
+    void UnbindRB() const;
 
     void CacheUniform4(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
     void CacheUniform4(const std::string name, unsigned int num , float *variable);

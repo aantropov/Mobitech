@@ -61,11 +61,12 @@ protected:
 public:
 
     string name;
-        
+    
     unsigned int GetWidth() const { return width; }
     unsigned int GetHeight() const { return height; }
     const unsigned char* GetData() const { return data; }
     
+    void Initialize(const unsigned int w, const unsigned int h) { width = w; height = h; }
     virtual bool Instantiate();
     virtual void Free();
     virtual bool Load(const string path);
