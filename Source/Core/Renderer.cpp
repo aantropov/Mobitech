@@ -932,6 +932,11 @@ void Renderer::DisableBlend()
     glDisable(GL_BLEND);
 }
 
+void Renderer::ClearColor(vec4 color) const
+{
+    OPENGL_CALL(glClearColor(color.x, color.y, color.z, color.w));
+}
+
 bool Renderer::SetVerticalSynchronization(bool bEnabled)
 {
 #ifdef MOBITECH_WIN32
@@ -983,7 +988,7 @@ bool Renderer::Initialize()
         return false;
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
-    OPENGL_CALL(glClearColor(0.5f, 0.5f, 0.5f, 1.0f));
+    ClearColor(vec4_z);
     //OPENGL_CALL(glClearDepth(1.0f));
     //OPENGL_CALL(glEnable(GL_DEPTH_TEST));
     //OPENGL_CALL(glEnable(GL_CULL_FACE));

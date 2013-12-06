@@ -251,6 +251,8 @@ public:
     void SetupCameraForShaderProgram(Camera *cam, const ShaderProgram *shd, const mat4 model);
     void SetupCameraLightForShaderProgram(const Camera &camera);
 
+    void ClearColor(vec4 color) const;
+
     int CreateTexture(const Texture *tex) const;
     void BindTexture(const Texture *tex);
     void DeleteTexture(const Texture *tex) const;
