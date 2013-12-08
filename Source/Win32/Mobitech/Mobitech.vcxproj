@@ -83,6 +83,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp" />
     <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp" />
+    <ClCompile Include="..\..\Core\font\bmfont.cpp" />
     <ClCompile Include="..\..\Core\lodepng\lodepng.cpp" />
     <ClCompile Include="..\..\Core\math\bounds.cpp" />
     <ClCompile Include="..\..\Core\math\frustum.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="..\..\Core\2dgameanimation\Animation.h" />
     <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h" />
     <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h" />
+    <ClInclude Include="..\..\Core\font\bmfont.h" />
     <ClInclude Include="..\..\Core\lodepng\lodepng.h" />
     <ClInclude Include="..\..\Core\math\bounds.h" />
     <ClInclude Include="..\..\Core\math\frustum.h" />

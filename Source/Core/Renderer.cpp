@@ -49,7 +49,7 @@ bool Window::Create(string title, int width, int height, bool fullScreen)
         WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
         WGL_CONTEXT_MINOR_VERSION_ARB, 3,
         WGL_CONTEXT_FLAGS_ARB,         WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-        WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB ,
+        WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
         0
     };
 #endif //MOBITECH_DEBUG
@@ -1178,7 +1178,7 @@ bool RenderBuffer::Instantiate()
     return (_id != -1);
 }
 
-bool RenderTexture::Initialize(unsigned int width, unsigned int height, const std::string name)
+bool RenderTexture::Initialize(unsigned int width, unsigned int height)
 {
     this->width = width;
     this->height = height;
@@ -1190,7 +1190,6 @@ bool RenderTexture::Initialize(unsigned int width, unsigned int height, const st
        return false;
 
     res = dynamic_cast<Texture*>(Engine::main_resource_factory.Create(RT_TEXTURE));
-    res->name = name;
     res->Initialize(width, height);
         
     if(!res->Instantiate())

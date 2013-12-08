@@ -28,6 +28,9 @@
     <Filter Include="CppSource\Core\2dgameanimation">
       <UniqueIdentifier>{2aaacc2a-6415-4dd6-8ab9-11e7f2b073e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CppSource\Core\font">
+      <UniqueIdentifier>{496a3596-53e5-45ee-9d76-deb1ac21677e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -98,6 +101,9 @@
     <ClCompile Include="..\Core\2dgameanimation\MovingPart.cpp">
       <Filter>CppSource\Core\2dgameanimation</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\font\bmfont.cpp">
+      <Filter>CppSource\Core\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\lodepng\lodepng.h">
@@ -165,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="..\Core\2dgameanimation\MovingPart.h">
       <Filter>CppSource\Core\2dgameanimation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\font\bmfont.h">
+      <Filter>CppSource\Core\font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

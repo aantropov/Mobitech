@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{5b9ddaf4-7524-4365-a608-7bb539595daf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Core\font">
+      <UniqueIdentifier>{95a3da0e-d903-4461-8014-7ba6c98dbc5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Core\font\bmfont.cpp">
+      <Filter>Source Files\Core\font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
       <Filter>Source Files\Core\2dgameanimation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Core\font\bmfont.h">
+      <Filter>Source Files\Core\font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

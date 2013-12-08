@@ -40,6 +40,7 @@ using namespace std;
 #include "tinyxml\tinyxml.h"
 #include "lodepng\lodepng.h"
 #include "math\mathgl.h"
+#include "font\bmfont.h"
 #include "resources.h"
 #include "renderer.h"
 #include "2dgameanimation\Animation.h"

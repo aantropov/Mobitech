@@ -132,7 +132,7 @@ protected:
 
 public:
     Texture* GetTexture() const { return res; }
-    bool Initialize(unsigned int width, unsigned int height, const std::string name);
+    bool Initialize(unsigned int width, unsigned int height);
     void Begin() const;
     void End() const;
 };

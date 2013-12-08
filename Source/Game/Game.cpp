@@ -1,9 +1,8 @@
 #include "../Core/Mobitech.h"
-float vertices[] = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 
-                     1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
+float vertices[] = { -100.0f, -100.0f, 100.0f, -100.0f, 100.0f, 100.0f, 
+                     100.0f, 100.0f, -100.0f, 100.0f, -100.0f, -100.0f };
 float texcoords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
                       1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
-
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
@@ -18,6 +17,8 @@ class GameScene : public Scene, IInputListener
     Animation *test_animation;
     RenderTexture rt;
 
+    BMFont font;
+ 
 public:
 
     GameScene()
@@ -30,15 +31,21 @@ public:
         camera.Create(-400.0f, -200.0f, 0.0f);
         camera.Ortho(0.0f, w, 0.0f, h, 0.0f, 1000.0f);
         
-        test_camera.Ortho(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-        test_camera.Create(0.0f, 0.0f, 0.0f);
+        //test_camera.Ortho(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+        //test_camera.Create(0.0f, 0.0f, 0.0f);
 
         touch_pressed = false;
 
+        font.LoadFont(&Engine::main_resource_factory, ASSETS_ROOT + "Fonts\\Font_plain.txt");
+        font.atlas = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.png", RT_TEXTURE));
+        font.atlas->name = "texture";
+        font.shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+
         test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        
         test_texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\Noise.png", RT_TEXTURE));
-        test_texture->name = "text";
+        test_texture->name = "texture";
 
         Input::GetInstance()->Register(this);
 
@@ -55,9 +62,10 @@ public:
 
         render->SetCurrentCamera(&camera);
 
-        rt.Initialize(512, 512, "text");
+        rt.Initialize(render->GetWidth(), render->GetHeight());
+        rt.GetTexture()->name = "text";
 
-        render->ClearColor(vec4_zero);
+        render->ClearColor(vec4(0.5f, 0.5f, 0.5f, 1.0f));
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -70,14 +78,14 @@ public:
     }
 
     virtual void DrawFrame()
-    {
+    {        
         Renderer *render = Renderer::GetInstance();
 
         mat4 model = mat4_identity;
         //model = GLRotationZ(angle);
         angle = clamp(angle, 0.0f, 1.0f);
         
-        rt.Begin();
+        //rt.Begin();
         render->SetCurrentCamera(&camera);
         render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, mat4_identity);
@@ -90,24 +98,29 @@ public:
                 
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
-        rt.End();      
+        //rt.End();      
                
-        render->EnableBlend(BT_ADDITIVE);
-        render->SetCurrentCamera(&test_camera);
-        render->BindShaderProgram(shader);
-        render->SetupCameraForShaderProgram(shader, mat4_identity);
-        render->BindTexture(rt.GetTexture(), 0);
+        render->EnableBlend(BT_ALPHA_BLEND);
+        //render->SetCurrentCamera(&test_camera);
+        render->BindShaderProgram(font.shader);
+        render->SetupCameraForShaderProgram(font.shader, mat4_identity);
+        render->BindTexture(font.atlas, 0);
 
-        glVertexAttribPointer(shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
-        glEnableVertexAttribArray(shader->attribute_locations.color);
+        glVertexAttribPointer(font.shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
+        glEnableVertexAttribArray(font.shader->attribute_locations.color);
 
-        glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
-        glEnableVertexAttribArray(shader->attribute_locations.texcoords);
+        glVertexAttribPointer(font.shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
+        glEnableVertexAttribArray(font.shader->attribute_locations.texcoords);
         
-        glVertexAttribPointer(shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(shader->attribute_locations.position);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        render->DisableBlend();
+        glVertexAttribPointer(font.shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(font.shader->attribute_locations.position);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);  
+      
+	
+	  //font.SetColor(250,251,252,255);
+	  font.PrintCenter(280, "This is a different font, centered.");
+      font.Print(100, 100, "ololo");
+      render->DisableBlend();
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2((float)x, (float)y); }
