@@ -37,7 +37,7 @@ unsigned short font_indices_buffer[2048*4];
 
 bool BMFont::ParseFont(const char *fontfile)
 {
-    AssetFile file(rf, fontfile);
+    AssetFile file(this->resource_factory, fontfile);
     unsigned int size = file.GetFileSize();
     char *file_buffer = new char[size];
     file.Read(file_buffer, 1, size);
@@ -63,7 +63,7 @@ bool BMFont::ParseFont(const char *fontfile)
 
 		//read the line's type
 		line_stream >> read;
-		if( read == "common")
+		if(read == "common")
 		{
 			//this holds common data
 			while(!line_stream.eof())
@@ -77,17 +77,17 @@ bool BMFont::ParseFont(const char *fontfile)
 				//assign the correct value
 				Converter << value;
 				if(key == "lineHeight")
-				{Converter >> line_height;}
+				    Converter >> line_height;
 				else if( key == "base")
-				{Converter >> base;}
+				    Converter >> base;
 				else if( key == "scaleW")
-				{Converter >> width;}
+				    Converter >> width;
 				else if( key == "scaleH")
-				{Converter >> height;}
+				    Converter >> height;
 				else if( key == "pages")
-				{Converter >> pages;}
+				    Converter >> pages;
 				else if( key == "outline")
-				{Converter >> outline;}
+				    Converter >> outline;
 			}
 		}		
 		else if(read == "char")
@@ -97,29 +97,29 @@ bool BMFont::ParseFont(const char *fontfile)
 			{
 				std::stringstream Converter;
 				line_stream >> read;
-				i = read.find( '=');
-				key = read.substr( 0, i);
-				value = read.substr( i + 1);
+				i = read.find('=');
+				key = read.substr(0, i);
+				value = read.substr(i+1);
 
 				Converter << value;
 				if( key == "id")
-				{Converter >> CharID;}
+				    Converter >> CharID;
 				else if( key == "x")
-				{	Converter >> descriptor.x;}      
+				    Converter >> descriptor.x;
 				else if( key == "y")
-				{	Converter >> descriptor.y;}      
+				    Converter >> descriptor.y;  
 				else if( key == "width")
-				{	Converter >> descriptor.width;}        
+				    Converter >> descriptor.width;
 				else if( key == "height")
-				{	Converter >> descriptor.height;}         
+					Converter >> descriptor.height;         
 				else if( key == "xoffset")
-				{	Converter >> descriptor.XOffset;}         
+					Converter >> descriptor.XOffset;         
 				else if( key == "yoffset")
-				{	Converter >> descriptor.YOffset;}        
+					Converter >> descriptor.YOffset;        
 				else if( key == "xadvance")
-				{	Converter >> descriptor.XAdvance;}         
+					Converter >> descriptor.XAdvance;
 				else if( key == "page")
-				{	Converter >> descriptor.Page;}           
+					Converter >> descriptor.Page;
 			}
 			
          	chars.insert(std::map<int,CharDescriptor>::value_type(CharID, descriptor));
@@ -140,7 +140,6 @@ bool BMFont::ParseFont(const char *fontfile)
 				    Converter >> kern_count;
 			}
 		}
-
 		else if( read == "kerning")
 		{
 			while( !line_stream.eof())
@@ -166,8 +165,7 @@ bool BMFont::ParseFont(const char *fontfile)
 		}
 	}
 
-	//stream.close();
-    
+	//stream.close();    
     if(file_buffer != NULL)
         delete[] file_buffer;
 
@@ -196,13 +194,15 @@ float BMFont::GetStringWidth(const char *str)
   return total * fscale;
 }
 
-bool BMFont::LoadFont(ResourceFactory *rf, const string font_file)
+bool BMFont::Load(const string font_file)
 {
-    this->rf = rf;
-		
-   // char* buf = replace_str(font_file.c_str(), ".fnt", ".png");
+    char* buf = replace_str(font_file.c_str(), ".txt", ".png");
    // atlas = dynamic_cast<Texture*>(rf->Load(buf, RT_TEXTURE));
-
+    
+    atlas = dynamic_cast<Texture*>(resource_factory->Load(buf, RT_TEXTURE));
+    atlas->name = "texture";
+    shader = resource_factory->Load(ASSETS_ROOT + "Shaders\\font_diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        
     ParseFont(font_file.c_str());
 	kern_count = (int)kearn.size();
 	return true;
@@ -220,11 +220,11 @@ void BMFont::RenderString(ShaderProgram *shader, int len) const
    glEnableVertexAttribArray(shader->attribute_locations.texcoords);
    
    glDrawElements(GL_TRIANGLES, len*6, GL_UNSIGNED_SHORT, font_indices_buffer);
-   //glDrawArrays(GL_QUADS, 0, len * 4); 
+   //glDrawArrays(GL_QUADS, 0, len * 4);
  
-   glEnableVertexAttribArray(shader->attribute_locations.color);
-   glEnableVertexAttribArray(shader->attribute_locations.texcoords);
-   glEnableVertexAttribArray(shader->attribute_locations.position);
+   glDisableVertexAttribArray(shader->attribute_locations.color);
+   glDisableVertexAttribArray(shader->attribute_locations.texcoords);
+   glDisableVertexAttribArray(shader->attribute_locations.position);
 }
 
 void BMFont::Print(float x, float y, const char *fmt, ...)
@@ -329,8 +329,8 @@ void BMFont::Print(float x, float y, const char *fmt, ...)
 }
 
 void BMFont::PrintCenter(float y, const char *string)
-{
-	int x=0;
+{  
+	int x = 0;
 	CharDescriptor  *f;		 
 	
     int window_width = Renderer::GetInstance()->GetWidth();
@@ -340,10 +340,8 @@ void BMFont::PrintCenter(float y, const char *string)
 	{
 	    f = &chars[string[i]];
 		if(len > 1 && i < len)
-		{ 
-		   x += GetKerningPair(string[i],string[i+1]);
-		}
-		x +=  f->XAdvance;
+		   x += GetKerningPair(string[i],string[i+1]);		
+		x += f->XAdvance;
 	}
 	Print((float)(window_width/2) - (x/2) , y, string);
 }

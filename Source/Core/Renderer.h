@@ -247,9 +247,10 @@ public:
 
     Camera *GetCurrentCamera() const;
     void SetCurrentCamera(Camera *cam);
+    
     void SetupCameraForShaderProgram(const ShaderProgram *shd, const mat4 model);
-    void SetupCameraForShaderProgram(Camera *cam, const ShaderProgram *shd, const mat4 model);
-    void SetupCameraLightForShaderProgram(const Camera &camera);
+    void SetupCameraCameraForShaderProgram(const ShaderProgram *shd, const mat4 model);
+    void SetupCameraForShaderProgram(Camera *cam, const ShaderProgram *shd, const mat4 model);   
 
     void ClearColor(vec4 color) const;
 
@@ -307,7 +308,7 @@ public:
     void Uniform4(unsigned int location, unsigned int num , float *variable) const;
     void Uniform1(unsigned int location, unsigned int num , float *variable) const;
     void Uniform1(unsigned int location, int value) const;
-    void Uniform3(unsigned int location, unsigned int num , float *variable) const;
+    void Uniform3(unsigned int location, unsigned int num , const float *variable) const;
     void UniformMatrix4(unsigned int location, unsigned int num , float *variable) const;
     void UniformMatrix3(unsigned int location, unsigned int num , float *variable) const;
 
@@ -317,10 +318,10 @@ public:
     void DrawArrays(int type, int a, int size);
     void DrawBuffer(const VertexBuffer *vb);
     void DrawBuffer(const IndexBuffer* ib);
+    void DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count);
 
     void EnableBlend(BLEND_TYPE type);
     void DisableBlend();
 };
-
 
 #endif //_RENDERER_H_

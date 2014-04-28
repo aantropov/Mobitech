@@ -4,6 +4,7 @@
 #include "../math/math3d.h"
 #include <vector>
 #include <map>
+#include "../Resources.h"
 
 #ifndef MAKE_RGBA
 #define MAKE_RGBA(r,g,b,a)  (r | (g << 8) | (b << 16) | (a << 24))
@@ -57,14 +58,16 @@ public:
 class Texture;
 class ShaderProgram;
 class ResourceFactory;
-class BMFont
+
+class BMFont :  public Resource
 {
  public:
 
     Texture *atlas;
     ShaderProgram *shader;
 
-	bool LoadFont(ResourceFactory *rf, const string font_file);
+	virtual bool Load(const string font_file);    
+
 	void SetColor(int r, int g, int b, int a) { fcolor = MAKE_RGBA(r,g,b,a); }
     void SetColor(vec4 color) { SetColor((int)(color.x * 255.0f), (int)(color.y * 255.0f), (int)(color.z * 255.0f), (int)(color.w * 255.0f)); }
 	void SetBlend(int b) { fblend = b; }
@@ -80,10 +83,12 @@ class BMFont
 		  fblend = 0;
           fscale = 1.0;
 	};
-	~BMFont ();
+
+	virtual ~BMFont ();
+    virtual void Free() {}
 
 private:
-    ResourceFactory *rf;
+    //ResourceFactory *rf;
     short line_height;
 	short base;
 	short width;

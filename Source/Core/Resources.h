@@ -119,7 +119,7 @@ public:
     void InitLocations();
 
     virtual bool Instantiate();
-    virtual bool Load(const  string path);
+    virtual bool Load(const string path);
     bool Load(const std::string vertexshd_path, const std::string pixelshd_path);
 
     virtual void Free();

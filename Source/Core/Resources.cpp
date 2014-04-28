@@ -98,8 +98,10 @@ Resource* ResourceFactory::Create(const RESOURCE_TYPE type, const string path)
         temp = new ShaderProgram();
     else if(type == RT_ANIMATION)
         temp = new Animation();
+    else if(type == RT_BM_FONT)
+        temp = new BMFont();
     else
-        return NULL;
+        assert("Resource type not implemented");
 
     temp->resource_factory = this;
     temp->resource_id = path;
@@ -176,7 +178,7 @@ Resource* ResourceFactory::Load(const std::string path, const RESOURCE_TYPE type
         return res;
 
     Logger::Message("Loading resource: \"" + path + "\"");
-       Resource* temp;
+    Resource* temp;
     if(type == RT_SHADER)
         temp = new Shader();
     else if(type == RT_TEXTURE)
@@ -185,8 +187,10 @@ Resource* ResourceFactory::Load(const std::string path, const RESOURCE_TYPE type
         temp = new ShaderProgram();
     else if(type == RT_ANIMATION)
         temp = new Animation();    
+    else if(type == RT_BM_FONT)
+        temp = new BMFont();
     else
-        return NULL;
+        assert("Resource type not implemented");
     
     temp->resource_factory = this;
     temp->Load(path);
@@ -203,6 +207,8 @@ void ResourceFactory::Release(const std::string path)
 
 void ResourceFactory::Release(Resource *resource)
 {
+    assert("todo: release resource");
+    //wrong code
     for (std::map<string, Resource*>::iterator it = resources.begin(); it != resources.end(); ++it)
         if (it->second == resource)
         {
@@ -353,6 +359,9 @@ bool Texture::Load(const std::string path)
         delete[] data;
         data = NULL;
     }
+    
+    name = "texture";
+
     return res;
 }
 

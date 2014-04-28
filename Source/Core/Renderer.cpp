@@ -653,6 +653,36 @@ void Renderer::DrawBuffer(const IndexBuffer* ib)
     OPENGL_CALL(glDrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL));    
 }
 
+void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count)
+{    
+    draw_calls++;
+
+    if(colors != NULL)
+    {
+        glVertexAttribPointer(shader_program->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
+        glEnableVertexAttribArray(shader_program->attribute_locations.color);
+    }
+
+    if(texcoords != NULL)
+    {
+        glVertexAttribPointer(shader_program->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
+        glEnableVertexAttribArray(shader_program->attribute_locations.texcoords);
+    }
+
+    if(vertices != NULL)
+    {
+        glVertexAttribPointer(shader_program->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(shader_program->attribute_locations.position);
+    }
+
+    OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, count));
+
+    glDisableVertexAttribArray(shader_program->attribute_locations.position);
+    glDisableVertexAttribArray(shader_program->attribute_locations.texcoords);
+    glDisableVertexAttribArray(shader_program->attribute_locations.color);
+
+}
+
 void Renderer::BindBuffer(const VertexBuffer *vb) const
 {    
     glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());    
@@ -911,10 +941,10 @@ void Renderer::Uniform1(unsigned int location, int value) const
         glUniform1i(location, value);
 }
 
-void Renderer::Uniform3(unsigned int location, unsigned int num , float *variable) const
+void Renderer::Uniform3(unsigned int location, unsigned int num , const float *variable) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
-        glUniform3fv(location,  num, variable);
+        glUniform3fv(location, num, variable);
 }
 
 void Renderer::EnableBlend(BLEND_TYPE type)
@@ -1188,6 +1218,9 @@ bool RenderTexture::Initialize(unsigned int width, unsigned int height)
        
     if(!rb.Instantiate())
        return false;
+    
+    if(res != NULL)
+        Engine::main_resource_factory.Release(res);
 
     res = dynamic_cast<Texture*>(Engine::main_resource_factory.Create(RT_TEXTURE));
     res->Initialize(width, height);

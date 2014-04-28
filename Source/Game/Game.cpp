@@ -1,8 +1,9 @@
 #include "../Core/Mobitech.h"
-float vertices[] = { -100.0f, -100.0f, 100.0f, -100.0f, 100.0f, 100.0f, 
-                     100.0f, 100.0f, -100.0f, 100.0f, -100.0f, -100.0f };
+float vertices[] = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 
+                     1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
 float texcoords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
                       1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
+
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
@@ -16,8 +17,9 @@ class GameScene : public Scene, IInputListener
     float angle;
     Animation *test_animation;
     RenderTexture rt;
-
-    BMFont font;
+    BMFont* font;
+    Texture *nebula_tile_1;
+    Texture *nebula_tile_2;
  
 public:
 
@@ -31,22 +33,17 @@ public:
         camera.Create(-400.0f, -200.0f, 0.0f);
         camera.Ortho(0.0f, w, 0.0f, h, 0.0f, 1000.0f);
         
-        //test_camera.Ortho(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-        //test_camera.Create(0.0f, 0.0f, 0.0f);
+        test_camera.Ortho(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+        test_camera.Create(0.0f, 0.0f, 0.0f);
 
         touch_pressed = false;
 
-        font.LoadFont(&Engine::main_resource_factory, ASSETS_ROOT + "Fonts\\Font_plain.txt");
-        font.atlas = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.png", RT_TEXTURE));
-        font.atlas->name = "texture";
-        font.shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
-
+        font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT)); //(&Engine::main_resource_factory, ASSETS_ROOT + "Fonts\\Font_plain.txt");
         test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         
         test_texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\Noise.png", RT_TEXTURE));
-        test_texture->name = "texture";
-
+        nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -54,10 +51,10 @@ public:
         vertices[3] = vec2(0.5f, -0.5f);*/
 
         colors[0] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        colors[1] = vec4(0.9f, 1.0f, 1.0f, 1.0f);
+        colors[1] = vec4(0.7f, 1.0f, 1.0f, 1.0f);
         colors[2] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
         colors[3] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        colors[4] = vec4(1.0f, 1.0f, 0.9f, 1.0f);
+        colors[4] = vec4(1.0f, 1.0f, 0.7f, 1.0f);
         colors[5] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         render->SetCurrentCamera(&camera);
@@ -85,7 +82,7 @@ public:
         //model = GLRotationZ(angle);
         angle = clamp(angle, 0.0f, 1.0f);
         
-        //rt.Begin();
+        rt.Begin();
         render->SetCurrentCamera(&camera);
         render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, mat4_identity);
@@ -98,29 +95,26 @@ public:
                 
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
-        //rt.End();      
-               
+                    
         render->EnableBlend(BT_ALPHA_BLEND);
-        //render->SetCurrentCamera(&test_camera);
-        render->BindShaderProgram(font.shader);
-        render->SetupCameraForShaderProgram(font.shader, mat4_identity);
-        render->BindTexture(font.atlas, 0);
-
-        glVertexAttribPointer(font.shader->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
-        glEnableVertexAttribArray(font.shader->attribute_locations.color);
-
-        glVertexAttribPointer(font.shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
-        glEnableVertexAttribArray(font.shader->attribute_locations.texcoords);
+	    font->PrintCenter(280, "This is a different font, centered.");
+        font->Print(100, -100, "ololo");
+        render->DisableBlend();
+        rt.End();
         
-        glVertexAttribPointer(font.shader->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(font.shader->attribute_locations.position);
-        //glDrawArrays(GL_TRIANGLES, 0, 6);  
-      
-	
-	  //font.SetColor(250,251,252,255);
-	  font.PrintCenter(280, "This is a different font, centered.");
-      font.Print(100, 100, "ololo");
-      render->DisableBlend();
+        render->SetCurrentCamera(&test_camera);
+        render->BindShaderProgram(font->shader);
+        render->SetupCameraForShaderProgram(font->shader, mat4_identity);
+        
+        render->EnableBlend(BT_ALPHA_BLEND);
+        render->BindTexture(rt.GetTexture(), 0);
+        render->DrawTriangles(vertices, colors, texcoords, 6);
+
+        render->EnableBlend(BT_ALPHA_BLEND);
+        render->BindTexture(nebula_tile_1, 0);
+        render->DrawTriangles(vertices, colors, texcoords, 6);
+       
+        render->DisableBlend();        
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2((float)x, (float)y); }

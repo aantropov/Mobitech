@@ -7,7 +7,7 @@ uniform sampler2D texture;
 void main() 
 {
     float delta = 0.001f;
-	vec4 color = 0.5f * (texture2D(texture, v_texcoords + vec2(delta, 0.0f)) + texture2D(texture, v_texcoords - vec2(delta, 0.0f))) + texture2D(texture, v_texcoords);
+    vec4 color = 0.5f * (texture2D(texture, v_texcoords + vec2(delta, 0.0f)) + texture2D(texture, v_texcoords - vec2(delta, 0.0f))) + texture2D(texture, v_texcoords);
 	
     gl_FragColor = 0.5f * color * v_color;
 }
