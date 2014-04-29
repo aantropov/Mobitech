@@ -39,7 +39,7 @@ unsigned long long Engine::GetTimeMS()
 #ifdef MOBITECH_WIN32
    SYSTEMTIME time;
    GetSystemTime(&time);
-   return time.wMilliseconds;
+   return (((time.wDay*24 + time.wHour)*60 + time.wMinute)*60 + time.wSecond)*1000 + time.wMilliseconds;
 #endif
 
 #ifdef MOBITECH_ANDROID

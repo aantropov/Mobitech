@@ -249,7 +249,6 @@ public:
     void SetCurrentCamera(Camera *cam);
     
     void SetupCameraForShaderProgram(const ShaderProgram *shd, const mat4 model);
-    void SetupCameraCameraForShaderProgram(const ShaderProgram *shd, const mat4 model);
     void SetupCameraForShaderProgram(Camera *cam, const ShaderProgram *shd, const mat4 model);   
 
     void ClearColor(vec4 color) const;
@@ -266,7 +265,7 @@ public:
     int CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const;
     int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const;    
     void DeleteVBO(const Buffer *vb) const;
-
+    
     void BindVAO(VertexBuffer *vb);
     void UnbindVAO() const;    
     int CreateVAO() const;
@@ -295,6 +294,7 @@ public:
     void CacheUniform1(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
     void CacheUniform1(const std::string name, unsigned int num , float *variable);
     void CacheUniform1(const std::string name, int value);
+    void CacheUniform1(const std::string name, float value);
 
     void CacheUniform3(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable);
     void CacheUniform3(const std::string name, unsigned int num , float *variable);
@@ -308,6 +308,7 @@ public:
     void Uniform4(unsigned int location, unsigned int num , float *variable) const;
     void Uniform1(unsigned int location, unsigned int num , float *variable) const;
     void Uniform1(unsigned int location, int value) const;
+    void Uniform1(unsigned int location, float value) const;
     void Uniform3(unsigned int location, unsigned int num , const float *variable) const;
     void UniformMatrix4(unsigned int location, unsigned int num , float *variable) const;
     void UniformMatrix3(unsigned int location, unsigned int num , float *variable) const;
@@ -319,7 +320,7 @@ public:
     void DrawBuffer(const VertexBuffer *vb);
     void DrawBuffer(const IndexBuffer* ib);
     void DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count);
-
+    void Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
     void EnableBlend(BLEND_TYPE type);
     void DisableBlend();
 };

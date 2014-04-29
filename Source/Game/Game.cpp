@@ -7,6 +7,8 @@ float texcoords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
+    ShaderProgram* background;
+
     vec4 colors[6];
     Texture* test_texture;
 
@@ -15,17 +17,20 @@ class GameScene : public Scene, IInputListener
     Camera camera;
     Camera test_camera;
     float angle;
+    float background_rotation;
     Animation *test_animation;
     RenderTexture rt;
     BMFont* font;
     Texture *nebula_tile_1;
     Texture *nebula_tile_2;
- 
+    Texture *background_stars;
+
 public:
 
     GameScene()
     {         
         angle = 0.0f;
+        background_rotation = 0.0f;
         Renderer *render = Renderer::GetInstance();
 
         float h = 600.0f;
@@ -38,12 +43,15 @@ public:
 
         touch_pressed = false;
 
-        font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT)); //(&Engine::main_resource_factory, ASSETS_ROOT + "Fonts\\Font_plain.txt");
+        font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT));
         test_animation = dynamic_cast<Animation*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Animations\\111.aml", RT_ANIMATION));
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
-        
+        background = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+
         test_texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\Noise.png", RT_TEXTURE));
         nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
+        nebula_tile_2 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile2.png", RT_TEXTURE));
+        background_stars = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\stars.png", RT_TEXTURE));
         Input::GetInstance()->Register(this);
 
         /*vertices[0] = vec2(0.0f, 0.5f);
@@ -61,8 +69,8 @@ public:
 
         rt.Initialize(render->GetWidth(), render->GetHeight());
         rt.GetTexture()->name = "text";
-
-        render->ClearColor(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+        
+        render->ClearColor(vec4(0.0f, 0.0f, 0.0f, 0.0f));
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -72,6 +80,10 @@ public:
         angle += dt;
         if(angle >= 1.0f)
             angle = 0.0f;
+
+        background_rotation += dt * 2.0f;//* 0.1f;
+        if(background_rotation >= 360.0f)
+            background_rotation = 0.0f;
     }
 
     virtual void DrawFrame()
@@ -81,8 +93,11 @@ public:
         mat4 model = mat4_identity;
         //model = GLRotationZ(angle);
         angle = clamp(angle, 0.0f, 1.0f);
-        
+        background_rotation = clamp(background_rotation, 0.0f, 360.0f);
+
         rt.Begin();
+        render->Clear();
+        
         render->SetCurrentCamera(&camera);
         render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, mat4_identity);
@@ -95,26 +110,38 @@ public:
                 
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
-                    
+        
         render->EnableBlend(BT_ALPHA_BLEND);
-	    font->PrintCenter(280, "This is a different font, centered.");
-        font->Print(100, -100, "ololo");
+        font->PrintCenter(280, "This is a different font, centered.");
+        font->Print(0, 0, "ololo");
         render->DisableBlend();
+
         rt.End();
         
         render->SetCurrentCamera(&test_camera);
-        render->BindShaderProgram(font->shader);
-        render->SetupCameraForShaderProgram(font->shader, mat4_identity);
-        
-        render->EnableBlend(BT_ALPHA_BLEND);
-        render->BindTexture(rt.GetTexture(), 0);
-        render->DrawTriangles(vertices, colors, texcoords, 6);
+        render->BindShaderProgram(background);        
+        render->SetupCameraForShaderProgram(font->shader, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation));
 
         render->EnableBlend(BT_ALPHA_BLEND);
         render->BindTexture(nebula_tile_1, 0);
         render->DrawTriangles(vertices, colors, texcoords, 6);
+        
+        render->SetupCameraForShaderProgram(font->shader, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation * -2.0f));
+        render->EnableBlend(BT_MULTIPLY);
+        render->BindTexture(nebula_tile_2, 0);
+        render->DrawTriangles(vertices, colors, texcoords, 6);
+
+        render->BindShaderProgram(font->shader);
+        render->SetupCameraForShaderProgram(font->shader, mat4_identity);
+        render->EnableBlend(BT_ADDITIVE);
+        render->BindTexture(background_stars, 0);
+        render->DrawTriangles(vertices, colors, texcoords, 6);
+
+        render->EnableBlend(BT_ALPHA_BLEND);
+        render->BindTexture(rt.GetTexture(), 0);
+        render->DrawTriangles(vertices, colors, texcoords, 6);
        
-        render->DisableBlend();        
+        render->DisableBlend();
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) { touch_pressed = true; prev_mouse_pos = vec2((float)x, (float)y); }

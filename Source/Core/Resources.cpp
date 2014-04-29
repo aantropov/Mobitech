@@ -269,7 +269,7 @@ void ShaderProgram::InitLocations()
 
 bool ShaderProgram::Load(const string path)
 {
-    //not implemented yet
+   //not implemented yet
     return false;
 }
 

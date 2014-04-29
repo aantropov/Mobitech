@@ -519,7 +519,7 @@ void Renderer::BindTexture(const Texture *tex, unsigned int channel)
         tex_channels_cache[channel] = tex->GetId();
         glActiveTexture(GL_TEXTURE0 + channel);
         glBindTexture(GL_TEXTURE_2D, tex->GetId());
-        CacheUniform1(tex->name, channel);
+        CacheUniform1(tex->name, (int)channel);
     }
 }
 
@@ -680,7 +680,6 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
     glDisableVertexAttribArray(shader_program->attribute_locations.position);
     glDisableVertexAttribArray(shader_program->attribute_locations.texcoords);
     glDisableVertexAttribArray(shader_program->attribute_locations.color);
-
 }
 
 void Renderer::BindBuffer(const VertexBuffer *vb) const
@@ -850,7 +849,7 @@ int Renderer::CacheUniformLocation(const string name, const ShaderProgram *sh)
         unsigned int  loc = glGetUniformLocation(sh->GetId(),  name.c_str());
 
         if(loc > MAX_UNIFORM_LOCATIONS)
-            loc = MAX_UNIFORM_LOCATIONS+1;
+            loc = MAX_UNIFORM_LOCATIONS + 1;
         *res = loc;
     }
     return *res;
@@ -901,6 +900,11 @@ void Renderer::CacheUniform1(const std::string name, int value)
     Uniform1(CacheUniformLocation(name), value);
 }
 
+void Renderer::CacheUniform1(const std::string name, float value)
+{
+    Uniform1(CacheUniformLocation(name), value);
+}
+
 void Renderer::CacheUniform3(const ShaderProgram *sh, const std::string name, unsigned int num , float *variable)
 {
     Uniform3(CacheUniformLocation(name, sh),  num, variable);
@@ -941,6 +945,12 @@ void Renderer::Uniform1(unsigned int location, int value) const
         glUniform1i(location, value);
 }
 
+void Renderer::Uniform1(unsigned int location, float value) const
+{
+    if(location < MAX_UNIFORM_LOCATIONS)
+        glUniform1f(location, value);
+}
+
 void Renderer::Uniform3(unsigned int location, unsigned int num , const float *variable) const
 {
     if(location < MAX_UNIFORM_LOCATIONS)
@@ -950,10 +960,12 @@ void Renderer::Uniform3(unsigned int location, unsigned int num , const float *v
 void Renderer::EnableBlend(BLEND_TYPE type)
 {
     if(type == BT_ADDITIVE)
-        glBlendFunc(GL_ONE, GL_ONE);
-    else
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    else if(type == BT_ALPHA_BLEND)
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    else if(type == BT_MULTIPLY)
+        glBlendFunc (GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        
     glEnable(GL_BLEND);
 }
 
@@ -1019,8 +1031,10 @@ bool Renderer::Initialize()
 
     OPENGL_CALL(glActiveTexture(GL_TEXTURE0));
     ClearColor(vec4_z);
+
+    OPENGL_CALL(glDepthFunc(GL_LEQUAL));
     //OPENGL_CALL(glClearDepth(1.0f));
-    //OPENGL_CALL(glEnable(GL_DEPTH_TEST));
+    OPENGL_CALL(glEnable(GL_DEPTH_TEST));
     //OPENGL_CALL(glEnable(GL_CULL_FACE));
 
 #ifdef MOBITECH_WIN32
@@ -1244,8 +1258,7 @@ void RenderTexture::Begin() const
     render->BindFBO(&fbo);
            
     glViewport(0,0, width, height);
-        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void RenderTexture::End() const
