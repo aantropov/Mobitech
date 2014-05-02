@@ -37,10 +37,10 @@ public:
         float w = (h * render->GetWidth()) /render->GetHeight();
         camera.Create(-400.0f, -200.0f, 0.0f);
         camera.Ortho(0.0f, w, 0.0f, h, 0.0f, 1000.0f);
-        
-        test_camera.Ortho(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+                
         test_camera.Create(0.0f, 0.0f, 0.0f);
-
+        test_camera.Ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
+        
         touch_pressed = false;
 
         font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT));
@@ -107,12 +107,11 @@ public:
 
         test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-400, 200)), false);
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
-                
+           
         test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
         test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
         
-        render->EnableBlend(BT_ALPHA_BLEND);
-        font->PrintCenter(280, "This is a different font, centered.");
+        render->EnableBlend(BT_ALPHA_BLEND);        
         font->Print(0, 0, "ololo");
         render->DisableBlend();
 
@@ -140,7 +139,8 @@ public:
         render->EnableBlend(BT_ALPHA_BLEND);
         render->BindTexture(rt.GetTexture(), 0);
         render->DrawTriangles(vertices, colors, texcoords, 6);
-       
+
+        font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
         render->DisableBlend();
     }
 

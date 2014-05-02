@@ -31,12 +31,9 @@ void AnimationClip::Load(TiXmlElement *xe, Texture *tex)
 
 void AnimationClip::SetModel(mat4 model, bool mirror) 
 {
-    sub_position = mat4_identity;
-    sub_position *= GLTranslation(-pivot_pos.x, -pivot_pos.y, 0.0f);
+    sub_position = GLTranslation(-pivot_pos.x, -pivot_pos.y, 0.0f);
     if (mirror) 
-    {
         sub_position*= GLScale(-1.0f, 1.0f, 0.0f);
-    }
     sub_position *= model;
 }
 

@@ -74,6 +74,8 @@ class BMFont :  public Resource
 	void SetScale(float scale) { fscale = scale; }
 	float GetHeight() const { return line_height * fscale; }
 	void Print(float, float, const char *,...);
+    void Print(mat4 model, const char *fmt, ...);
+    void Print(float x, float y, mat4 model, const char *text);
 	void PrintCenter(float, const char *);
 
 	BMFont() 

@@ -66,10 +66,10 @@ public:
     void Play(string name);
     void Update()
     {
+    /*  
         for(int i = 0; i < animation_states.size(); i++)
-        {
-//            animation_states[i].name = "sd";
-        }
+            animation_states[i].name = "sd";
+    */
     }
 
     virtual bool Instantiate() { return true; }

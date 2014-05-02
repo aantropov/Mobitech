@@ -227,7 +227,7 @@ void BMFont::RenderString(ShaderProgram *shader, int len) const
    glDisableVertexAttribArray(shader->attribute_locations.position);
 }
 
-void BMFont::Print(float x, float y, const char *fmt, ...)
+void BMFont::Print(float x, float y, mat4 model, const char *text)
 {
 	float CurX = (float) x;
 	float CurY = (float) y;
@@ -236,19 +236,11 @@ void BMFont::Print(float x, float y, const char *fmt, ...)
 	int Flen;
 	
     float adv = (float) 1.0/width;
-	char text[512] = "";
-	CharDescriptor  *f;	                                    
+	CharDescriptor  *f;
 	va_list		ap;
 
-	if(fmt == NULL)
-		return;
-
-	va_start(ap, fmt);
-	vsprintf(text, fmt, ap);
-	va_end(ap);		
-
     Renderer::GetInstance()->BindShaderProgram(shader);
-    Renderer::GetInstance()->SetupCameraForShaderProgram(shader, mat4_identity);
+    Renderer::GetInstance()->SetupCameraForShaderProgram(shader, model);
     Renderer::GetInstance()->BindTexture(atlas, 0);
 	unsigned char *color = (unsigned char*)&fcolor;
 	
@@ -326,6 +318,36 @@ void BMFont::Print(float x, float y, const char *fmt, ...)
 		 x +=  f->XAdvance;
     }
    RenderString(shader, strlen(text));
+}
+
+void BMFont::Print(mat4 model, const char *fmt, ...)
+{
+    va_list		ap;
+    char text[512] = "";
+
+	if(fmt == NULL)
+		return;
+
+	va_start(ap, fmt);
+	vsprintf(text, fmt, ap);
+	va_end(ap);		
+
+	Print(0.0f, 0.0f, model, text);
+}
+
+void BMFont::Print(float x, float y, const char *fmt, ...)
+{
+	va_list		ap;
+    char text[512] = "";
+
+	if(fmt == NULL)
+		return;
+
+	va_start(ap, fmt);
+	vsprintf(text, fmt, ap);
+	va_end(ap);		
+
+    Print(x, y, mat4_identity, text);
 }
 
 void BMFont::PrintCenter(float y, const char *string)

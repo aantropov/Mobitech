@@ -151,14 +151,12 @@ void MovingPart::ComputeTransform(float p, std::vector<mat3> &stack)
 	if (visible = (index >= 0)) 
     {
         transform = stack.back();
+        transform = GLTranslation(-_center.x, -_center.y) * 
+                    GLScale(_scaleX.GetFrame(index, localT), _scaleY.GetFrame(index, localT)) * 
+                    GLRotation(math_degrees * _angle.GetFrame(index, localT)) * 
+                    GLTranslation(_x.GetFrame(index, localT), _y.GetFrame(index, localT)) * transform;
 
-        transform = GLTranslation(_x.GetFrame(index, localT), _y.GetFrame(index, localT)) * transform;
-        transform = GLRotation(math_degrees * _angle.GetFrame(index, localT)) * transform;
-		transform = GLScale(_scaleX.GetFrame(index, localT), _scaleY.GetFrame(index, localT)) * transform;
-
-		transform = GLTranslation(-_center.x, -_center.y) * transform;
         stack.push_back(transform);
-
         transform = transpose(transform);	
 
 		for (unsigned int i = 0; i < bones.size(); ++i)
