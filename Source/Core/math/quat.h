@@ -102,7 +102,7 @@ inline const quat conjugate(const quat &q)
     return quat(-q.x, -q.y, -q.z, q.w);
 }
 
-inline vec3    rotate(const quat& q, const vec3& v)
+inline vec3 rotate(const quat& q, const vec3& v)
 {
     quat p(v);
     quat qConj = conjugate(q);

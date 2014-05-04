@@ -219,7 +219,7 @@ void BMFont::RenderString(ShaderProgram *shader, int len) const
    glVertexAttribPointer(shader->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, sizeof(vlist), &font_vertices_buffer[0].texx);
    glEnableVertexAttribArray(shader->attribute_locations.texcoords);
    
-   glDrawElements(GL_TRIANGLES, len*6, GL_UNSIGNED_SHORT, font_indices_buffer);
+   Renderer::GetInstance()->DrawElements(GL_TRIANGLES, len*6, GL_UNSIGNED_SHORT, font_indices_buffer);   
    //glDrawArrays(GL_QUADS, 0, len * 4);
  
    glDisableVertexAttribArray(shader->attribute_locations.color);

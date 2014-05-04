@@ -79,4 +79,9 @@ inline const vec3 normalize(const vec3 &v)
     return v / length(v);
 }
 
+inline const float projection(const vec3 &v1, const vec3 &v2)
+{
+    return length(v1) * dot(v1, v2);
+}
+
 #endif /* VEC3_H */

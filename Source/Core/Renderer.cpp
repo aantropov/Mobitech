@@ -131,7 +131,7 @@ bool Window::Create(string title, int width, int height, bool fullScreen)
     pfd.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 32;
-    pfd.cDepthBits = 24;
+    pfd.cDepthBits = 32;
 
     // Get pixel format for format which is described above
     format = ChoosePixelFormat(hdc, &pfd);
@@ -649,8 +649,13 @@ void Renderer::DrawBuffer(const VertexBuffer* vb)
 
 void Renderer::DrawBuffer(const IndexBuffer* ib)
 {    
+    DrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL);    
+}
+
+void Renderer::DrawElements(int type, int count, int value_type, void* indices)
+{
     draw_calls++;
-    OPENGL_CALL(glDrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL));    
+    OPENGL_CALL(glDrawElements(type, count, value_type, indices));
 }
 
 void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count)
@@ -674,6 +679,23 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
         glVertexAttribPointer(shader_program->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glEnableVertexAttribArray(shader_program->attribute_locations.position);
     }
+
+    /*
+    VertexBuffer vb;
+    vb.Create(count);
+    auto ptr = (Vertex*)vb.Lock();
+    
+    for(int i = 0; i < count; i++)
+    {
+        ptr[i].color = ((vec3*)colors)[i];
+        ptr[i].texcoord = ((vec2*)texcoords)[i];
+        ptr[i].pos = ((vec3*)vertices)[i];
+    }
+
+    vb.Unlock();
+
+    DrawBuffer(&vb);
+    */
 
     OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, count));
 
@@ -1092,11 +1114,6 @@ void* VertexBuffer::GetPointer() const
     return (void*)vertices; 
 }
 
-unsigned int VertexBuffer::GetNum() const 
-{
-    return num_vertices; 
-}
-
 void VertexBuffer::Create(int num_vertices) 
 { 
     this->num_vertices = num_vertices; 
@@ -1124,7 +1141,7 @@ bool VertexBuffer::Instantiate()
 void VertexBuffer::Free()
 {
     if(_id != -1)
-    Renderer::GetInstance()->DeleteVBO(this);
+        Renderer::GetInstance()->DeleteVBO(this);
     _id = -1;
 
     delete[] (Vertex*)vertices;

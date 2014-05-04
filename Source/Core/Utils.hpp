@@ -148,6 +148,12 @@ enum LOG_TYPE
     LT_ERROR
 };
 
+enum PO_State
+{
+	PO_STATIC = 0,
+	PO_DYNAMIC
+};
+
 template<typename T>
 class Singleton
 {
@@ -329,12 +335,12 @@ public:
     virtual void Unlock() const = 0;
 
     virtual void* GetPointer() const = 0;
-    virtual unsigned int GetNum() = 0;
+    virtual unsigned int GetNum() const = 0;
     virtual void Create(int num) = 0;
     virtual bool Instantiate() = 0;
     virtual void Free() = 0;
 
-    Buffer(void);
+    Buffer(void) {}
     virtual ~Buffer(void) {}
 };
 

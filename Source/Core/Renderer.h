@@ -44,12 +44,12 @@ class VertexBuffer : public Buffer
 {    
     int num_vertices;
     void *vertices;    
-    VertexArrayObject* vao;
+    VertexArrayObject *vao;
 
 public:
 
     virtual void* GetPointer() const;
-    virtual unsigned int GetNum() const;
+    virtual unsigned int GetNum() const { return num_vertices; }
     virtual void Create(int num_vertices);
     VertexArrayObject* GetVAO() const;
     virtual bool Instantiate();
@@ -57,8 +57,8 @@ public:
     void* Lock() const;
     void Unlock() const;
 
-    VertexBuffer(void);
-    virtual ~VertexBuffer(void) {}
+    VertexBuffer(void) { num_vertices = 0; vertices = NULL; vao = NULL; }
+    virtual ~VertexBuffer(void) { Free(); }
 };
 
 class RenderBuffer : public GLObject
@@ -197,7 +197,7 @@ public:
 class ShaderProgram;
 class Texture;
 class Shader;
-class Renderer: public Singleton<Renderer>
+class Renderer : public Singleton<Renderer>
 {
     Window window;
     
@@ -206,7 +206,7 @@ class Renderer: public Singleton<Renderer>
     
     std::vector<mat4> modelview_matrix_stack;
 
-    // Optimization
+    // cache
     ShaderProgram *shader_program;
     unsigned int previous_vao;
     unsigned int previous_ib;
@@ -320,6 +320,7 @@ public:
     void DrawBuffer(const VertexBuffer *vb);
     void DrawBuffer(const IndexBuffer* ib);
     void DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count);
+    void DrawElements(int type, int count, int value_type, void* indices);
     void Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
     void EnableBlend(BLEND_TYPE type);
     void DisableBlend();

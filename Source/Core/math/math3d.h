@@ -459,4 +459,12 @@ inline vec3 VertexTangentSpace(vec3& v0pos, vec3& v1pos, vec3& v2pos, vec2& v0te
     return normalize(v0t);
 }/**/
 
-#endif 
+inline float distance_to_line(vec3 point, vec3 line_a, vec3 line_b)
+{
+    float dx = line_a.x - line_b.x;
+    float dy = line_a.y - line_b.y;
+    float D = dx * (point.y - line_a.y) - dy * (point.x - line_a.x);
+    return D / sqrt(dx * dx + dy * dy);
+}
+
+#endif

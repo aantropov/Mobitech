@@ -139,7 +139,7 @@ public:
         render->EnableBlend(BT_ALPHA_BLEND);
         render->BindTexture(rt.GetTexture(), 0);
         render->DrawTriangles(vertices, colors, texcoords, 6);
-
+        
         font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
         render->DisableBlend();
     }

@@ -89,6 +89,7 @@
     <ClCompile Include="..\..\Core\math\frustum.cpp" />
     <ClCompile Include="..\..\Core\math\transform.cpp" />
     <ClCompile Include="..\..\Core\Mobitech.cpp" />
+    <ClCompile Include="..\..\Core\Physics.cpp" />
     <ClCompile Include="..\..\Core\Renderer.cpp" />
     <ClCompile Include="..\..\Core\Resources.cpp" />
     <ClCompile Include="..\..\Core\tinyxml\tinystr.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="..\..\Core\math\vec3.h" />
     <ClInclude Include="..\..\Core\math\vec4.h" />
     <ClInclude Include="..\..\Core\Mobitech.h" />
+    <ClInclude Include="..\..\Core\Physics.h" />
     <ClInclude Include="..\..\Core\Renderer.h" />
     <ClInclude Include="..\..\Core\Resources.h" />
     <ClInclude Include="..\..\Core\tinyxml\tinystr.h" />
