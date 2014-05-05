@@ -81,15 +81,21 @@ bool IntersectAABB(AABB *a, AABB *b)
 }
 
 // [res.x,res.y] - interval of projection Poly to Vector
-vec3 Projection(vector<vec3> &a, vec3 b){
+vec3 Projection(vector<vec3> &poly, vec3 point, vec3& min_point, vec3& max_point){
 	vec3 res;
-    res.y = res.x = projection(a[0], b);
-    for(int i = 1; i < a.size() ; i++){
-		double temp = projection(a[i], b);
+    res.y = res.x = projection(poly[0], point);
+    for(int i = 1; i < poly.size() ; i++){
+		double temp = projection(poly[i], point);
 		if(temp < res.x)
+        {
 			res.x = temp;
+            min_point = poly[i];
+        }
         if(temp > res.y)
+        {
 			res.y = temp;
+            max_point = poly[i];
+        }
 	}
 	return res;
 }
@@ -132,10 +138,12 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
     double proj = 0.0;
     double p = 0.0;
 
+    vec3 min_max_points[4];
+
     for(int i = 0; i < psa.size(); i++)
     {
-		vec3 r1 = Projection(transformed_a, psa[i]);
-		vec3 r2 = Projection(transformed_b, psa[i]);
+		vec3 r1 = Projection(transformed_a, psa[i], min_max_points[0], min_max_points[1]);
+		vec3 r2 = Projection(transformed_b, psa[i], min_max_points[2], min_max_points[3]);
 		
 		if(r1.y < r2.x)
 			return false;
@@ -145,7 +153,7 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 		
         if(r2.x < r1.y && r1.y < r2.y)
         {
-			if((min_index == -1 && r1.y - r2.x > 0) ||(min > r1.y - r2.x && r1.y - r2.x > 0))
+			if((min_index == -1 && r1.y - r2.x > 0) || (min > r1.y - r2.x && r1.y - r2.x > 0))
             {
 				min = r1.y - r2.x;
 				min_index = i;
@@ -154,18 +162,25 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 
 		if(r1.x < r2.y && r2.y < r1.y)
         {
-			if((min_index == -1 && r2.y - r1.x < 0) ||(min > r2.y - r1.x && r2.y - r1.x < 0))
+			if((min_index == -1 && r2.y - r1.x < 0) || (min > r2.y - r1.x && r2.y - r1.x < 0))
             {
 				min = r2.y - r1.x;
 				min_index = i;
 			}
 		}		
 	}
+
+//    if(min_index == -1)
+  //      return false;
+
+    Projection(transformed_a, psa[min_index], min_max_points[0], min_max_points[1]);
+    Projection(transformed_b, psa[min_index], min_max_points[2], min_max_points[3]);
+
 	c = psa[min_index];
 	d = fabs(min);
 
 	//result vector, lenght = intersection 
-    c *= d / length(c);
+    c *= d / length(c);   
 
 	bool a_intersect = false;
 	vector<vec3> *intersected_obj = &transformed_a;
@@ -181,7 +196,7 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 	
 	// intersect edge
 	vec3 p1 , p2;
-	if( min_index == intersected_obj->size() - 1)
+	if(min_index == intersected_obj->size() - 1)
     {
         p1 = (*intersected_obj)[intersected_obj->size()-1];	
         p2 = (*intersected_obj)[0];	
@@ -195,16 +210,19 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 	// intersect point
 	p2 = p2 - p1;
     double l = length(p2);
-	
-    for(int i = 0; i < intersect_obj->size(); i++)
+    float error = 999999.0f;
+    for(int i = 0; i < 4; i++)
     {
-        vec3 temp = (*intersect_obj)[i] - p1;
+        vec3 temp = min_max_points[i] - p1;
         double temp_proj = projection(temp, p2);
-        double dist = fabs(distance_to_line(temp, vec3(0.0f, 0.0f, 0.0f), p2));
-
-        if(-math_epsilon <= temp_proj && temp_proj <= l + math_epsilon && 
-            dist <= d + math_epsilon && dist >= d - math_epsilon)
-            contact = (*intersect_obj)[i];
+        double dist = fabs(distance_to_line(min_max_points[i], p1, p2));
+        float current_error = fabs(temp_proj - l) + fabs(dist - d);
+        if(current_error <= error)
+        {
+            contact = min_max_points[i];
+            error = current_error;
+        }
     }
+    
     return true;
 }

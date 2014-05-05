@@ -47,7 +47,7 @@ void RigidBody:: ApplyImpulse(vec2 point, vec2 normal, double impulse)
     vec2 dir = point - translation; //(x - (shape->x+shape->centre.x), y-(shape->y+shape->centre.y));
  
     velocity += normal * float(impulse * anti_mass);
-    rotation += impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion;
+    rotation += (impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion);
 }
 
 Physics* Physics::GetInstance()
@@ -105,13 +105,14 @@ void Physics::Update(double delta_time)
 					    physics_objects[i]->model.position += v * (physics_objects[j]->anti_mass/(physics_objects[j]->anti_mass+physics_objects[i]->anti_mass));
                     }
 
+                    v = normalize(v) * d;
 				    double impulse = CalculateImpulse(v, physics_objects[j], physics_objects[i], P);
 
 					physics_objects[i]->velocity = vec3_zero;
 					
                     if(physics_objects[i]->state != PO_STATIC)
 						physics_objects[i]->ApplyImpulse(P, v, -impulse);
-					if(physics_objects[j]->state != PO_STATIC)					
+					if(physics_objects[j]->state != PO_STATIC)	
 						physics_objects[j]->ApplyImpulse(P, v, impulse);
 
 					physics_objects[i]->OnCollide(physics_objects[j]);
@@ -120,6 +121,6 @@ void Physics::Update(double delta_time)
 		    }
 	    }
 
-   for(int i = 0; i < physics_objects.size(); i++)
-    physics_objects[i]->Tick(delta_time);
+    for(int i = 0; i < physics_objects.size(); i++)
+        physics_objects[i]->Tick(delta_time);
 }

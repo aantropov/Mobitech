@@ -13,18 +13,19 @@ class Asteroid : public RigidBody
 
 public:
     
-    Asteroid() : RigidBody(5.0, PO_DYNAMIC)
+    Asteroid() : RigidBody(20.0f, PO_DYNAMIC)
     {
         
         shape = new VertexBuffer();
-        unsigned int count = unirand(5, 7);
-        shape->Create(count);        
-        float size = unirand(10.0f, 50.0f);
-        
+        unsigned int count = unirand(3, 7);
+        shape->Create(count);
+        float size = unirand(50.0f, 50.0f);
+        float dispertion = 0.1f;
+
         for(int i = 0; i < count; i++)
         {            
             float angle = float(i) * (360.0f/float(count)) * math_radians;
-            ((Vertex*)shape->GetPointer())[i].pos = vec3(cosf(angle), sinf(angle), 0.0f) * size;
+            ((Vertex*)shape->GetPointer())[i].pos = vec3(cosf(angle) + unirand(-dispertion, dispertion), sinf(angle) + unirand(-dispertion, dispertion), 0.0f) * size;
             ((Vertex*)shape->GetPointer())[i].color = vec3_one;//vec3(unirand(0.5f, 1.0f), unirand(0.5f, 1.0f), unirand(0.5f, 1.0f));
             ((Vertex*)shape->GetPointer())[i].texcoord = vec2(cosf(angle) * 0.5f + 0.5f, sinf(angle)* 0.5f + 0.5f);
         }
@@ -59,6 +60,7 @@ public:
     virtual void OnCollide(RigidBody *body) {}
 };
 
+#define ASTEROIDS_COUNT 2
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
@@ -80,7 +82,7 @@ class GameScene : public Scene, IInputListener
     Texture *nebula_tile_2;
     Texture *background_stars;
 
-    Asteroid test_asteroid[2];
+    Asteroid test_asteroid[ASTEROIDS_COUNT];
 
 public:
 
@@ -129,9 +131,14 @@ public:
         
         render->ClearColor(vec4(0.3f, 0.3f, 0.3f, 0.0f));
 
-        test_asteroid[0].model.rotation = GLRotationZ(110.0f);//.velocity = -vec2_x * 30.0f;
-        test_asteroid[1].velocity = -vec2_x * 30.0f;
-        test_asteroid[1].model.position += vec3_x * 150.0f;
+        for(int i = 0; i < ASTEROIDS_COUNT; i++)
+        {
+            float angle = float(i) * (360.0f/float(ASTEROIDS_COUNT)) * math_radians;
+
+            test_asteroid[i].velocity = -vec2(cosf(angle), sinf(angle)) * unirand(50.0f, 100.0f);
+            test_asteroid[i].model.rotation = GLRotationZ(79.0f);
+            test_asteroid[i].model.position = vec3(cosf(angle), sinf(angle), 0.0f) * 300.0f;
+        }
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -167,11 +174,11 @@ public:
         test_animation->GetAnimationClip("banana_level2")->Draw(angle);
 
         
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < ASTEROIDS_COUNT; i++)
             test_asteroid[i].Draw();        
 
         render->EnableBlend(BT_ALPHA_BLEND);        
-        font->Print(0, 0, "ololo");
+        //font->Print(0, 0, "ololo");
         render->DisableBlend();
 
         rt.End();
@@ -199,7 +206,7 @@ public:
         render->BindTexture(rt.GetTexture(), 0);
         render->DrawTriangles(vertices, colors, texcoords, 6);
         
-        font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
+        //font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
         render->DisableBlend();
     }
 
