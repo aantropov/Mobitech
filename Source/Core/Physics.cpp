@@ -1,7 +1,7 @@
 #include "Physics.h"
 #include "math\bounds.h"
 
-RigidBody:: RigidBody(double mass, PO_State pst)
+RigidBody:: RigidBody(double mass, PHYSICS_OBJECT_STATE pst)
 {
     rotation = angular_force_summ = 0.0;
     this->mass =  mass;
@@ -50,6 +50,13 @@ void RigidBody:: ApplyImpulse(vec2 point, vec2 normal, double impulse)
     rotation += impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion;
 }
 
+Physics* Physics::GetInstance()
+{
+    if(instance == NULL)
+        instance = new Physics();        
+    return instance;
+}
+
 double Physics::CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point)
 {
     vec2 dir_m1 = vec2(point.x - m1->model.position.x, point.y - m1->model.position.y);
@@ -74,7 +81,7 @@ void Physics::Update(double delta_time)
     for(int i = 0; i <  physics_objects.size(); i++ )
 		for(int j = i+1; j <  physics_objects.size(); j++ )
         {
-            if(IntersectAABB(&physics_objects[i]->aabb,&physics_objects[j]->aabb))
+            if(IntersectAABB(&physics_objects[i]->aabb, &physics_objects[j]->aabb))
             {
 			    vec3 v;
 			    double d;
@@ -109,10 +116,10 @@ void Physics::Update(double delta_time)
 
 					physics_objects[i]->OnCollide(physics_objects[j]);
 					physics_objects[j]->OnCollide(physics_objects[i]);				
-			}
-		}
-	}
+			    }
+		    }
+	    }
 
-        for(int i = 0; i < physics_objects.size(); i++)
-            physics_objects[i]->Tick(delta_time);
+   for(int i = 0; i < physics_objects.size(); i++)
+    physics_objects[i]->Tick(delta_time);
 }

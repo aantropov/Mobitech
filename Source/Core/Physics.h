@@ -33,9 +33,10 @@ public:
     double elasticity;
 		
     VertexBuffer* shape;
-    PO_State state;
+    PHYSICS_OBJECT_STATE state;
 
-    RigidBody(double mass, PO_State pst);
+    //RigidBody() { }
+    RigidBody(double mass, PHYSICS_OBJECT_STATE pst);
     virtual ~RigidBody();
 
     void UpdatePosition(double dt);
@@ -49,14 +50,16 @@ public:
 class Physics : public Singleton<Physics>
 {
     std::vector<RigidBody*> physics_objects;
+    double CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point);
 
 public:
+
+    static Physics* GetInstance();
 
     Physics(): physics_objects() {}
     ~Physics() {}	
 
-	void Update(double delta_time);
-	double CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point);
+	void Update(double delta_time);	
     void RegisterRigidBody(RigidBody *rb) { physics_objects.push_back(rb); }
     void UnregisterRigidBody(RigidBody *rb) { std::remove(physics_objects.begin(), physics_objects.end(), rb); }
 };

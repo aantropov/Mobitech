@@ -29,6 +29,7 @@ public:
     virtual void* GetPointer() const { return (void*)indices; }
     virtual unsigned int GetNum() const { return num_indices; }
 
+    void Fill(GLenum type);
     virtual void Create(int num_faces);
     virtual bool Instantiate();
     virtual void Free();
@@ -36,8 +37,8 @@ public:
     void* Lock() const;
     void Unlock() const;
 
-    IndexBuffer(void);
-    virtual ~IndexBuffer(void);
+    IndexBuffer(void) { this->type = STATIC; indices = NULL; }
+    virtual ~IndexBuffer(void) { Free(); }
 };
 
 class VertexBuffer : public Buffer
@@ -57,7 +58,7 @@ public:
     void* Lock() const;
     void Unlock() const;
 
-    VertexBuffer(void) { num_vertices = 0; vertices = NULL; vao = NULL; }
+    VertexBuffer(void) { this->type = STATIC; num_vertices = 0; vertices = NULL; vao = NULL; }
     virtual ~VertexBuffer(void) { Free(); }
 };
 
@@ -260,7 +261,7 @@ public:
 
     void BindBuffer(const VertexBuffer *vb) const;
     void BindBuffer(const IndexBuffer *ib);
-    void UnbindBuffer(bool is_vertex_buffer) const;
+    void UnbindBuffer(bool is_vertex_buffer);
     
     int CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const;
     int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const;    

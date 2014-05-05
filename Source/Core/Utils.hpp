@@ -137,8 +137,8 @@ enum SHADER_TYPE
 
 enum BUFFER_TYPE
 {
-    STATIC,
-    DYNAMIC
+    STATIC = GL_STATIC_DRAW,
+    DYNAMIC = GL_DYNAMIC_DRAW
 };
 
 enum LOG_TYPE
@@ -148,7 +148,7 @@ enum LOG_TYPE
     LT_ERROR
 };
 
-enum PO_State
+enum PHYSICS_OBJECT_STATE
 {
 	PO_STATIC = 0,
 	PO_DYNAMIC
@@ -327,8 +327,8 @@ public:
 
 class Buffer: public GLObject
 {
+protected:
     BUFFER_TYPE type;
-
 public:
 
     virtual void* Lock() const = 0;

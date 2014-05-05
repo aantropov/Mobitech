@@ -9,17 +9,22 @@
 
 void AABB:: Calculate(VertexBuffer* p, mat4 model)
 {
-    for(int i = 0; i < p->GetNum(); i++)
+    vec3 point = model * ((Vertex*)p->GetPointer())[0].pos;
+    top_left = vec2(point.x, point.y);
+    bottom_right = top_left;
+
+    for(int i = 1; i < p->GetNum(); i++)
     {      
-        vec3 point = model * ((Vertex*)p->GetPointer())[i].pos;
+        point = model * ((Vertex*)p->GetPointer())[i].pos;       
+
         if(point.x < top_left.x)
 			top_left.x = point.x;
-		if(point.x > right_down.x)
-			right_down.x = point.x;
-		if(point.y < top_left.y)
+		if(point.x > bottom_right.x)
+			bottom_right.x = point.x;
+		if(point.y > top_left.y)
 			top_left.y = point.y;
-		if(point.y > right_down.y)
-			right_down.y = point.y;
+		if(point.y < bottom_right.y)
+			bottom_right.y = point.y;
     }
 }
 
@@ -59,7 +64,7 @@ bool IntersectConvexShapePoint(VertexBuffer* buffer, mat4 model, vec3* point)
     double summ = 0;
 	for(int i = 1; i< buffer->GetNum() ; i++)
     {
-		b = ((Vertex*)buffer->GetPointer())[i] - model_space_point;
+        b = ((Vertex*)buffer->GetPointer())[i].pos - model_space_point;
         summ += dot(a,b);
 		a = b;	
 	}
@@ -69,7 +74,10 @@ bool IntersectConvexShapePoint(VertexBuffer* buffer, mat4 model, vec3* point)
 
 bool IntersectAABB(AABB *a, AABB *b)
 {
-    return a->right_down.x < b->top_left.x || b->right_down.x < a->top_left.x || a->right_down.y < b->top_left.y || b->right_down.y < a->top_left.y;
+    if(a->top_left.x > b->top_left.x)
+        return IntersectAABB(b, a);
+
+    return a->bottom_right.x > b->top_left.x  && !(a->bottom_right.y > b->top_left.y || b->bottom_right.y > a->top_left.y);
 }
 
 // [res.x,res.y] - interval of projection Poly to Vector
@@ -107,12 +115,12 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 	}
 
     vec3 last = transformed_a[0] - transformed_a[transformed_a.size()-1];
-	psa.push_back(GLRotationZ(90.0f) * last);
+	psa.push_back(normalize(GLRotationZ(90.0f) * last));
 	
     for(int i = 0; i < transformed_b.size()- 1; i++)
     {
 		vec3 temp = transformed_b[i+1] - transformed_b[i];
-        psa.push_back(GLRotationZ(90.0f) * temp);
+        psa.push_back(normalize(GLRotationZ(90.0f) * temp));
 	}
 
     last = transformed_b[0] - transformed_b[transformed_b.size()-1];

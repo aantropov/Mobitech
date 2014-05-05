@@ -72,8 +72,11 @@ void Engine::OneFrame()
     current_tick = GetTimeMS();
     delta_time += current_tick - begin_frame_time;
 
+    double delta = ((double)(current_tick - begin_frame_time))/1000.0;
+    Physics::GetInstance()->Update(delta);
+
     if(current_scene.get() != NULL)
-        current_scene->Update(((double)(current_tick - begin_frame_time))/1000.0);
+        current_scene->Update(delta);
 
     elapsed_time += ((float)(current_tick - begin_frame_time))/1000.0f;
     ++fps;

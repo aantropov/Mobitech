@@ -1,6 +1,7 @@
 #ifndef _BOUNDS_H_
 #define _BOUNDS_H_
 
+#include "vec2.h"
 #include "vec3.h"
 
 struct sphere
@@ -16,7 +17,7 @@ class VertexBuffer;
 struct AABB
 {
 	vec2 top_left;
-	vec2 right_down;
+	vec2 bottom_right;
     	
 	void Calculate(VertexBuffer* p, mat4 model);
 };

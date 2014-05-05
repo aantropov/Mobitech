@@ -43,6 +43,7 @@ using namespace std;
 #include "font\bmfont.h"
 #include "resources.h"
 #include "renderer.h"
+#include "physics.h"
 #include "2dgameanimation\Animation.h"
 
 #ifdef MOBITECH_ANDROID

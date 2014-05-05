@@ -4,6 +4,61 @@ float vertices[] = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
 float texcoords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
                       1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
 
+
+class Asteroid : public RigidBody
+{
+    IndexBuffer index_buffer;
+    Texture* texture;
+    ShaderProgram* shader;
+
+public:
+    
+    Asteroid() : RigidBody(5.0, PO_DYNAMIC)
+    {
+        
+        shape = new VertexBuffer();
+        unsigned int count = unirand(5, 7);
+        shape->Create(count);        
+        float size = unirand(10.0f, 50.0f);
+        
+        for(int i = 0; i < count; i++)
+        {            
+            float angle = float(i) * (360.0f/float(count)) * math_radians;
+            ((Vertex*)shape->GetPointer())[i].pos = vec3(cosf(angle), sinf(angle), 0.0f) * size;
+            ((Vertex*)shape->GetPointer())[i].color = vec3_one;//vec3(unirand(0.5f, 1.0f), unirand(0.5f, 1.0f), unirand(0.5f, 1.0f));
+            ((Vertex*)shape->GetPointer())[i].texcoord = vec2(cosf(angle) * 0.5f + 0.5f, sinf(angle)* 0.5f + 0.5f);
+        }
+        shape->Instantiate();
+
+        index_buffer.Create(count-2);
+        index_buffer.Fill(GL_TRIANGLE_FAN);
+        index_buffer.Instantiate();
+
+        shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\asteroid.png", RT_TEXTURE));
+
+        OPENGL_CHECK_FOR_ERRORS();
+    }
+    
+    void Draw()
+    {
+        Renderer *render = Renderer::GetInstance();
+        
+        render->SetupCameraForShaderProgram(shader, model.matrix());
+        render->BindTexture(texture, 0);
+
+        render->BindBuffer(shape);
+        render->BindBuffer(&index_buffer);
+        render->DrawBuffer(&index_buffer);
+        render->UnbindBuffer(true);
+        render->UnbindBuffer(false);
+    }
+
+    ~Asteroid() { delete shape; }
+
+    virtual void OnCollide(RigidBody *body) {}
+};
+
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
@@ -25,6 +80,8 @@ class GameScene : public Scene, IInputListener
     Texture *nebula_tile_2;
     Texture *background_stars;
 
+    Asteroid test_asteroid[2];
+
 public:
 
     GameScene()
@@ -35,7 +92,7 @@ public:
 
         float h = 600.0f;
         float w = (h * render->GetWidth()) /render->GetHeight();
-        camera.Create(-400.0f, -200.0f, 0.0f);
+        camera.Create(-render->GetWidth()/2.0f, -render->GetHeight()/2.0f, 0.0f);
         camera.Ortho(0.0f, w, 0.0f, h, 0.0f, 1000.0f);
                 
         test_camera.Create(0.0f, 0.0f, 0.0f);
@@ -70,7 +127,11 @@ public:
         rt.Initialize(render->GetWidth(), render->GetHeight());
         rt.GetTexture()->name = "text";
         
-        render->ClearColor(vec4(0.0f, 0.0f, 0.0f, 0.0f));
+        render->ClearColor(vec4(0.3f, 0.3f, 0.3f, 0.0f));
+
+        test_asteroid[0].model.rotation = GLRotationZ(110.0f);//.velocity = -vec2_x * 30.0f;
+        test_asteroid[1].velocity = -vec2_x * 30.0f;
+        test_asteroid[1].model.position += vec3_x * 150.0f;
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -101,16 +162,14 @@ public:
         render->SetCurrentCamera(&camera);
         render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, mat4_identity);
-
-        test_animation->GetAnimationClip("banana_level4")->SetModel(GLScale(1.0f, -1.0f, 1.0f), false);
-        test_animation->GetAnimationClip("banana_level4")->Draw(angle);
-
-        test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-400, 200)), false);
-        test_animation->GetAnimationClip("banana_level2")->Draw(angle);
-           
-        test_animation->GetAnimationClip("banana_level3")->SetModel(GLScale(1.0f, -1.0f, 1.0f) * GLTranslation(vec2(-150, 150)), false);
-        test_animation->GetAnimationClip("banana_level3")->Draw(angle);/**/
         
+        test_animation->GetAnimationClip("banana_level2")->SetModel(GLScale(1.0f, -1.0f, 1.0f), false);
+        test_animation->GetAnimationClip("banana_level2")->Draw(angle);
+
+        
+        for(int i = 0; i < 2; i++)
+            test_asteroid[i].Draw();        
+
         render->EnableBlend(BT_ALPHA_BLEND);        
         font->Print(0, 0, "ololo");
         render->DisableBlend();

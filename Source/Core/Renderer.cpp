@@ -561,6 +561,7 @@ int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const
     OPENGL_CALL(glGenBuffers ( 1, &vbo ));
     glBindBuffer(GL_ARRAY_BUFFER , vbo );
     OPENGL_CALL(glBufferData(GL_ARRAY_BUFFER , size, vb->GetPointer(), state));
+    //glBufferSubData(GL_ARRAY_BUFFER, 0, size, vb->GetPointer());
 
     return vbo;
 }
@@ -568,11 +569,12 @@ int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const
 int Renderer::CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const
 {
     int size = ib->GetNum() * sizeof(unsigned int);
-
+    
     GLuint vbo;
     OPENGL_CALL(glGenBuffers ( 1, &vbo ));
-    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER , vbo );
-    OPENGL_CALL(glBufferData ( GL_ELEMENT_ARRAY_BUFFER , size, ib->GetPointer(), state));         
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , vbo );
+    OPENGL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER , size, ib->GetPointer(), state));         
+    //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, ib->GetPointer());
 
     return vbo;
 }
@@ -648,8 +650,21 @@ void Renderer::DrawBuffer(const VertexBuffer* vb)
 }
 
 void Renderer::DrawBuffer(const IndexBuffer* ib)
-{    
-    DrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL);    
+{   
+    OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.position));
+    OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.position, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)0));
+
+    OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.color));
+    OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.color, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(2*sizeof(vec3))));
+
+    OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.texcoords));
+    OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(3*sizeof(vec3))));
+
+    DrawElements(GL_TRIANGLES, ib->GetNum(), GL_UNSIGNED_INT, NULL);
+
+    glDisableVertexAttribArray(shader_program->attribute_locations.position);
+    glDisableVertexAttribArray(shader_program->attribute_locations.texcoords);
+    glDisableVertexAttribArray(shader_program->attribute_locations.color);
 }
 
 void Renderer::DrawElements(int type, int count, int value_type, void* indices)
@@ -706,7 +721,7 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
 
 void Renderer::BindBuffer(const VertexBuffer *vb) const
 {    
-    glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());    
+    glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());   
 }
 
 void Renderer::BindBuffer(const IndexBuffer *vb)
@@ -718,12 +733,17 @@ void Renderer::BindBuffer(const IndexBuffer *vb)
     }
 }
 
-void Renderer::UnbindBuffer(bool vertex_buffer) const
+void Renderer::UnbindBuffer(bool vertex_buffer)
 {
     if(vertex_buffer)
+    {        
         glBindBuffer ( GL_ARRAY_BUFFER , 0 ); 
+    }
     else
-        glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER , 0 ); 
+    {
+        glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER , 0 );
+        previous_ib = 0;
+    }
 }    
 
 int Renderer::CreateVAO() const
@@ -1109,33 +1129,92 @@ void Renderer::PrintDebugInfo()
     OPENGL_CHECK_FOR_ERRORS();
 }
 
-void* VertexBuffer::GetPointer() const 
+void* VertexBuffer:: GetPointer() const 
 { 
     return (void*)vertices; 
 }
 
-void VertexBuffer::Create(int num_vertices) 
-{ 
-    this->num_vertices = num_vertices; 
-    vertices = new Vertex[num_vertices](); 
+void VertexBuffer:: Create(int num_vertices)
+{
+    Free();
+    this->num_vertices = num_vertices;
+    vertices = new Vertex[num_vertices]();
 }
 
-VertexArrayObject* VertexBuffer::GetVAO() const 
+void IndexBuffer:: Create(int num_faces)
+{
+    Free();
+    num_indices = num_faces*3;
+    indices = new unsigned int[num_indices]();
+}
+        
+bool IndexBuffer:: Instantiate()
+{
+    _id = -1;
+    _id = Renderer::GetInstance()->CreateVBO(this, type);
+    return (_id != -1);
+}
+
+void* IndexBuffer:: Lock() const
+{
+    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
+    glBufferData(GL_ARRAY_BUFFER, num_indices * sizeof(indices), 0, GL_STREAM_DRAW_ARB);
+    unsigned int* pBuffer = (unsigned int*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);            
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    return pBuffer;
+}
+
+void IndexBuffer:: Unlock() const
+{        
+    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
+    GLboolean result = glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void IndexBuffer::Fill(GLenum type)
 { 
-    return vao; 
+    if(type == GL_TRIANGLE_FAN)
+    {
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+
+        for(int i = 1; i < num_indices / 3; i++)
+        {
+            indices[i*3 + 0] = 0;
+            indices[i*3 + 1] = indices[(i-1)*3 + 2];
+            indices[i*3 + 2] = indices[i*3 + 1] + 1;
+        }
+    }
+    else if (type == GL_TRIANGLES)
+    {
+        for(int i = 0; i < num_indices; i++)
+            indices[i] = i;
+    }   
+}
+
+void IndexBuffer::Free()
+{
+    if(_id != -1)
+        Renderer::GetInstance()->DeleteVBO(this);
+    _id = -1;
+
+    if(indices != NULL)
+        delete[] indices;
 }
 
 bool VertexBuffer::Instantiate()
 {
-    vao = new VertexArrayObject();
-    vao->Instantiate();
+    //vao = new VertexArrayObject();
+    //vao->Instantiate();
     
-    Renderer::GetInstance()->BindVAO(this);
+    //Renderer::GetInstance()->BindVAO(this);
 
     _id = -1;
-    _id = Renderer::GetInstance()->CreateVBO(this, STATIC);
+    _id = Renderer::GetInstance()->CreateVBO(this, type);
 
-    return (_id != -1) && (vao->GetId() != -1);
+    return (_id != -1);// && (vao->GetId() != -1);
 }
 
 void VertexBuffer::Free()
