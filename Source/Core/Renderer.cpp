@@ -617,7 +617,6 @@ void Renderer::DrawTransform(::transform xf) const
 
 void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color)  const
 {
-
     /*GLfloat glverts[24];
     glVertexPointer(3, GL_FLOAT, 0, glverts);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -635,6 +634,18 @@ void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const 
     glLineWidth(3);
     glColor4f(1, 0, 1, 1 );
     glDrawArrays(GL_LINE_LOOP, 0, vertex_count);*/
+}
+void Renderer::DebugDrawLine(vec2 start, vec2 end, vec3 color)
+{
+    glLineWidth(3);
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(color.x, color.y, color.z);
+    glBegin(GL_LINES);
+		glVertex2d(start.x, start.y);
+		glVertex2d(end.x, end.y);
+	glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glEnable(GL_TEXTURE_2D);
 }
 
 void Renderer::DrawArrays(int type, int a, int b)

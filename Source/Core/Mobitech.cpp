@@ -20,7 +20,7 @@ bool Engine::Initialize()
 {
     elapsed_time = 0;
     fps = 0;
-
+    
     if(Window::IsRunning())
         return true;
 
@@ -73,6 +73,7 @@ void Engine::OneFrame()
     delta_time += current_tick - begin_frame_time;
 
     double delta = ((double)(current_tick - begin_frame_time))/1000.0;
+    
     Physics::GetInstance()->Update(delta);
 
     if(current_scene.get() != NULL)

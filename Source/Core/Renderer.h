@@ -314,6 +314,7 @@ public:
     void UniformMatrix4(unsigned int location, unsigned int num , float *variable) const;
     void UniformMatrix3(unsigned int location, unsigned int num , float *variable) const;
 
+    void DebugDrawLine(vec2 start, vec2 end, vec3 color);
     void DrawSegment(const vec3& p1, const vec3& p2, const vec3& color) const;
     void DrawTransform(::transform xf) const;
     void DrawSolidPolygon(const Vertex* vertices, int vertex_count, const vec4 color) const;

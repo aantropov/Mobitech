@@ -21,6 +21,7 @@ public:
     ::transform model;
 
 	vec2 velocity;
+    double rotation1;
     double rotation;
     double mass;
     double inertion;

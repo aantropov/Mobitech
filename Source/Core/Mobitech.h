@@ -66,10 +66,11 @@ class Engine : public Singleton<Engine>
 {
     unsigned int fps;
     float elapsed_time;
+    
     std::tr1::shared_ptr<Scene> current_scene;
         
     unsigned long long delta_time, begin_frame_time, fixed_time_step;  
-    Engine(): APK_ROOT("") { }
+    Engine(): APK_ROOT("") {}
 
 public:
   

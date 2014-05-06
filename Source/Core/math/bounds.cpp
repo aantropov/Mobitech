@@ -101,7 +101,7 @@ vec3 Projection(vector<vec3> &poly, vec3 point, vec3& min_point, vec3& max_point
 }
 
 //Separeting Axis Theorem
-bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 model_b, vec3 &contact, vec3 &c, double &d)
+bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 model_b, vec3 &contact_point, vec3 &contact_normal)
 {
 	// potential separating axis
 	vector<vec3> psa; 
@@ -134,9 +134,7 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 
 	//check axies
 	int min_index = -1;
-	double min = 0.0;
-    double proj = 0.0;
-    double p = 0.0;
+	double min = 0.0;   
 
     vec3 min_max_points[4];
 
@@ -176,12 +174,10 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
     Projection(transformed_a, psa[min_index], min_max_points[0], min_max_points[1]);
     Projection(transformed_b, psa[min_index], min_max_points[2], min_max_points[3]);
 
-	c = psa[min_index];
-	d = fabs(min);
-
-	//result vector, lenght = intersection 
-    c *= d / length(c);   
-
+    //result vector, lenght = intersection
+    float contact_normal_lenght = fabs(min);
+    contact_normal = normalize(psa[min_index]) * contact_normal_lenght;
+    
 	bool a_intersect = false;
 	vector<vec3> *intersected_obj = &transformed_a;
 	vector<vec3> *intersect_obj = &transformed_b;
@@ -211,15 +207,16 @@ bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 m
 	p2 = p2 - p1;
     double l = length(p2);
     float error = 999999.0f;
+ 
     for(int i = 0; i < 4; i++)
     {
         vec3 temp = min_max_points[i] - p1;
         double temp_proj = projection(temp, p2);
         double dist = fabs(distance_to_line(min_max_points[i], p1, p2));
-        float current_error = fabs(temp_proj - l) + fabs(dist - d);
+        float current_error = fabs(temp_proj - l) + fabs(dist - contact_normal_lenght);
         if(current_error <= error)
         {
-            contact = min_max_points[i];
+            contact_point = min_max_points[i];
             error = current_error;
         }
     }
