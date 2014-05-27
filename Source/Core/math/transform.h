@@ -1,5 +1,7 @@
 #ifndef _TRANSFORM_H_
 #define _TRANSFORM_H_
+#include "vec4.h"
+#include "quat.h"
 
 struct vec2;
 struct vec3;

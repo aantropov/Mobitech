@@ -3,6 +3,7 @@
 
 #include "vec2.h"
 #include "vec3.h"
+#include "transform.h"
 
 struct sphere
 {
@@ -22,9 +23,9 @@ struct AABB
 	void Calculate(VertexBuffer* p, mat4 model);
 };
 
-bool IntersectConvexShape(VertexBuffer* a, mat4 model_a, VertexBuffer* b, mat4 model_b, vec3 &contact_point, vec3 &contact_normal);
+bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b, ::transform model_b, vec3 &contact_point, vec3 &contact_normal);
 bool IntersectAABB(AABB *a, AABB *b);
 bool IntersectConvexShapePoint(VertexBuffer* buffer, mat4 model, vec3* point);
-bool IntersectLine(vec3* a1, vec3* a2, vec3* b1, vec3* b2,vec3* c);
+bool IntersectLine(const vec3* a1, const vec3* a2, const vec3* b1, const vec3* b2, vec3* c);
 
 #endif //__H_

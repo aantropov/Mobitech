@@ -16,7 +16,7 @@ RigidBody:: RigidBody(double mass, PHYSICS_OBJECT_STATE pst)
 
     rotation1 = 0;
     
-    //Physics::GetInstance()->RegisterRigidBody(this);
+    Physics::GetInstance()->RegisterRigidBody(this);
 }
 
 RigidBody:: ~RigidBody()
@@ -51,7 +51,7 @@ void RigidBody:: ApplyImpulse(vec2 point, vec2 normal, double impulse)
     vec2 dir = point - model.position; //(x - (shape->x+shape->centre.x), y-(shape->y+shape->centre.y));
  
     velocity += normal * float(impulse * anti_mass);
-    //rotation += (impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion);
+    rotation += (impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion);
 }
 
 Physics* Physics::GetInstance()
@@ -61,7 +61,6 @@ Physics* Physics::GetInstance()
     return instance;
 }
 
-static DWORD tick = 0;
 double Physics::CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point)
 {    
     vec2 dir_m1 = vec2(point.x - m1->model.position.x, point.y - m1->model.position.y);
@@ -83,9 +82,6 @@ double Physics::CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2
 
 void Physics::Update(double delta_time)
 {
-    if(GetTickCount() - tick < 7)
-		return;
-
     for(int i = 0; i <  physics_objects.size(); i++ )
 		for(int j = i+1; j <  physics_objects.size(); j++ )
         {
@@ -94,7 +90,7 @@ void Physics::Update(double delta_time)
 			    vec3 contact_normal;
 			    vec3 contact_point;
 			
-                if(IntersectConvexShape(physics_objects[i]->shape, physics_objects[i]->model.matrix(), physics_objects[j]->shape, physics_objects[j]->model.matrix(), contact_point, contact_normal))
+                if(IntersectConvexShape(physics_objects[i]->shape, physics_objects[i]->model, physics_objects[j]->shape, physics_objects[j]->model, contact_point, contact_normal))
                 {
 				    if(physics_objects[i]->state == PO_STATIC && physics_objects[j]->state != PO_STATIC)
                         physics_objects[j]->model.position -= contact_normal;
@@ -114,8 +110,8 @@ void Physics::Update(double delta_time)
 					        physics_objects[i]->model.position += contact_normal * (physics_objects[i]->anti_mass / summ_antimass);
                         }
                     }
-				    
-                    double impulse = CalculateImpulse(contact_normal, physics_objects[i], physics_objects[j], contact_point);
+
+                    double impulse = CalculateImpulse(contact_normal, physics_objects[j], physics_objects[i], contact_point);
                     
                     if(physics_objects[i]->state != PO_STATIC)
 						physics_objects[i]->ApplyImpulse(contact_point, contact_normal, -impulse);
@@ -123,13 +119,11 @@ void Physics::Update(double delta_time)
 						physics_objects[j]->ApplyImpulse(contact_point, contact_normal, impulse);
 
 					physics_objects[i]->OnCollide(physics_objects[j]);
-					physics_objects[j]->OnCollide(physics_objects[i]);				
+					physics_objects[j]->OnCollide(physics_objects[i]);
 			    }
 		    }
 	    }
 
     for(int i = 0; i < physics_objects.size(); i++)
         physics_objects[i]->Tick(delta_time);
-
-    tick = GetTickCount();
 }
