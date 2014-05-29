@@ -21,7 +21,6 @@ public:
     ::transform model;
 
 	vec2 velocity;
-    double rotation1;
     double rotation;
     double mass;
     double inertion;
@@ -51,13 +50,16 @@ public:
 class Physics : public Singleton<Physics>
 {
     std::vector<RigidBody*> physics_objects;
-    double CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point);
+    double CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point);    
+    double last_physics_update;
 
 public:
+    
+    double update_time;
 
     static Physics* GetInstance();
 
-    Physics(): physics_objects() {}
+    Physics(): last_physics_update(0.0), update_time(0.0), physics_objects() {}
     ~Physics() {}	
 
 	void Update(double delta_time);	

@@ -107,44 +107,42 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 	vector<vec3> psa; 
     
 	vector<vec3> transformed_a;    
-    for(int i = 0; i< a->GetNum(); i++)
+    for(int i = 0; i < a->GetNum(); i++)
     {
         vec3 pos = model_a.matrix() * ((Vertex*)a->GetPointer())[i].pos;
         transformed_a.push_back(pos);
     }
 
     vector<vec3> transformed_b;
-    for(int i = 0; i< b->GetNum(); i++)
+    for(int i = 0; i < b->GetNum(); i++)
     {
         vec3 pos = model_b.matrix() * ((Vertex*)b->GetPointer())[i].pos;
         transformed_b.push_back(pos);
     }
        
-    for(int i = 0; i < transformed_a.size()- 1; i++)
+    for(int i = 0; i < transformed_a.size() - 1; i++)
     {
 		vec3 temp = transformed_a[i+1] - transformed_a[i];
-        psa.push_back(normalize(vec3(-temp.y,temp.x, 0.0f)));
+        psa.push_back(normalize(vec3(-temp.y, temp.x, 0.0f)));
 	}
 
     vec3 last = transformed_a[0] - transformed_a[transformed_a.size()-1];
-	psa.push_back(normalize(vec3(-last.y,last.x, 0.0f)));
+	psa.push_back(normalize(vec3(-last.y, last.x, 0.0f)));
 	
     for(int i = 0; i < transformed_b.size()- 1; i++)
     {
 		vec3 temp = transformed_b[i+1] - transformed_b[i];
-        psa.push_back(normalize(vec3(-temp.y,temp.x, 0.0f)));
+        psa.push_back(normalize(vec3(-temp.y, temp.x, 0.0f)));
 	}
 
     last = transformed_b[0] - transformed_b[transformed_b.size()-1];
-	psa.push_back(normalize(vec3(-last.y,last.x, 0.0f)));
+	psa.push_back(normalize(vec3(-last.y, last.x, 0.0f)));
 
 	//check axies
 	int min_index = -1;
 	double min = 0.0;   
 
     vec3 min_max_points[4];
-    bool intersect_object_is_left = false;
-    vec3 dir = model_a.position - model_b.position;
     for(int i = 0; i < psa.size(); i++)
     {
 		vec3 r1 = Projection(transformed_a, psa[i], min_max_points[0], min_max_points[1]);
@@ -160,7 +158,6 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
         {
             if((min_index == -1 && r1.y - r2.x > 0) || (min > r1.y - r2.x && r1.y - r2.x > 0))
             {
-                intersect_object_is_left = true;
 				min = r1.y - r2.x;
 				min_index = i;
 			}
@@ -170,23 +167,22 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
         {
 			if((min_index == -1 && r2.y - r1.x < 0) || (min > r2.y - r1.x && r2.y - r1.x < 0))
             {
-                intersect_object_is_left = false;
 				min = r2.y - r1.x;
 				min_index = i;
 			}
-		}		
+		}
 	}
 
 //    if(min_index == -1)
   //      return false;
 
-    Projection(transformed_a, psa[min_index], min_max_points[0], min_max_points[1]);
-    Projection(transformed_b, psa[min_index], min_max_points[2], min_max_points[3]);
-
     //result vector, lenght = intersection
     float contact_normal_lenght = fabs(min);
-    contact_normal = -psa[min_index] * contact_normal_lenght;
+    contact_normal = psa[min_index] * contact_normal_lenght;
     
+    //initialize
+    contact_point = (model_a.position + model_b.position) * 0.5f;
+
 	bool a_intersect = false;
 	vector<vec3> *intersected_obj = &transformed_a;
 	vector<vec3> *intersect_obj = &transformed_b;
@@ -226,6 +222,8 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
         double dist = fabs(distance_to_line(temp, vec3_zero, p2));
 		float current_error = fabs(dist - contact_normal_lenght);
         
+        float eps = 0.2f;
+        //if( -eps <= temp_proj && temp_proj <= l+eps && dist <= contact_normal_lenght + eps && dist >= contact_normal_lenght - eps)
         if(current_error <= error && -math_epsilon < temp_proj && temp_proj < l + math_epsilon)
         {
             contact_point = (*intersect_obj)[i];

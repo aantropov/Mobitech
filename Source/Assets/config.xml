@@ -2,5 +2,6 @@
 <config>
 <platform name="win32">
 <display width="800" height="600" fullscreen="0" vsync="0"/>
+<physics update_time="0.0001f">
 </platform>
 </config>

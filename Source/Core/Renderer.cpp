@@ -1071,6 +1071,10 @@ bool Renderer::Initialize()
                 fullscreen = atoi(display->Attribute("fullscreen")) == 1;
                 vsync = atoi(display->Attribute("vsync")) == 1;
             }
+            
+            TiXmlElement *physics = platform->FirstChildElement("physics");
+            if (physics)
+                Physics::GetInstance()->update_time = atof(physics->Attribute("update_time"));
             break;
         }
     }

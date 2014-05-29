@@ -12,12 +12,12 @@ class Asteroid : public RigidBody
 
 public:
     
-    Asteroid() : RigidBody(10000.0f, PO_DYNAMIC)
+    Asteroid() : RigidBody(200.0f, PO_DYNAMIC)
     {
         shape = new VertexBuffer();
-        unsigned int count = unirand(3, 7);
+        unsigned int count = unirand(7, 11);
         shape->Create(count);
-        float size = unirand(50.0f, 50.0f);
+        float size = unirand(10.0f, 50.0f);
         float dispertion = 0.2f;
 
         for(int i = 0; i < count; i++)
@@ -29,7 +29,7 @@ public:
         }
         shape->Instantiate();
 
-        index_buffer.Create(count-2);
+        index_buffer.Create(count - 2);
         index_buffer.Fill(GL_TRIANGLE_FAN);
         index_buffer.Instantiate();
 
@@ -58,7 +58,7 @@ public:
     virtual void OnCollide(RigidBody *body) {}
 };
 
-#define ASTEROIDS_COUNT 3
+#define ASTEROIDS_COUNT 10
 class GameScene : public Scene, IInputListener
 {
     ShaderProgram* shader;
@@ -133,11 +133,11 @@ public:
         {
             float angle = float(i) * (360.0f/float(ASTEROIDS_COUNT)) * math_radians;
 
-            test_asteroid[i].velocity = -vec2(cosf(angle), sinf(angle)) * unirand(100.0f, 300.0f);
-            test_asteroid[i].rotation = 35.0f;
-            test_asteroid[i].model.rotation = GLRotationZ(79.0f);
+            test_asteroid[i].velocity = -vec2(cosf(angle), sinf(angle)) * unirand(50.0f, 350.0f);
+            test_asteroid[i].rotation = 15.0f;
+            //test_asteroid[i].model.rotation = GLRotationZ(79.0f);
             test_asteroid[i].model.position = vec3(cosf(angle), sinf(angle), 0.0f) * 300.0f;
-            test_asteroid[i].elasticity = 0.01f;
+            test_asteroid[i].elasticity = 0.005f;
         }
     }
 
@@ -149,7 +149,7 @@ public:
         if(angle >= 1.0f)
             angle = 0.0f;
 
-        background_rotation += dt * 2.0f;//* 0.1f;
+        background_rotation += dt * 2.0f;
         if(background_rotation >= 360.0f)
             background_rotation = 0.0f;
     }
