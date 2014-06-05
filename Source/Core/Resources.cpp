@@ -327,7 +327,7 @@ bool Texture::Instantiate()
     if(_id != -1)
         Renderer::GetInstance()->DeleteTexture(this);
     glGenTextures(1, (GLuint*)&_id);
-    return Renderer::GetInstance()->CreateTexture(this);
+    return Renderer::GetInstance()->CreateTexture(this) > 0;
 }
 
 bool Texture::Load(const std::string path)

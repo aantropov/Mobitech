@@ -14,6 +14,7 @@ RigidBody:: RigidBody(double mass, PHYSICS_OBJECT_STATE pst)
     anti_inertion = 1.0 / inertion;
     shape = NULL;
 
+    Physics::GetInstance()->UnregisterRigidBody(this);
     Physics::GetInstance()->RegisterRigidBody(this);
 }
 
@@ -24,14 +25,14 @@ RigidBody:: ~RigidBody()
 
 void RigidBody:: UpdatePosition(double dt)
 {
-    model.rotation *= quat(GLRotationZ(rotation * dt));
-    model.position += vec4(velocity.x, velocity.y, 0.0f, 0.0f) * dt;
+    model.rotation *= quat(GLRotationZ((float)(-rotation * dt)));
+    model.position += vec4(velocity.x, velocity.y, 0.0f, 0.0f) * (float)dt;
 }
 
 void RigidBody:: UpdateSpeed(double dt)
 {
-    velocity += force_summ * anti_mass * dt;
-    rotation += angular_force_summ * anti_inertion * dt;
+    velocity += force_summ * (float)(anti_mass * dt);
+    rotation += (float)(angular_force_summ * anti_inertion * dt);
 }
 
 void RigidBody:: Tick(double dt)
@@ -45,13 +46,13 @@ void RigidBody:: ApplyImpulse(vec2 point, vec2 normal, double impulse)
 {
     vec2 dir = point - model.position;
     velocity += normal * float(impulse * anti_mass);
-    rotation += (impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion);
+    rotation += impulse * (normal.y * dir.x - normal.x * dir.y) * anti_inertion;
 }
 
 Physics* Physics::GetInstance()
 {
     if(instance == NULL)
-        instance = new Physics();        
+        instance = new Physics();
     return instance;
 }
 
@@ -81,15 +82,15 @@ void Physics::Update(double delta_time)
     if(last_physics_update < update_time)
         return;
 
-    for(int i = 0; i <  physics_objects.size(); i++ )
-		for(int j = i+1; j <  physics_objects.size(); j++ )
+    for(unsigned int i = 0; i <  physics_objects.size(); i++ )
+		for(unsigned int j = i+1; j <  physics_objects.size(); j++ )
         {
             if(IntersectAABB(&physics_objects[i]->aabb, &physics_objects[j]->aabb))
             {
 			    vec3 contact_normal;
 			    vec3 contact_point;
 			
-                if(IntersectConvexShape(physics_objects[j]->shape, physics_objects[j]->model, physics_objects[i]->shape, physics_objects[i]->model, contact_point, contact_normal))
+                if(IntersectConvexShape(physics_objects[i]->shape, physics_objects[i]->model, physics_objects[j]->shape, physics_objects[j]->model, contact_point, contact_normal))
                 {
 				    if(physics_objects[i]->state == PO_STATIC && physics_objects[j]->state != PO_STATIC)
                         physics_objects[j]->model.position -= contact_normal;
@@ -104,9 +105,9 @@ void Physics::Update(double delta_time)
 					    }
                         else
                         {
-                            float summ_antimass = physics_objects[j]->anti_mass + physics_objects[i]->anti_mass;
-					        physics_objects[j]->model.position -= contact_normal * (physics_objects[j]->anti_mass / summ_antimass);
-					        physics_objects[i]->model.position += contact_normal * (physics_objects[i]->anti_mass / summ_antimass);
+                            float summ_antimass = (float)(physics_objects[j]->anti_mass + physics_objects[i]->anti_mass);
+					        physics_objects[j]->model.position -= contact_normal * (float)(physics_objects[j]->anti_mass / summ_antimass);
+					        physics_objects[i]->model.position += contact_normal * (float)(physics_objects[i]->anti_mass / summ_antimass);
                         }
                     }
 
@@ -123,7 +124,7 @@ void Physics::Update(double delta_time)
 		    }
 	    }
 
-    for(int i = 0; i < physics_objects.size(); i++)
+    for(unsigned int i = 0; i < physics_objects.size(); i++)
         physics_objects[i]->Tick(last_physics_update);
 
     last_physics_update = 0;

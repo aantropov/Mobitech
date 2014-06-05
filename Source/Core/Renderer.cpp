@@ -637,6 +637,7 @@ void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const 
 }
 void Renderer::DebugDrawLine(vec2 start, vec2 end, vec3 color)
 {
+#ifdef MOBITECH_WIN32
     glLineWidth(3);
     glDisable(GL_TEXTURE_2D);
     glColor3f(color.x, color.y, color.z);
@@ -646,6 +647,7 @@ void Renderer::DebugDrawLine(vec2 start, vec2 end, vec3 color)
 	glEnd();
     glColor3f(1.0f, 1.0f, 1.0f);
     glEnable(GL_TEXTURE_2D);
+#endif
 }
 
 void Renderer::DrawArrays(int type, int a, int b)
@@ -759,7 +761,7 @@ void Renderer::UnbindBuffer(bool vertex_buffer)
 
 int Renderer::CreateVAO() const
 {
-    GLuint vao;
+    GLuint vao = -1;
     //OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
     //glBindVertexArray( vao );        
     return vao;
@@ -1102,7 +1104,7 @@ bool Renderer::Initialize()
 
     float aspectRatio = (float)width / (float)height;
     main_camera.Create(0.0f, 1.0f, 0.0f);
-    main_camera.Ortho(0, width, 0, height, 0.0f, 10.0f);// Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
+    main_camera.Ortho(0.0f, (float)width, 0.0f, (float)height, 0.0f, 10.0f);// Perspective(45.0f, aspectRatio, 0.001f, 1000.0f);
 
     SetCurrentCamera(&main_camera);
 
@@ -1172,19 +1174,24 @@ bool IndexBuffer:: Instantiate()
 
 void* IndexBuffer:: Lock() const
 {
+    unsigned int* pBuffer = NULL;
+
+#ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
     glBufferData(GL_ARRAY_BUFFER, num_indices * sizeof(indices), 0, GL_STREAM_DRAW_ARB);
-    unsigned int* pBuffer = (unsigned int*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);            
+    pBuffer = (unsigned int*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);            
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+#endif
     return pBuffer;
 }
 
 void IndexBuffer:: Unlock() const
-{        
+{     
+#ifdef MOBITECH_WIN32
     glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
     GLboolean result = glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
 }
 
 void IndexBuffer::Fill(GLenum type)
@@ -1195,7 +1202,7 @@ void IndexBuffer::Fill(GLenum type)
         indices[1] = 1;
         indices[2] = 2;
 
-        for(int i = 1; i < num_indices / 3; i++)
+        for(unsigned int i = 1; i < num_indices / 3; i++)
         {
             indices[i*3 + 0] = 0;
             indices[i*3 + 1] = indices[(i-1)*3 + 2];
@@ -1204,7 +1211,7 @@ void IndexBuffer::Fill(GLenum type)
     }
     else if (type == GL_TRIANGLES)
     {
-        for(int i = 0; i < num_indices; i++)
+        for(unsigned int i = 0; i < num_indices; i++)
             indices[i] = i;
     }   
 }

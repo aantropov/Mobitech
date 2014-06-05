@@ -20,7 +20,7 @@ void AnimationClip::Load(TiXmlElement *xe, Texture *tex)
     TiXmlElement *element = xe->FirstChildElement();
     while (element) 
     {
-        bones.push_back(new MovingPart(this, element, texture->GetWidth(), texture->GetHeight()));
+        bones.push_back(new MovingPart(this, element, (float)texture->GetWidth(), (float)texture->GetHeight()));
         element = element->NextSiblingElement();
     }
     sub_position = mat4_identity;
@@ -147,7 +147,7 @@ void Animation::Play(string name)
     state.name = name;
     state.progress = 0.0f;
     state.speed = 1.0f;
-    state.start_time = Engine::GetTimeMS();
+    state.start_time = (double)Engine::GetTimeMS();
     state.weight = 1.0f;
     state.clip = GetAnimationClip(name);
 

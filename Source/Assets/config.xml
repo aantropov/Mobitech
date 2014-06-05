@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="utf-8" standalone="yes"?>
 <config>
 <platform name="win32">
-<display width="800" height="600" fullscreen="0" vsync="0"/>
-<physics update_time="0.0001f">
+<display width="640" height="480" fullscreen="0" vsync="0"/>
+<physics update_time="0.001f">
 </platform>
 </config>

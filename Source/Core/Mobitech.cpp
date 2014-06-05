@@ -91,8 +91,8 @@ void Engine::Run()
     Window::SetActive(true);
     Window::SetRunning(true); 	
 
-    delta_time      = 0.0;
-    fixed_time_step  = 1.0 / 100.0;
+    delta_time = 0;
+    fixed_time_step = 0;//1.0 / 100.0;
 
     while (Window::IsRunning())
     {

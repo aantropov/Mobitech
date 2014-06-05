@@ -104,6 +104,9 @@
     <ClCompile Include="..\Core\font\bmfont.cpp">
       <Filter>CppSource\Core\font</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\Physics.cpp">
+      <Filter>CppSource\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\lodepng\lodepng.h">
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="..\Core\font\bmfont.h">
       <Filter>CppSource\Core\font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Physics.h">
+      <Filter>CppSource\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

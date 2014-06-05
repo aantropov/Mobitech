@@ -59,8 +59,8 @@ public:
 
     static Physics* GetInstance();
 
-    Physics(): last_physics_update(0.0), update_time(0.0), physics_objects() {}
-    ~Physics() {}	
+    Physics(): last_physics_update(0.0), update_time(0.0001), physics_objects() {}
+    ~Physics() {}
 
 	void Update(double delta_time);	
     void RegisterRigidBody(RigidBody *rb) { physics_objects.push_back(rb); }

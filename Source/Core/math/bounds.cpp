@@ -13,7 +13,7 @@ void AABB:: Calculate(VertexBuffer* p, mat4 model)
     top_left = vec2(point.x, point.y);
     bottom_right = top_left;
 
-    for(int i = 1; i < p->GetNum(); i++)
+    for(unsigned int i = 1; i < p->GetNum(); i++)
     {      
         point = model * ((Vertex*)p->GetPointer())[i].pos;       
 
@@ -35,19 +35,19 @@ inline double Determinant(double a11, double a12, double a21, double a22)
 
 bool IntersectLine(const vec3* a1, const vec3* a2, const vec3* b1, const vec3* b2,vec3* c)
 {
-    double ady = a1->y - a2->y;
-    double adx = a2->x - a1->x;
-    double bdy = b1->y - b2->y;
-    double bdx = b2->x - b1->x;
-    double D = Determinant(ady, adx, bdy, bdx);
+    float ady = a1->y - a2->y;
+    float adx = a2->x - a1->x;
+    float bdy = b1->y - b2->y;
+    float bdx = b2->x - b1->x;
+    float D = Determinant(ady, adx, bdy, bdx);
 
     if (fabs(D) < math_epsilon)
 	    return true;
 
-    double aC = adx * a1->y + ady * a1->x;
-    double bC = bdx * b1->y + bdy * b1->x;
-    double DX = Determinant(aC, adx, bC, bdx);
-    double DY = Determinant(ady, aC, bdy, bC);
+    float aC = adx * a1->y + ady * a1->x;
+    float bC = bdx * b1->y + bdy * b1->x;
+    float DX = Determinant(aC, adx, bC, bdx);
+    float DY = Determinant(ady, aC, bdy, bC);
     
     c->x = DX / D;
     c->y = DY / D;
@@ -62,14 +62,18 @@ bool IntersectConvexShapePoint(VertexBuffer* buffer, mat4 model, vec3* point)
 	vec3 b;
 	
     int intersections = 0;
-	for(int i = 0; i< buffer->GetNum(); i++)
+	for(unsigned int i = 0; i< buffer->GetNum(); i++)
     {
         b = ((Vertex*)buffer->GetPointer())[i].pos;
-        intersections += IntersectLine(&b, &a, &model_space_point, &vec3(model_space_point.x + 1000, model_space_point.y, 0.0f), &vec3());
+
+        vec3 temp = vec3(model_space_point.x + 1000, model_space_point.y, 0.0f);
+        vec3 temp1 = vec3_zero;
+
+        intersections += IntersectLine(&b, &a, &model_space_point, &temp, &temp1);
 		a = b;	
 	}
 
-    return (intersections%2);
+    return (intersections % 2) == 1;
 }
 
 bool IntersectAABB(AABB *a, AABB *b)
@@ -81,16 +85,20 @@ bool IntersectAABB(AABB *a, AABB *b)
 }
 
 // [res.x,res.y] - interval of projection Poly to Vector
-vec3 Projection(vector<vec3> &poly, vec3 point, vec3& min_point, vec3& max_point){
+vec3 Projection(vector<vec3> &poly, vec3 point, vec3& min_point, vec3& max_point)
+{
 	vec3 res;
     res.y = res.x = dot(point, poly[0]);
-    for(int i = 1; i < poly.size() ; i++){
+    for(unsigned int i = 1; i < poly.size(); i++)
+    {
 		float temp =  dot(point, poly[i]);
-		if(temp < res.x)
+		
+        if(temp < res.x)
         {
 			res.x = temp;
             min_point = poly[i];
         }
+
         if(temp > res.y)
         {
 			res.y = temp;
@@ -107,20 +115,20 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 	vector<vec3> psa; 
     
 	vector<vec3> transformed_a;    
-    for(int i = 0; i < a->GetNum(); i++)
+    for(unsigned int i = 0; i < a->GetNum(); i++)
     {
         vec3 pos = model_a.matrix() * ((Vertex*)a->GetPointer())[i].pos;
         transformed_a.push_back(pos);
     }
 
     vector<vec3> transformed_b;
-    for(int i = 0; i < b->GetNum(); i++)
+    for(unsigned int i = 0; i < b->GetNum(); i++)
     {
         vec3 pos = model_b.matrix() * ((Vertex*)b->GetPointer())[i].pos;
         transformed_b.push_back(pos);
     }
        
-    for(int i = 0; i < transformed_a.size() - 1; i++)
+    for(unsigned int i = 0; i < transformed_a.size() - 1; i++)
     {
 		vec3 temp = transformed_a[i+1] - transformed_a[i];
         psa.push_back(normalize(vec3(-temp.y, temp.x, 0.0f)));
@@ -129,7 +137,7 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
     vec3 last = transformed_a[0] - transformed_a[transformed_a.size()-1];
 	psa.push_back(normalize(vec3(-last.y, last.x, 0.0f)));
 	
-    for(int i = 0; i < transformed_b.size()- 1; i++)
+    for(unsigned int i = 0; i < transformed_b.size()- 1; i++)
     {
 		vec3 temp = transformed_b[i+1] - transformed_b[i];
         psa.push_back(normalize(vec3(-temp.y, temp.x, 0.0f)));
@@ -143,7 +151,7 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 	double min = 0.0;   
 
     vec3 min_max_points[4];
-    for(int i = 0; i < psa.size(); i++)
+    for(unsigned int i = 0; i < psa.size(); i++)
     {
 		vec3 r1 = Projection(transformed_a, psa[i], min_max_points[0], min_max_points[1]);
 		vec3 r2 = Projection(transformed_b, psa[i], min_max_points[2], min_max_points[3]);
@@ -177,8 +185,8 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
   //      return false;
 
     //result vector, lenght = intersection
-    float contact_normal_lenght = fabs(min);
-    contact_normal = psa[min_index] * contact_normal_lenght;
+    float contact_normal_lenght = (float)fabs(min);
+    contact_normal = -psa[min_index] * contact_normal_lenght;
     
     //initialize
     contact_point = (model_a.position + model_b.position) * 0.5f;
@@ -187,7 +195,7 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 	vector<vec3> *intersected_obj = &transformed_a;
 	vector<vec3> *intersect_obj = &transformed_b;
 
-    if(min_index >= transformed_a.size())
+    if((unsigned int)min_index >= transformed_a.size())
     {
 		a_intersect = true;
 		intersected_obj = &transformed_b;
@@ -214,13 +222,13 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 	p2 = p2 - p1;
     double l = length(p2);
 
-	for(int i = 0; i < intersect_obj->size(); i++)
+	for(unsigned int i = 0; i < intersect_obj->size(); i++)
     {
 	    vec3 temp = (*intersect_obj)[i];
 		temp = vec2(temp.x - p1.x, temp.y - p1.y);
 		double temp_proj = projection(temp, p2);
         double dist = fabs(distance_to_line(temp, vec3_zero, p2));
-		float current_error = fabs(dist - contact_normal_lenght);
+		float current_error = (float)fabs(dist - contact_normal_lenght);
         
         float eps = 0.2f;
         //if( -eps <= temp_proj && temp_proj <= l+eps && dist <= contact_normal_lenght + eps && dist >= contact_normal_lenght - eps)
