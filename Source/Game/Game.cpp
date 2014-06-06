@@ -468,10 +468,17 @@ void Asteroid:: OnCollide(RigidBody *body)
     {
         is_destroying = true;        
 
-        if(size > 7.0f)
+        if(size > 20.0f)
         {
-            current_scene->CreateObject(new Asteroid(size * 0.5f), model.position + vec2_y*size*0.6f);
-            current_scene->CreateObject(new Asteroid(size * 0.5f), model.position - vec2_y*size*0.6f);
+            Asteroid *ast = new Asteroid(size * 0.5f);
+            ast->velocity += vec3_y * unirand(0.0f, 50.0f);
+
+            current_scene->CreateObject(ast, model.position + vec2_y*size*0.6f);
+
+            ast = new Asteroid(size * 0.5f);
+            ast->velocity += vec3_y * unirand(-50.0f, 0.0f);
+
+            current_scene->CreateObject(ast, model.position - vec2_y*size*0.6f);
         }
     }
 }
