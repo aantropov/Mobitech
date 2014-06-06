@@ -50,6 +50,10 @@ public:
 class Physics : public Singleton<Physics>
 {
     std::vector<RigidBody*> physics_objects;
+    
+    std::list<RigidBody*> register_queue;
+    std::list<RigidBody*> unregister_queue;
+    
     double CalculateImpulse(vec2 normal, RigidBody *m1, RigidBody *m2, vec2 point);    
     double last_physics_update;
 
@@ -63,8 +67,8 @@ public:
     ~Physics() {}
 
 	void Update(double delta_time);	
-    void RegisterRigidBody(RigidBody *rb) { physics_objects.push_back(rb); }
-    void UnregisterRigidBody(RigidBody *rb) { std::remove(physics_objects.begin(), physics_objects.end(), rb); }
+    void RegisterRigidBody(RigidBody *rb) { register_queue.push_back(rb); }//physics_objects.push_back(rb); }
+    void UnregisterRigidBody(RigidBody *rb) { unregister_queue.push_back(rb); }//std::remove(physics_objects.begin(), physics_objects.end(), rb); }
 };
 
 #endif //_PHYSICS_H_

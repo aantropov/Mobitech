@@ -33,7 +33,7 @@ inline double Determinant(double a11, double a12, double a21, double a22)
     return a11 * a22 - a12 * a21;
 }
 
-bool IntersectLine(const vec3* a1, const vec3* a2, const vec3* b1, const vec3* b2,vec3* c)
+bool IntersectLine(const vec3* a1, const vec3* a2, const vec3* b1, const vec3* b2, vec3* c)
 {
     float ady = a1->y - a2->y;
     float adx = a2->x - a1->x;
@@ -181,8 +181,8 @@ bool IntersectConvexShape(VertexBuffer* a, ::transform model_a, VertexBuffer* b,
 		}
 	}
 
-//    if(min_index == -1)
-  //      return false;
+    if(min_index == -1)
+        return false;
 
     //result vector, lenght = intersection
     float contact_normal_lenght = (float)fabs(min);

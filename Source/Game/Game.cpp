@@ -10,10 +10,12 @@ class GameScene;
 class GameObject
 {
 public:
+    bool is_destroying;
     GameScene *current_scene;
     virtual void Update() = 0;
     virtual void Draw() = 0;
     virtual ~GameObject() {}
+    GameObject(): is_destroying(false) {}
 };
 
 class Bullet : public RigidBody, public GameObject
@@ -174,7 +176,7 @@ public:
 };
 
 class Asteroid : public RigidBody, public GameObject
-{
+{    
     IndexBuffer index_buffer;
     Texture* texture;
     ShaderProgram* shader;
@@ -235,7 +237,7 @@ public:
 };
 
 class GameScene : public Scene, IInputListener
-{    
+{
     ShaderProgram* shader;
     ShaderProgram* background;
 
@@ -320,6 +322,13 @@ public:
         
         for(auto it = objects.begin(); it != objects.end(); )
             (*(it++))->Update();
+        
+        for(auto it = objects.begin(); it != objects.end(); )
+        {
+            GameObject *obj = *(it++);
+            if(obj->is_destroying)
+                DeleteObject(obj);
+        }
 
         ship.model.position.y = clamp(ship.model.position.y, -(render_h*0.5f - 40.0f), render_h*0.5f - 40.0f);
 
@@ -427,6 +436,7 @@ public:
     void DeleteObject(GameObject* obj)
     {
         objects.remove(obj);
+        delete obj;
     }
 
     void CreateObject(GameObject* obj, vec3 position)
@@ -442,8 +452,8 @@ public:
 
 void Bullet:: OnCollide(RigidBody *body)
 {
-    if(dynamic_cast<Asteroid*>(body) != NULL)
-        current_scene->DeleteObject(this);
+    if(body != NULL && dynamic_cast<Asteroid*>(body) != NULL)
+        is_destroying = true;
 }
 
 void Bullet:: Update()
@@ -456,7 +466,7 @@ void Asteroid:: OnCollide(RigidBody *body)
 {
     if(dynamic_cast<Bullet*>(body) != NULL)
     {
-        current_scene->DeleteObject(this);
+        is_destroying = true;        
 
         if(size > 7.0f)
         {
