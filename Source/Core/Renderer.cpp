@@ -492,6 +492,7 @@ void Renderer::SetupCameraForShaderProgram(const ShaderProgram *shd, const mat4 
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
     Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera->GetPosition().v);
+    Uniform3(shd->uniform_locations.time, 1, vec3(Engine::GetTimeMS(), Engine::GetTimeMS()*0.001f, 0.0f).v);
     //UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
 }
 
@@ -532,8 +533,11 @@ int Renderer::CreateTexture(const Texture *tex) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger ( IL_IMAGE_FORMAT ) , tex->GetWidth(), tex->GetHeight(), 0, ilGetInteger ( IL_IMAGE_FORMAT ) , ilGetInteger ( IL_IMAGE_TYPE    ), ilGetData()));
 #ifdef MOBITECH_WIN32

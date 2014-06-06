@@ -261,7 +261,8 @@ void ShaderProgram::InitLocations()
     uniform_locations.transform_normal = glGetUniformLocation(_id, "normal");
     uniform_locations.transform_modelViewProjection = glGetUniformLocation(_id, "modelViewProjection");
     uniform_locations.transform_viewPosition = glGetUniformLocation(_id, "viewPosition");
-    
+    uniform_locations.time = glGetUniformLocation(_id, "time");
+
     attribute_locations.color = glGetAttribLocation(_id, "color");
     attribute_locations.position = glGetAttribLocation(_id, "position");
     attribute_locations.texcoords = glGetAttribLocation(_id, "texcoords");

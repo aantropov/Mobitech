@@ -81,15 +81,15 @@ void Physics::Update(double delta_time)
 
     if(unregister_queue.size() > 0)
         int a = 0;
-
+     
+    for(auto it = register_queue.begin(); it != register_queue.end();)
+        physics_objects.push_back(*(it++));
+    register_queue.clear();
+    
     for(auto it = unregister_queue.begin(); it != unregister_queue.end();)
         physics_objects.erase(std::remove(physics_objects.begin(), physics_objects.end(), *(it++)), physics_objects.end());
     unregister_queue.clear();
 
-    for(auto it = register_queue.begin(); it != register_queue.end();)
-        physics_objects.push_back(*(it++));
-    register_queue.clear();
-        
     if(last_physics_update < update_time)
         return;
 

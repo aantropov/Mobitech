@@ -103,7 +103,8 @@ public:
         unsigned int transform_viewProjection;
         unsigned int transform_normal;
         unsigned int transform_modelViewProjection;
-        unsigned int transform_viewPosition;        
+        unsigned int transform_viewPosition;
+        unsigned int time;
     };
 
     struct AttributeLocations

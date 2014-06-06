@@ -12,10 +12,111 @@ class GameObject
 public:
     bool is_destroying;
     GameScene *current_scene;
-    virtual void Update() = 0;
+    virtual void Update(double dt) = 0;
     virtual void Draw() = 0;
     virtual ~GameObject() {}
     GameObject(): is_destroying(false) {}
+};
+
+class Explosion: public RigidBody, public GameObject
+{
+    IndexBuffer index_buffer;
+    Texture* texture;
+    ShaderProgram* shader;
+
+public:
+    
+    int columns_size;
+    int rows_size;
+
+    vec3 vertices[6];
+    vec2 texcoords[6];
+    vec3 colors[8];
+
+    float fps;
+    float start_time;    
+    int current_frame;
+
+    float size;
+    Explosion(int size) : RigidBody(300.0f, PO_STATIC), columns_size(4), rows_size(4), fps(30), current_frame(0)
+    {
+        Physics::GetInstance()->UnregisterRigidBody(this);
+        this->size = size;
+
+        float width = size;
+        float height = size;
+        
+        vertices[0] = vec3(-width, -height, 0.0f)*0.5f;
+        texcoords[0] = vec2(0.0f, 0.0f);
+
+        vertices[1] = vec3(width, -height, 0.0f)*0.5f;
+        texcoords[1] = vec2(1.0f, 0.0f);
+
+        vertices[2] = vec3(width, height, 0.0f)*0.5f;
+        texcoords[2] = vec2(1.0f, 1.0f);
+
+        vertices[3] = vec3(-width, -height, 0.0f)*0.5f;
+        texcoords[3] = vec2(1.0f, 1.0f);
+        
+        vertices[4] = vec3(width, height, 0.0f)*0.5f;
+        texcoords[4] = vec2(0.0f, 1.0f);
+
+        vertices[5] = vec3(-width, height, 0.0f)*0.5f;
+        texcoords[5] = vec2(0.0f, 0.0f);
+
+        for(int i = 0; i < 8; i++)
+            colors[i] = vec3_one;
+
+        shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        
+        if(unirand(0.0f, 1.0f) > 0.5f)
+            texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\explosion2.png", RT_TEXTURE));
+        else
+            texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\explosion.png", RT_TEXTURE));
+        
+        start_time = Engine::GetTimeMS()*0.001f;
+
+        OPENGL_CHECK_FOR_ERRORS();
+    }
+
+    virtual ~Explosion() { }
+
+    virtual void Draw()
+    {
+        Renderer *render = Renderer::GetInstance();
+        
+        render->SetupCameraForShaderProgram(shader, model.matrix()*GLScale(size, size));
+        render->BindTexture(texture, 0);
+        
+        render->EnableBlend(BT_ADDITIVE);
+        render->DrawTriangles(vertices_ortho_01, colors, texcoords, 6);
+        
+        render->DisableBlend();
+    }
+
+    virtual void Update(double dt)
+    {
+        current_frame = clamp((Engine::GetTimeMS()*0.001f - start_time)*fps, 0, rows_size * columns_size);
+    
+        if(current_frame == rows_size * columns_size)
+            is_destroying = true;
+        
+        //current_frame = 1;
+
+        vec2 element_size = vec2(1.0f/columns_size, 1.0f/rows_size);
+        vec2 offset;
+        offset.y = (current_frame/columns_size)*element_size.x;
+        offset.x = (float(current_frame) - (current_frame/columns_size)*float(rows_size))*element_size.y;
+
+        texcoords[0] = offset + vec2(0.0f, 0.0f);
+        texcoords[1] = offset + vec2(element_size.x * 1.0f, 0.0f);
+        texcoords[2] = offset + vec2(element_size.x * 1.0f, element_size.y * 1.0f);
+        texcoords[3] = offset + vec2(element_size.x * 1.0f, element_size.y * 1.0f);
+        texcoords[4] = offset + vec2(0.0f, element_size.y * 1.0f);
+        texcoords[5] = offset + vec2(0.0f, 0.0f);
+    }
+
+    virtual void OnCollide(RigidBody *body) {} 
 };
 
 class Bullet : public RigidBody, public GameObject
@@ -33,7 +134,7 @@ public:
         shape->Create(6);
         
         float width = 32;
-        float height = 32;
+        float height = 16;
         
         Vertex *ptr = ((Vertex*)shape->GetPointer());
 
@@ -95,9 +196,9 @@ public:
         render->DisableBlend();
     }
 
-    virtual void Update();   
+    virtual void Update(double dt);
 
-    virtual void OnCollide(RigidBody *body);    
+    virtual void OnCollide(RigidBody *body);
 };
 
 class Ship : public RigidBody
@@ -231,9 +332,9 @@ public:
         render->UnbindBuffer(false);
     }
 
-    virtual void Update();
+    virtual void Update(double dt);
     virtual void OnCollide(RigidBody *body);
-    virtual ~Asteroid() { delete shape; }    
+    virtual ~Asteroid() { delete shape; }
 };
 
 class GameScene : public Scene, IInputListener
@@ -266,7 +367,7 @@ class GameScene : public Scene, IInputListener
 
 public:
 
-    GameScene() : asteroid_spawn_time(5.0f)
+    GameScene() : asteroid_spawn_time(3.0f)
     {         
         background_rotation = 0.0f;
         Renderer *render = Renderer::GetInstance();
@@ -283,7 +384,7 @@ public:
 
         font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT));
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
-        background = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
+        background = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background.vs", ASSETS_ROOT + "Shaders\\background.ps");
 
         nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
         nebula_tile_2 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile2.png", RT_TEXTURE));
@@ -321,7 +422,7 @@ public:
         //camera.SetPosition(ship.model.position - vec2(render_w * 0.3f, render_h * 0.5f));
         
         for(auto it = objects.begin(); it != objects.end(); )
-            (*(it++))->Update();
+            (*(it++))->Update(dt);
         
         for(auto it = objects.begin(); it != objects.end(); )
         {
@@ -349,29 +450,11 @@ public:
 
         mat4 model = mat4_identity;
         background_rotation = clamp(background_rotation, 0.0f, 360.0f);
-
-        rt.Begin();
+        
         render->Clear();
-        
-        render->SetCurrentCamera(&camera);
-        render->BindShaderProgram(shader);
-        render->SetupCameraForShaderProgram(shader, mat4_identity);
-        
-        ship.Draw();
 
-        for(auto it = objects.begin(); it !=  objects.end(); it++)
-            (*it)->Draw();              
-
-        render->SetupCameraForShaderProgram(shader, mat4_identity);
-        render->EnableBlend(BT_ALPHA_BLEND);
-        //font->Print(0, 0, "ololo");
-        render->DisableBlend();
-
-        rt.End();
-        
-        //
         render->SetCurrentCamera(&camera_ortho_01);
-        render->BindShaderProgram(background);        
+        render->BindShaderProgram(background);
         render->SetupCameraForShaderProgram(font->shader, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation));
 
         render->EnableBlend(BT_ALPHA_BLEND);
@@ -390,11 +473,25 @@ public:
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
 
         render->EnableBlend(BT_ALPHA_BLEND);
-        render->BindTexture(rt.GetTexture(), 0);
-        render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
+        render->SetCurrentCamera(&camera);
+        render->BindShaderProgram(shader);
+        render->SetupCameraForShaderProgram(shader, mat4_identity);
+        
+        ship.Draw();
+
+        for(auto it = objects.begin(); it !=  objects.end(); it++)
+            (*it)->Draw();              
+
+        render->SetupCameraForShaderProgram(shader, mat4_identity);
+        render->EnableBlend(BT_ALPHA_BLEND);
+        //font->Print(0, 0, "ololo");
+        render->DisableBlend();
+
+        //render->EnableBlend(BT_ALPHA_BLEND);
+        //render->BindTexture(rt.GetTexture(), 0);
+        //render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
         
         //font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
-        render->DisableBlend();
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) 
@@ -405,6 +502,8 @@ public:
         float sign = 1.0f;
         float ship_y = 1.0f - (ship.model.position.y + render_h*0.5f)/render_h;
         float abs_y = (float(y)/Renderer::GetInstance()->GetHeight());
+        float abs_x = (float(x)/Renderer::GetInstance()->GetWidth());
+        
         if(abs_y > ship_y)
             sign *= -1.0f;
            
@@ -453,10 +552,14 @@ public:
 void Bullet:: OnCollide(RigidBody *body)
 {
     if(body != NULL && dynamic_cast<Asteroid*>(body) != NULL)
+    {
         is_destroying = true;
+
+        current_scene->CreateObject(new Explosion(32), model.position);
+    }
 }
 
-void Bullet:: Update()
+void Bullet:: Update(double dt)
 {
     if(length(model.position) > 2000.0f)
         current_scene->DeleteObject(this);
@@ -479,11 +582,12 @@ void Asteroid:: OnCollide(RigidBody *body)
             ast->velocity += vec3_y * unirand(-50.0f, 0.0f);
 
             current_scene->CreateObject(ast, model.position - vec2_y*size*0.6f);
+            current_scene->CreateObject(new Explosion(size), model.position);
         }
     }
 }
 
-void Asteroid:: Update()
+void Asteroid:: Update(double dt)
 {
     if(length(model.position) > 2000.0f)
         current_scene->DeleteObject(this);
