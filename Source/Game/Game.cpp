@@ -126,9 +126,11 @@ class Bullet : public RigidBody, public GameObject
     Texture* texture;
     ShaderProgram* shader;
 
+    float life_time;
+
 public:
 
-    Bullet() : RigidBody(300.0f, PO_STATIC)
+    Bullet() : RigidBody(300.0f, PO_STATIC), life_time(2.0f)
     {
         shape = new VertexBuffer();
 
@@ -172,7 +174,8 @@ public:
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\bullet.png", RT_TEXTURE));
 
-        this->velocity = vec3(700.0f, 0.0f, 0.0f);        
+        this->velocity = vec3(700.0f, 0.0f, 0.0f);
+        this->force_summ = vec3(-100000.0f, 0.0f, 0.0f);
 
         OPENGL_CHECK_FOR_ERRORS();
     }
@@ -603,14 +606,14 @@ void Bullet:: OnCollide(RigidBody *body)
     if(body != NULL && dynamic_cast<Asteroid*>(body) != NULL)
     {
         is_destroying = true;
-
         current_scene->CreateObject(new Explosion(32), model.position);
     }
 }
 
 void Bullet:: Update(double dt)
 {
-    if(length(model.position) > 2000.0f || length(velocity) < 10.0f)
+    life_time -= (float)dt;
+    if(life_time < 0.0f)
         current_scene->DeleteObject(this);
 }
 
