@@ -169,7 +169,7 @@ bool Window::Create(string title, int width, int height, bool fullScreen)
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"wglCreateContextAttribsARB fail (%d), try to create context with wglCreateContext", GetLastError());
-        Logger::GetInstance()->Message(message, LOG_TYPE::LT_ERROR);
+        Logger::GetInstance()->Message(message, LT_ERROR);
         //return false;
 
         // Create context with OpenGL 2 support
@@ -185,7 +185,7 @@ bool Window::Create(string title, int width, int height, bool fullScreen)
     {
         char message[BUFFER_LENGTH];
         sprintf_s(message,"Creating render context fail (%d)", GetLastError());
-        Logger::GetInstance()->Message(message, LOG_TYPE::LT_ERROR);
+        Logger::GetInstance()->Message(message, LT_ERROR);
         return false;
     }
 
@@ -231,7 +231,7 @@ void Window::SetSize(int width, int height, bool is_fullScreen)
         {
             char message[BUFFER_LENGTH];
             sprintf_s(message,"ChangeDisplaySettings fail %dx%d (%d)", width, height, result);
-            Logger::Message(message, LOG_TYPE::LT_ERROR);
+            Logger::Message(message, LT_ERROR);
             fullscreen = false;
         }
     }

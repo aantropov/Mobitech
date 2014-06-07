@@ -28,7 +28,7 @@ void AABB:: Calculate(VertexBuffer* p, mat4 model)
     }
 }
 
-inline double Determinant(double a11, double a12, double a21, double a22)
+inline float Determinant(float a11, float a12, float a21, float a22)
 {
     return a11 * a22 - a12 * a21;
 }

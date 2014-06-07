@@ -38,7 +38,7 @@ public:
     int current_frame;
 
     float size;
-    Explosion(int size) : RigidBody(300.0f, PO_STATIC), columns_size(4), rows_size(4), fps(30), current_frame(0)
+    Explosion(float size) : RigidBody(300.0f, PO_STATIC), columns_size(4), rows_size(4), fps(30), current_frame(0)
     {
         Physics::GetInstance()->UnregisterRigidBody(this);
         this->size = size;
@@ -97,7 +97,7 @@ public:
 
     virtual void Update(double dt)
     {
-        current_frame = clamp((Engine::GetTimeMS()*0.001f - start_time)*fps, 0, rows_size * columns_size);
+        current_frame = (int)clamp((Engine::GetTimeMS()*0.001f - start_time)*fps, 0, (float)rows_size * columns_size);
 
         if(current_frame == rows_size * columns_size)
             is_destroying = true;
@@ -172,7 +172,7 @@ public:
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\bullet.png", RT_TEXTURE));
 
-        this->velocity = vec3(900.0f, 0.0f, 0.0f);        
+        this->velocity = vec3(700.0f, 0.0f, 0.0f);        
 
         OPENGL_CHECK_FOR_ERRORS();
     }
@@ -217,7 +217,7 @@ public:
     float width;
     float height;
 
-    Ship() : RigidBody(300.0f, PO_STATIC), strafe_speed(350.0f), width(75), height(150)
+    Ship() : RigidBody(300.0f, PO_STATIC), strafe_speed(350.0f), width(75), height(75)
     {
         shape = new VertexBuffer();
 
@@ -280,7 +280,7 @@ public:
 
     virtual ~Ship() { delete shape; }
 
-    virtual void OnCollide(RigidBody *body) {}
+    virtual void OnCollide(RigidBody *body);
 };
 
 class Asteroid : public RigidBody, public GameObject
@@ -318,7 +318,7 @@ public:
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\asteroid.png", RT_TEXTURE));
 
-        this->velocity = -vec2_x * unirand(50.0f, 200.0f);
+        this->velocity = -vec2_x * unirand(25.0f, 150.0f);
         //this->rotation = unirand(50.0f, -50.0f);
         this->elasticity = 0.001f;
 
@@ -354,6 +354,7 @@ class GameScene : public Scene, IInputListener
 
     vec4 colors[6];
 
+    bool ship_controlled;
     bool touch_pressed_action;
     bool touch_pressed;
     vec2 prev_mouse_pos;
@@ -365,6 +366,7 @@ class GameScene : public Scene, IInputListener
     Texture *nebula_tile_1;
     Texture *nebula_tile_2;
     Texture *background_stars;
+    Texture *start_game;
 
     Ship ship;
 
@@ -377,9 +379,13 @@ class GameScene : public Scene, IInputListener
     float asteroid_spawn_time;
 
 public:
+    
+    bool press_any_key_to_start;
 
     GameScene() : asteroid_spawn_time(3.0f)
-    {         
+    {   
+        press_any_key_to_start = true;
+        ship_controlled = false;
         background_rotation = 0.0f;
         Renderer *render = Renderer::GetInstance();
 
@@ -401,6 +407,7 @@ public:
         nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
         nebula_tile_2 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile2.png", RT_TEXTURE));
         background_stars = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\stars.png", RT_TEXTURE));
+        start_game = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\start_game.png", RT_TEXTURE));
 
         Input::GetInstance()->Register(this);
 
@@ -417,12 +424,13 @@ public:
         ship.model.position = vec3(0.0f, 0.0f, 0.0f);
         ship.model.rotation = quat(GLRotationZ(90.0f));
 
-        camera.SetPosition(ship.model.position - vec2(render_w * 0.15f, render_h * 0.5f));
+        camera.SetPosition(ship.model.position - vec2(render_w * 0.2f, render_h * 0.5f));
 
         //to seconds
         latest_asteroid_spawn_time = (float)Engine::GetTimeMS() * 0.001f;
 
         touch_pressed_action = false;
+
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -455,20 +463,43 @@ public:
 
         if(touch_pressed_action)
         {
-            float sign = 1.0f;
-            float ship_y = 1.0f - (ship.model.position.y + render_h*0.5f)/render_h;
-            float abs_y = (float(prev_mouse_pos.y)/render->GetHeight());
-            float abs_x = (float(prev_mouse_pos.x)/render->GetWidth());
+            if(press_any_key_to_start)
+            {
+                press_any_key_to_start = false;
 
-            if(abs_y > ship_y)
-                sign *= -1.0f;
+                for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); )
+                {
+                    GameObject *obj = *(it++);
+                    DeleteObject(obj);
+                }
 
-            if(abs(abs_y - ship_y) > ship.width/render_h)
-                ship.velocity = vec3(0.0f, ship.strafe_speed * sign, 0.0f);
+                objects.clear();
+            }
             else
-                CreateObject(new Bullet(), ship.model.position + vec3(ship.height*0.5f, 0.0f, 0.0f));
+            {
+                float sign = 1.0f;
+                float ship_y = 1.0f - (ship.model.position.y + render_h*0.5f)/render_h;
+                float abs_y = (float(prev_mouse_pos.y)/render->GetHeight());
+                float abs_x = (float(prev_mouse_pos.x)/render->GetWidth());
 
+                if(abs_y > ship_y)
+                    sign *= -1.0f;
+
+                if(abs(abs_y - ship_y) > ship.width/render_h)
+                    ;//ship.velocity = vec3(0.0f, ship.strafe_speed * sign, 0.0f);
+                else
+                {
+                    CreateObject(new Bullet(), ship.model.position + vec3(ship.height*0.5f, 0.0f, 0.0f));
+                    ship_controlled = true;
+                }
+            }
             touch_pressed_action = false;
+        }
+
+        if(ship_controlled && !press_any_key_to_start)
+        {
+            float abs_y = (float(prev_mouse_pos.y)/render->GetHeight());
+            ship.model.position.y = -abs_y*render_h + render_h*0.5f;
         }
     }
 
@@ -509,17 +540,17 @@ public:
 
         render->DisableBlend();
             
-        /*render->SetupCameraForShaderProgram(shader, mat4_identity);
-        render->EnableBlend(BT_ALPHA_BLEND);
-        //font->Print(0, 0, "ololo");
-        render->DisableBlend();
-        */
+        if(press_any_key_to_start)
+        {
+            render->SetCurrentCamera(&camera_ortho_01);
+            
+            render->BindShaderProgram(background);
+            render->SetupCameraForShaderProgram(background, mat4_identity);
 
-        //render->EnableBlend(BT_ALPHA_BLEND);
-        //render->BindTexture(rt.GetTexture(), 0);
-        //render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
-
-        //font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
+            render->EnableBlend(BT_ADDITIVE);
+            render->BindTexture(start_game, 0);
+            render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
+        }
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) 
@@ -534,6 +565,7 @@ public:
         ship.velocity = vec3_zero;
         touch_pressed = false;
         touch_pressed_action = false;
+        ship_controlled = false;
     }
 
     virtual void OnMove(int x, int y, unsigned int touch_id = 0)
@@ -573,7 +605,7 @@ void Bullet:: OnCollide(RigidBody *body)
 
 void Bullet:: Update(double dt)
 {
-    if(length(model.position) > 2000.0f)
+    if(length(model.position) > 2000.0f || length(velocity) < 10.0f)
         current_scene->DeleteObject(this);
 }
 
@@ -597,12 +629,23 @@ void Asteroid:: OnCollide(RigidBody *body)
             current_scene->CreateObject(new Explosion(size), model.position);
         }
     }
+    else if(dynamic_cast<Ship*>(body) != NULL)
+    {
+        is_destroying = true;
+        current_scene->press_any_key_to_start = true;
+        current_scene->CreateObject(new Explosion(size), model.position);
+        current_scene->CreateObject(new Explosion(128), body->model.position);
+    }
 }
 
 void Asteroid:: Update(double dt)
 {
     if(length(model.position) > 2000.0f)
         current_scene->DeleteObject(this);
+}
+
+void Ship:: OnCollide(RigidBody *body)
+{
 }
 
 void GameMain()
