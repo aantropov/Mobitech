@@ -379,7 +379,7 @@ class GameScene : public Scene, IInputListener
     float asteroid_spawn_time;
 
 public:
-    
+
     bool press_any_key_to_start;
 
     GameScene() : asteroid_spawn_time(3.0f)
@@ -445,9 +445,14 @@ public:
 
         for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); )
         {
-            GameObject *obj = *(it++);
+            GameObject *obj = *it;
             if(obj->is_destroying)
-                DeleteObject(obj);
+            {
+                it = objects.erase(it);
+                delete obj;
+            }
+            else
+                ++it;
         }
 
         ship.model.position.y = clamp(ship.model.position.y, -(render_h*0.5f - 40.0f), render_h*0.5f - 40.0f);
@@ -539,11 +544,11 @@ public:
             (*it)->Draw();
 
         render->DisableBlend();
-            
+
         if(press_any_key_to_start)
         {
             render->SetCurrentCamera(&camera_ortho_01);
-            
+
             render->BindShaderProgram(background);
             render->SetupCameraForShaderProgram(background, mat4_identity);
 
