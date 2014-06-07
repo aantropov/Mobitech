@@ -56,8 +56,6 @@ unsigned long long Engine::GetTimeMS()
 void Engine::OneFrame()
 {
     begin_frame_time = GetTimeMS();
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
 	Renderer::GetInstance()->draw_calls = 0;
 

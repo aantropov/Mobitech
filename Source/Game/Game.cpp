@@ -339,8 +339,9 @@ public:
 
 class GameScene : public Scene, IInputListener
 {
-    ShaderProgram* shader;
-    ShaderProgram* background;
+    ShaderProgram *shader;
+    ShaderProgram *background;
+    ShaderProgram *background_stars_sh;
 
     vec4 colors[6];
 
@@ -382,13 +383,15 @@ public:
         
         touch_pressed = false;
 
+        background_stars_sh = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background_stars.vs", ASSETS_ROOT + "Shaders\\background.ps");
+        background = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background.vs", ASSETS_ROOT + "Shaders\\background.ps");
         font = dynamic_cast<BMFont*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Fonts\\Font_plain.txt", RT_BM_FONT));
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
-        background = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background.vs", ASSETS_ROOT + "Shaders\\background.ps");
 
         nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
         nebula_tile_2 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile2.png", RT_TEXTURE));
         background_stars = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\stars.png", RT_TEXTURE));
+        
         Input::GetInstance()->Register(this);
 
         colors[0] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -417,7 +420,7 @@ public:
     ~GameScene() { Input::GetInstance()->Unregister(this); }
 
     virtual void Update(double dt)
-    {
+    {        
         Renderer *render = Renderer::GetInstance();
         //camera.SetPosition(ship.model.position - vec2(render_w * 0.3f, render_h * 0.5f));
         
@@ -451,23 +454,23 @@ public:
         mat4 model = mat4_identity;
         background_rotation = clamp(background_rotation, 0.0f, 360.0f);
         
-        render->Clear();
+        //render->Clear();
 
         render->SetCurrentCamera(&camera_ortho_01);
         render->BindShaderProgram(background);
-        render->SetupCameraForShaderProgram(font->shader, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation));
+        render->SetupCameraForShaderProgram(background, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation));
 
         render->EnableBlend(BT_ALPHA_BLEND);
         render->BindTexture(nebula_tile_1, 0);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
         
-        render->SetupCameraForShaderProgram(font->shader, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation * -2.0f));
+        render->SetupCameraForShaderProgram(background, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation * -2.0f));
         render->EnableBlend(BT_MULTIPLY);
         render->BindTexture(nebula_tile_2, 0);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
 
-        render->BindShaderProgram(font->shader);
-        render->SetupCameraForShaderProgram(font->shader, mat4_identity);
+        render->BindShaderProgram(background_stars_sh);
+        render->SetupCameraForShaderProgram(background_stars_sh, mat4_identity);
         render->EnableBlend(BT_ADDITIVE);
         render->BindTexture(background_stars, 0);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
@@ -482,10 +485,11 @@ public:
         for(auto it = objects.begin(); it !=  objects.end(); it++)
             (*it)->Draw();              
 
-        render->SetupCameraForShaderProgram(shader, mat4_identity);
+        /*render->SetupCameraForShaderProgram(shader, mat4_identity);
         render->EnableBlend(BT_ALPHA_BLEND);
         //font->Print(0, 0, "ololo");
         render->DisableBlend();
+        */
 
         //render->EnableBlend(BT_ALPHA_BLEND);
         //render->BindTexture(rt.GetTexture(), 0);

@@ -14,9 +14,9 @@ varying vec4 v_color;
 void main()
 {   
 	v_texcoords = texcoords;
-    v_color = color * 1.5;
-	v_texcoords.x += time[0]*0.00002;
+	v_texcoords.x += time[0]*0.00001;
 	
+    v_color = color;
     gl_Position = viewProjection * model * position;
 }
  

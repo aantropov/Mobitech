@@ -488,11 +488,12 @@ void Renderer::SetupCameraForShaderProgram(const ShaderProgram *shd, const mat4 
     viewProjection = transpose(viewProjection);
     //mat3 normal         = transpose(mat3(inverse(model)));
 
+    Uniform3(shd->uniform_locations.time, 1, vec3(Engine::GetTimeMS(), Engine::GetTimeMS()*0.001f, 0.0f).v);
     UniformMatrix4(shd->uniform_locations.transform_model,  1, modelTr.m);
     UniformMatrix4(shd->uniform_locations.transform_viewProjection, 1, viewProjection.m);
     UniformMatrix4(shd->uniform_locations.transform_modelViewProjection, 1, modelViewProjection.m);
     Uniform3(shd->uniform_locations.transform_viewPosition, 1, current_camera->GetPosition().v);
-    Uniform3(shd->uniform_locations.time, 1, vec3(Engine::GetTimeMS(), Engine::GetTimeMS()*0.001f, 0.0f).v);
+    
     //UniformMatrix3(shd->uniform_locations.transform_normal, 1, normal.m);
 }
 
