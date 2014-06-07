@@ -10,6 +10,12 @@
 #include <iostream>
 using namespace std;
 
+AnimationClip::~AnimationClip() 
+{ 
+    for(unsigned int i = 0; i < bones.size(); ++i) 
+        delete bones[i]; 
+}
+
 void AnimationClip::Load(TiXmlElement *xe, Texture *tex)
 {
     texture = tex;

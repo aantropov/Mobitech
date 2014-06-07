@@ -263,8 +263,8 @@ public:
     void BindBuffer(const IndexBuffer *ib);
     void UnbindBuffer(bool is_vertex_buffer);
     
-    int CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const;
-    int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const;    
+    int CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state);
+    int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state);
     void DeleteVBO(const Buffer *vb) const;
     
     void BindVAO(VertexBuffer *vb);

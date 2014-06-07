@@ -69,7 +69,7 @@ class Engine : public Singleton<Engine>
     
     std::tr1::shared_ptr<Scene> current_scene;
         
-    unsigned long long delta_time, begin_frame_time, fixed_time_step;  
+    unsigned long long delta_time, begin_frame_time, last_update_time;  
     Engine(): APK_ROOT("") {}
 
 public:

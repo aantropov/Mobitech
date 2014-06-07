@@ -45,7 +45,7 @@ unsigned long long Engine::GetTimeMS()
 #ifdef MOBITECH_ANDROID
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
-    return ((unsigned long long)now.tv_sec)*1000LL + ((unsigned long long)now.tv_nsec)/1000000LL;
+    return ((unsigned long long)now.tv_sec)*1000LL + (unsigned long long)(((float)now.tv_nsec)/1000000.0f);
     
     /*struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -63,26 +63,28 @@ void Engine::OneFrame()
         current_scene->DrawFrame();
 
     unsigned long long current_tick = 0;
+
 #ifdef MOBITECH_WIN32
     SwapBuffers(Window::GetHDC());
 #endif //MOBITECH_WIN32
 
     current_tick = GetTimeMS();
-    delta_time += current_tick - begin_frame_time;
-
-    double delta = ((double)(current_tick - begin_frame_time))/1000.0;
+    double delta = (double)(current_tick - last_update_time)/1000.0; //((double)(current_tick - begin_frame_time))/1000.0;
     
+    last_update_time = GetTimeMS();
     Physics::GetInstance()->Update(delta);
 
     if(current_scene.get() != NULL)
         current_scene->Update(delta);
-
+    
     elapsed_time += ((float)(current_tick - begin_frame_time))/1000.0f;
     ++fps;
 }
 
 void Engine::Run()
 {
+    last_update_time = GetTimeMS();
+
     #ifdef MOBITECH_WIN32
     MSG msg;
     
@@ -90,7 +92,6 @@ void Engine::Run()
     Window::SetRunning(true); 	
 
     delta_time = 0;
-    fixed_time_step = 0;//1.0 / 100.0;
 
     while (Window::IsRunning())
     {
@@ -130,8 +131,7 @@ void Engine::Run()
     #endif //MOBITECH_WIN32
 
 #ifdef MOBITECH_ANDROID
-    delta_time = 0.0;
-    fixed_time_step = 1.0/ 100.0;    
+    
 #endif // MOBITECH_ANDROID
 }
 

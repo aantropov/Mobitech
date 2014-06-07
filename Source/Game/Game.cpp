@@ -1,10 +1,10 @@
 #include "../Core/Mobitech.h"
 
 float vertices_ortho_01[] = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 
-                     1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
+    1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
 
 float texcoords_ortho_01[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
-                      1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
+    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
 
 class GameScene;
 class GameObject
@@ -25,7 +25,7 @@ class Explosion: public RigidBody, public GameObject
     ShaderProgram* shader;
 
 public:
-    
+
     int columns_size;
     int rows_size;
 
@@ -45,7 +45,7 @@ public:
 
         float width = size;
         float height = size;
-        
+
         vertices[0] = vec3(-width, -height, 0.0f)*0.5f;
         texcoords[0] = vec2(0.0f, 0.0f);
 
@@ -57,7 +57,7 @@ public:
 
         vertices[3] = vec3(-width, -height, 0.0f)*0.5f;
         texcoords[3] = vec2(1.0f, 1.0f);
-        
+
         vertices[4] = vec3(width, height, 0.0f)*0.5f;
         texcoords[4] = vec2(0.0f, 1.0f);
 
@@ -68,12 +68,12 @@ public:
             colors[i] = vec3_one;
 
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
-        
+
         if(unirand(0.0f, 1.0f) > 0.5f)
             texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\explosion2.png", RT_TEXTURE));
         else
             texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\explosion.png", RT_TEXTURE));
-        
+
         start_time = Engine::GetTimeMS()*0.001f;
 
         OPENGL_CHECK_FOR_ERRORS();
@@ -84,23 +84,24 @@ public:
     virtual void Draw()
     {
         Renderer *render = Renderer::GetInstance();
-        
+
+        render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, model.matrix()*GLScale(size, size));
         render->BindTexture(texture, 0);
-        
+
         render->EnableBlend(BT_ADDITIVE);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords, 6);
-        
+
         render->DisableBlend();
     }
 
     virtual void Update(double dt)
     {
         current_frame = clamp((Engine::GetTimeMS()*0.001f - start_time)*fps, 0, rows_size * columns_size);
-    
+
         if(current_frame == rows_size * columns_size)
             is_destroying = true;
-        
+
         //current_frame = 1;
 
         vec2 element_size = vec2(1.0f/columns_size, 1.0f/rows_size);
@@ -126,16 +127,16 @@ class Bullet : public RigidBody, public GameObject
     ShaderProgram* shader;
 
 public:
-    
+
     Bullet() : RigidBody(300.0f, PO_STATIC)
     {
         shape = new VertexBuffer();
-        
+
         shape->Create(6);
-        
+
         float width = 32;
         float height = 16;
-        
+
         Vertex *ptr = ((Vertex*)shape->GetPointer());
 
         ptr[0].pos = vec3(-width*0.5f,-height*0.5f, 0.0f);
@@ -153,7 +154,7 @@ public:
         ptr[3].pos = vec3(-width*0.5f,-height*0.5f, 0.0f);
         ptr[3].color = vec3_one;
         ptr[3].texcoord = vec2(0.0f, 0.0f);
-        
+
         ptr[4].pos = vec3(width*0.5f, height*0.5f, 0.0f);
         ptr[4].color = vec3_one;
         ptr[4].texcoord = vec2(1.0f, 1.0f);
@@ -162,7 +163,7 @@ public:
         ptr[5].color = vec3_one;
         ptr[5].texcoord = vec2(0.0f, 1.0f);
 
-        shape->Instantiate();
+        shape->Instantiate();        
 
         index_buffer.Create(2);
         index_buffer.Fill(GL_TRIANGLES);
@@ -181,10 +182,13 @@ public:
     virtual void Draw()
     {
         Renderer *render = Renderer::GetInstance();
-        
+
+        render->EnableBlend(BT_ADDITIVE);
+
+        render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, model.matrix());
         render->BindTexture(texture, 0);
-        
+
         render->EnableBlend(BT_ADDITIVE);
 
         render->BindBuffer(shape);
@@ -208,17 +212,17 @@ class Ship : public RigidBody
     ShaderProgram* shader;
 
 public:
-    
+
     float strafe_speed;
     float width;
     float height;
 
-    Ship() : RigidBody(300.0f, PO_STATIC), strafe_speed(500.0f), width(75), height(150)
+    Ship() : RigidBody(300.0f, PO_STATIC), strafe_speed(350.0f), width(75), height(150)
     {
         shape = new VertexBuffer();
-        
+
         shape->Create(6);
-        
+
         Vertex *ptr = ((Vertex*)shape->GetPointer());
 
         ptr[0].pos = vec3(-width*0.5f,-height*0.5f, 0.0f);
@@ -236,7 +240,7 @@ public:
         ptr[3].pos = vec3(-width*0.5f,-height*0.5f, 0.0f);
         ptr[3].color = vec3_one;
         ptr[3].texcoord = vec2(0.0f, 0.0f);
-        
+
         ptr[4].pos = vec3(width*0.5f, height*0.5f, 0.0f);
         ptr[4].color = vec3_one;
         ptr[4].texcoord = vec2(1.0f, 1.0f);
@@ -256,11 +260,14 @@ public:
 
         OPENGL_CHECK_FOR_ERRORS();
     }
-    
+
     void Draw()
     {
         Renderer *render = Renderer::GetInstance();
-        
+
+        render->EnableBlend(BT_ALPHA_BLEND);
+
+        render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, model.matrix());
         render->BindTexture(texture, 0);
 
@@ -283,7 +290,7 @@ class Asteroid : public RigidBody, public GameObject
     ShaderProgram* shader;
 
 public:
-    
+
     float size;
 
     Asteroid(float _size = unirand(50.0f, 150.0f)) : RigidBody(_size * 300.0f, PO_DYNAMIC)
@@ -311,17 +318,19 @@ public:
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\asteroid.png", RT_TEXTURE));
 
-        this->velocity = -vec2_x * unirand(50.0f, 350.0f);
+        this->velocity = -vec2_x * unirand(50.0f, 200.0f);
         //this->rotation = unirand(50.0f, -50.0f);
         this->elasticity = 0.001f;
 
         OPENGL_CHECK_FOR_ERRORS();
     }
-    
+
     void Draw()
     {
         Renderer *render = Renderer::GetInstance();
-        
+
+        render->DisableBlend();
+        render->BindShaderProgram(shader);
         render->SetupCameraForShaderProgram(shader, model.matrix());
         render->BindTexture(texture, 0);
 
@@ -345,17 +354,18 @@ class GameScene : public Scene, IInputListener
 
     vec4 colors[6];
 
+    bool touch_pressed_action;
     bool touch_pressed;
     vec2 prev_mouse_pos;
+
     Camera camera;
     Camera camera_ortho_01;
     float background_rotation;
-    RenderTexture rt;
     BMFont* font;
     Texture *nebula_tile_1;
     Texture *nebula_tile_2;
     Texture *background_stars;
-    
+
     Ship ship;
 
     float render_w;
@@ -377,10 +387,10 @@ public:
         render_w = (render_h * render->GetWidth()) / render->GetHeight();
         //camera.Create(-render->GetWidth()/2.0f, -render->GetHeight()/2.0f, 0.0f);
         camera.Ortho(0.0f, render_w, 0.0f, render_h, 0.0f, 1000.0f);
-                
+
         camera_ortho_01.Create(0.0f, 0.0f, 0.0f);
         camera_ortho_01.Ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
-        
+
         touch_pressed = false;
 
         background_stars_sh = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\background_stars.vs", ASSETS_ROOT + "Shaders\\background.ps");
@@ -391,7 +401,7 @@ public:
         nebula_tile_1 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile1.png", RT_TEXTURE));
         nebula_tile_2 = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\nebula_tile2.png", RT_TEXTURE));
         background_stars = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\stars.png", RT_TEXTURE));
-        
+
         Input::GetInstance()->Register(this);
 
         colors[0] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -402,10 +412,6 @@ public:
         colors[5] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         render->SetCurrentCamera(&camera);
-          
-        rt.Initialize(render->GetWidth(), render->GetHeight());
-        rt.GetTexture()->name = "text";
-        
         render->ClearColor(vec4(0.3f, 0.3f, 0.3f, 0.0f));       
 
         ship.model.position = vec3(0.0f, 0.0f, 0.0f);
@@ -415,6 +421,8 @@ public:
 
         //to seconds
         latest_asteroid_spawn_time = (float)Engine::GetTimeMS() * 0.001f;
+
+        touch_pressed_action = false;
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -423,11 +431,11 @@ public:
     {        
         Renderer *render = Renderer::GetInstance();
         //camera.SetPosition(ship.model.position - vec2(render_w * 0.3f, render_h * 0.5f));
-        
-        for(auto it = objects.begin(); it != objects.end(); )
+
+        for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); )
             (*(it++))->Update(dt);
-        
-        for(auto it = objects.begin(); it != objects.end(); )
+
+        for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); )
         {
             GameObject *obj = *(it++);
             if(obj->is_destroying)
@@ -435,7 +443,6 @@ public:
         }
 
         ship.model.position.y = clamp(ship.model.position.y, -(render_h*0.5f - 40.0f), render_h*0.5f - 40.0f);
-
         background_rotation += (float)dt * 2.0f;
         if(background_rotation >= 360.0f)
             background_rotation = 0.0f;
@@ -445,6 +452,24 @@ public:
             CreateObject(new Asteroid(), vec3(render_w + 300.0f, unirand(-render_h,render_h) * 0.5f, 0.0f));
             latest_asteroid_spawn_time = (float)Engine::GetTimeMS() * 0.001f;
         }
+
+        if(touch_pressed_action)
+        {
+            float sign = 1.0f;
+            float ship_y = 1.0f - (ship.model.position.y + render_h*0.5f)/render_h;
+            float abs_y = (float(prev_mouse_pos.y)/render->GetHeight());
+            float abs_x = (float(prev_mouse_pos.x)/render->GetWidth());
+
+            if(abs_y > ship_y)
+                sign *= -1.0f;
+
+            if(abs(abs_y - ship_y) > ship.width/render_h)
+                ship.velocity = vec3(0.0f, ship.strafe_speed * sign, 0.0f);
+            else
+                CreateObject(new Bullet(), ship.model.position + vec3(ship.height*0.5f, 0.0f, 0.0f));
+
+            touch_pressed_action = false;
+        }
     }
 
     virtual void DrawFrame()
@@ -453,8 +478,8 @@ public:
 
         mat4 model = mat4_identity;
         background_rotation = clamp(background_rotation, 0.0f, 360.0f);
-        
-        //render->Clear();
+
+        render->Clear();
 
         render->SetCurrentCamera(&camera_ortho_01);
         render->BindShaderProgram(background);
@@ -463,7 +488,7 @@ public:
         render->EnableBlend(BT_ALPHA_BLEND);
         render->BindTexture(nebula_tile_1, 0);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
-        
+
         render->SetupCameraForShaderProgram(background, GLScale(1.5f, 1.5f, 1.5f) * GLRotationZ(background_rotation * -2.0f));
         render->EnableBlend(BT_MULTIPLY);
         render->BindTexture(nebula_tile_2, 0);
@@ -475,16 +500,15 @@ public:
         render->BindTexture(background_stars, 0);
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
 
-        render->EnableBlend(BT_ALPHA_BLEND);
         render->SetCurrentCamera(&camera);
-        render->BindShaderProgram(shader);
-        render->SetupCameraForShaderProgram(shader, mat4_identity);
-        
+
         ship.Draw();
 
-        for(auto it = objects.begin(); it !=  objects.end(); it++)
-            (*it)->Draw();              
+        for(std::list<GameObject*>::iterator it = objects.begin(); it !=  objects.end(); it++)
+            (*it)->Draw();
 
+        render->DisableBlend();
+            
         /*render->SetupCameraForShaderProgram(shader, mat4_identity);
         render->EnableBlend(BT_ALPHA_BLEND);
         //font->Print(0, 0, "ololo");
@@ -494,33 +518,22 @@ public:
         //render->EnableBlend(BT_ALPHA_BLEND);
         //render->BindTexture(rt.GetTexture(), 0);
         //render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
-        
+
         //font->Print(-300.0f, 0.0f, GLScale(1.0f/render->GetWidth(), 1.0f/render->GetHeight(), 1.0f), "This is a different font, centered.");
     }
 
     virtual void OnTouchDown(int x, int y, unsigned int touch_id = 0) 
     { 
         touch_pressed = true; 
-        //prev_mouse_pos = vec2((float)x, (float)y); 
-
-        float sign = 1.0f;
-        float ship_y = 1.0f - (ship.model.position.y + render_h*0.5f)/render_h;
-        float abs_y = (float(y)/Renderer::GetInstance()->GetHeight());
-        float abs_x = (float(x)/Renderer::GetInstance()->GetWidth());
-        
-        if(abs_y > ship_y)
-            sign *= -1.0f;
-           
-        if(abs(abs_y - ship_y) > ship.width/render_h)
-            ship.velocity = vec3(0.0f, ship.strafe_speed * sign, 0.0f);
-        else
-            CreateObject(new Bullet(), ship.model.position + vec3(ship.height*0.5f, 0.0f, 0.0f));
+        touch_pressed_action = true;
+        prev_mouse_pos = vec2((float)x, (float)y);
     }
 
     virtual void OnTouchUp(int x, int y, unsigned int touch_id = 0) 
     { 
         ship.velocity = vec3_zero;
-        touch_pressed = false; 
+        touch_pressed = false;
+        touch_pressed_action = false;
     }
 
     virtual void OnMove(int x, int y, unsigned int touch_id = 0)
@@ -528,14 +541,9 @@ public:
         if(!touch_pressed)
             return;
 
-        vec3 pos = camera.GetPosition();
-        pos.x += prev_mouse_pos.x - x;
-        pos.y -= prev_mouse_pos.y - y;
-        //camera.SetPosition(vec3(pos.x, pos.y, 0.0f));
-
         prev_mouse_pos = vec2((float)x, (float)y);
     }
-    
+
     void DeleteObject(GameObject* obj)
     {
         objects.remove(obj);
@@ -547,7 +555,7 @@ public:
         RigidBody* body = dynamic_cast<RigidBody*>(obj);
         if(body != NULL)
             body->model.position = position;
-            
+
         obj->current_scene = this;
         objects.push_back(obj);
     }
@@ -573,7 +581,7 @@ void Asteroid:: OnCollide(RigidBody *body)
 {
     if(dynamic_cast<Bullet*>(body) != NULL)
     {
-        is_destroying = true;        
+        is_destroying = true;
 
         if(size > 20.0f)
         {

@@ -237,7 +237,7 @@ void BMFont::Print(float x, float y, mat4 model, const char *text)
 	
     float adv = (float) 1.0/width;
 	CharDescriptor  *f;
-	va_list ap = NULL;
+	char *ap = NULL;
 
     Renderer::GetInstance()->BindShaderProgram(shader);
     Renderer::GetInstance()->SetupCameraForShaderProgram(shader, model);

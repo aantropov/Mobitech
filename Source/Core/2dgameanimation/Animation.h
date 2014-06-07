@@ -17,7 +17,7 @@ public:
     string name;
 
     AnimationClip() {}
-    virtual ~AnimationClip() { for(unsigned int i = 0; i < bones.size(); ++i) delete bones[i]; }
+    virtual ~AnimationClip();
 
     Texture* texture;
 

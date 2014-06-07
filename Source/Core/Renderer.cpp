@@ -558,7 +558,7 @@ void Renderer::DeleteTexture(const Texture *tex) const
     OPENGL_CALL(glDeleteTextures(1, &t));
 }
 
-int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const
+int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state)
 {
     int size = vb->GetNum() * sizeof(Vertex);
 
@@ -568,10 +568,13 @@ int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state) const
     OPENGL_CALL(glBufferData(GL_ARRAY_BUFFER , size, vb->GetPointer(), state));
     //glBufferSubData(GL_ARRAY_BUFFER, 0, size, vb->GetPointer());
 
+    UnbindBuffer(true);
+    //UnbindBuffer(false);
+
     return vbo;
 }
 
-int Renderer::CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const
+int Renderer::CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state)
 {
     int size = ib->GetNum() * sizeof(unsigned int);
     
@@ -580,6 +583,9 @@ int Renderer::CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state) const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , vbo );
     OPENGL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER , size, ib->GetPointer(), state));         
     //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, ib->GetPointer());
+
+    //UnbindBuffer(true);
+    UnbindBuffer(false);
 
     return vbo;
 }
@@ -695,6 +701,9 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
 {    
     draw_calls++;
 
+    UnbindBuffer(true);
+    UnbindBuffer(false);
+
     if(colors != NULL)
     {
         glVertexAttribPointer(shader_program->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
@@ -732,9 +741,14 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
 
     OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, count));
 
-    glDisableVertexAttribArray(shader_program->attribute_locations.position);
-    glDisableVertexAttribArray(shader_program->attribute_locations.texcoords);
-    glDisableVertexAttribArray(shader_program->attribute_locations.color);
+    if(vertices != NULL)
+        glDisableVertexAttribArray(shader_program->attribute_locations.position);
+    
+    if(texcoords != NULL)
+        glDisableVertexAttribArray(shader_program->attribute_locations.texcoords);
+
+    if(colors != NULL)
+        glDisableVertexAttribArray(shader_program->attribute_locations.color);
 }
 
 void Renderer::BindBuffer(const VertexBuffer *vb) const
