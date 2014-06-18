@@ -2,7 +2,7 @@
 #include "resources.h"
 #include "renderer.h"
 #include "Utils.hpp"
-#include "2dgameanimation/Animation.h"
+//#include "2dgameanimation/Animation.h"
 
 #ifdef MOBITECH_ANDROID
 #include <android/asset_manager_jni.h>
@@ -96,8 +96,8 @@ Resource* ResourceFactory::Create(const RESOURCE_TYPE type, const string path)
         temp = new Texture();
     else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
-    else if(type == RT_ANIMATION)
-        temp = new Animation();
+    //else if(type == RT_ANIMATION)
+    //    temp = new Animation();
     else if(type == RT_BM_FONT)
         temp = new BMFont();
     else
@@ -185,8 +185,8 @@ Resource* ResourceFactory::Load(const std::string path, const RESOURCE_TYPE type
         temp = new Texture();
     else if(type == RT_SHADER_PROGRAM)
         temp = new ShaderProgram();
-    else if(type == RT_ANIMATION)
-        temp = new Animation();    
+    //else if(type == RT_ANIMATION)
+    //    temp = new Animation();    
     else if(type == RT_BM_FONT)
         temp = new BMFont();
     else

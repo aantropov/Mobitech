@@ -10,6 +10,7 @@
 
 #ifdef MOBITECH_ANDROID
 #include <android/asset_manager_jni.h>
+#include <android/asset_manager.h>
 #endif //MOBITECH_ANDROID
 
 using namespace std;

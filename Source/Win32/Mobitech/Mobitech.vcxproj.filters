@@ -25,9 +25,6 @@
     <Filter Include="Source Files\Core\tinyxml">
       <UniqueIdentifier>{aebc028f-fd96-4d92-a4ae-f7a0cfc9cfe4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Core\2dgameanimation">
-      <UniqueIdentifier>{0dee2f96-7d50-45d7-9b92-18dcb06401c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{5b9ddaf4-7524-4365-a608-7bb539595daf}</UniqueIdentifier>
     </Filter>
@@ -74,12 +71,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Core\tinyxml\tinyxmlparser.cpp">
       <Filter>Source Files\Core\tinyxml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\Animation.cpp">
-      <Filter>Source Files\Core\2dgameanimation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Core\2dgameanimation\MovingPart.cpp">
-      <Filter>Source Files\Core\2dgameanimation</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Source Files\Game</Filter>
@@ -154,15 +145,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Core\tinyxml\tinyxml.h">
       <Filter>Source Files\Core\tinyxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\Animation.h">
-      <Filter>Source Files\Core\2dgameanimation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MotionValues.h">
-      <Filter>Source Files\Core\2dgameanimation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Core\2dgameanimation\MovingPart.h">
-      <Filter>Source Files\Core\2dgameanimation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Core\font\bmfont.h">
       <Filter>Source Files\Core\font</Filter>

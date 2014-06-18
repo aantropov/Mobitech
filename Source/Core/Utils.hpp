@@ -43,6 +43,11 @@ const string MOBITECH_PLATFORM = "android";
 const string MOBITECH_PLATFORM = "win32";
 #endif //MOBITECH_
 
+#ifdef MOBITECH_WIN32
+    #define USE_VAO 1
+    #define USE_VBO 1
+#endif //MOBITECH_WIN32
+
 #ifdef MOBITECH_DEBUG
 #define OPENGL_GET_PROC(p,n) \
     n = (p)wglGetProcAddress(#n); \

@@ -49,7 +49,7 @@ bool Window::Create(string title, int width, int height, bool fullScreen)
         WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
         WGL_CONTEXT_MINOR_VERSION_ARB, 3,
         WGL_CONTEXT_FLAGS_ARB,         WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-        WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+        WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0
     };
 #endif //MOBITECH_DEBUG
@@ -540,12 +540,7 @@ int Renderer::CreateTexture(const Texture *tex) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    //OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger ( IL_IMAGE_FORMAT ) , tex->GetWidth(), tex->GetHeight(), 0, ilGetInteger ( IL_IMAGE_FORMAT ) , ilGetInteger ( IL_IMAGE_TYPE    ), ilGetData()));
-#ifdef MOBITECH_WIN32
-    OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, 4, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
-#else
     OPENGL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->GetWidth(), tex->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &tex->GetData()[0]));
-#endif //MOBITECH_WIN32
     OPENGL_CHECK_FOR_ERRORS();
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -561,7 +556,7 @@ void Renderer::DeleteTexture(const Texture *tex) const
 int Renderer::CreateVBO(const VertexBuffer *vb, BUFFER_TYPE state)
 {
     int size = vb->GetNum() * sizeof(Vertex);
-
+    
     GLuint vbo;
     OPENGL_CALL(glGenBuffers ( 1, &vbo ));
     glBindBuffer(GL_ARRAY_BUFFER , vbo );
@@ -646,18 +641,19 @@ void Renderer::DrawSolidPolygon(const Vertex* vertices, int vertex_count, const 
     glColor4f(1, 0, 1, 1 );
     glDrawArrays(GL_LINE_LOOP, 0, vertex_count);*/
 }
+
 void Renderer::DebugDrawLine(vec2 start, vec2 end, vec3 color)
 {
 #ifdef MOBITECH_WIN32
     glLineWidth(3);
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
     glColor3f(color.x, color.y, color.z);
     glBegin(GL_LINES);
 		glVertex2d(start.x, start.y);
 		glVertex2d(end.x, end.y);
 	glEnd();
     glColor3f(1.0f, 1.0f, 1.0f);
-    glEnable(GL_TEXTURE_2D);
+   //glEnable(GL_TEXTURE_2D);
 #endif
 }
 
@@ -699,47 +695,64 @@ void Renderer::DrawElements(int type, int count, int value_type, void* indices)
 
 void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsigned int count)
 {    
-    draw_calls++;
-
     UnbindBuffer(true);
     UnbindBuffer(false);
 
+#ifdef USE_VBO
+   
+   VertexBuffer vb;
+   vb.Create(count);
+
+   auto ptr = (Vertex*)vb.GetPointer();
+   int pos_index = 0;
+    
+   for(int i = 0; i < count; i++)
+   {
+       ptr[i].color = vec3_one;//((vec3*)colors)[i];
+       ptr[i].texcoord = ((vec2*)texcoords)[i];
+       ptr[i].pos.x = ((float*)vertices)[pos_index++];
+       ptr[i].pos.y = ((float*)vertices)[pos_index++];
+       ptr[i].pos.z = 0.0f;
+   }
+
+   vb.Instantiate();
+   IndexBuffer ib;
+
+   ib.Create(count/3);
+   ib.Fill(GL_TRIANGLES);
+   ib.Instantiate();
+       
+   BindBuffer(&vb);
+   BindBuffer(&ib);
+   DrawBuffer(&ib);
+   UnbindBuffer(true);
+   UnbindBuffer(false);
+
+#else 
+   
+    draw_calls++;
+
     if(colors != NULL)
     {
-        glVertexAttribPointer(shader_program->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors);
-        glEnableVertexAttribArray(shader_program->attribute_locations.color);
+        OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.color, 4, GL_FLOAT, GL_FALSE, 0, colors));
+        OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.color));
     }
 
     if(texcoords != NULL)
     {
-        glVertexAttribPointer(shader_program->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
-        glEnableVertexAttribArray(shader_program->attribute_locations.texcoords);
+        OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.texcoords, 2, GL_FLOAT, GL_FALSE, 0, texcoords));
+        OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.texcoords));
     }
 
     if(vertices != NULL)
     {
-        glVertexAttribPointer(shader_program->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(shader_program->attribute_locations.position);
+        OPENGL_CALL(glVertexAttribPointer(shader_program->attribute_locations.position, 2, GL_FLOAT, GL_FALSE, 0, vertices));
+        OPENGL_CALL(glEnableVertexAttribArray(shader_program->attribute_locations.position));
     }
-
-    /*
-    VertexBuffer vb;
-    vb.Create(count);
-    auto ptr = (Vertex*)vb.Lock();
-    
-    for(int i = 0; i < count; i++)
-    {
-        ptr[i].color = ((vec3*)colors)[i];
-        ptr[i].texcoord = ((vec2*)texcoords)[i];
-        ptr[i].pos = ((vec3*)vertices)[i];
-    }
-
-    vb.Unlock();
-
-    DrawBuffer(&vb);
-    */
 
     OPENGL_CALL(glDrawArrays(GL_TRIANGLES, 0, count));
+
+#endif //MOBITECH_WIN32
 
     if(vertices != NULL)
         glDisableVertexAttribArray(shader_program->attribute_locations.position);
@@ -751,9 +764,10 @@ void Renderer::DrawTriangles(void* vertices, void* colors, void* texcoords, unsi
         glDisableVertexAttribArray(shader_program->attribute_locations.color);
 }
 
-void Renderer::BindBuffer(const VertexBuffer *vb) const
-{    
-    glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());   
+void Renderer::BindBuffer(const VertexBuffer *vb)
+{   
+    BindVAO(vb);
+    glBindBuffer(GL_ARRAY_BUFFER , vb->GetId());
 }
 
 void Renderer::BindBuffer(const IndexBuffer *vb)
@@ -768,7 +782,8 @@ void Renderer::BindBuffer(const IndexBuffer *vb)
 void Renderer::UnbindBuffer(bool vertex_buffer)
 {
     if(vertex_buffer)
-    {        
+    {   
+        UnbindVAO();    
         glBindBuffer ( GL_ARRAY_BUFFER , 0 ); 
     }
     else
@@ -781,29 +796,43 @@ void Renderer::UnbindBuffer(bool vertex_buffer)
 int Renderer::CreateVAO() const
 {
     GLuint vao = -1;
-    //OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
-    //glBindVertexArray( vao );        
+#ifdef USE_VAO
+    OPENGL_CALL(glGenVertexArrays ( 1, &vao ));
+#endif //USE_VAO
     return vao;
 }
 
 void Renderer::DeleteVAO(VertexArrayObject *vao) const
 {
-    //GLuint id =  vao->GetId();
-    //OPENGL_CALL(glDeleteVertexArrays(1, &id));
+#ifdef USE_VAO
+    GLuint id =  vao->GetId();
+    OPENGL_CALL(glDeleteVertexArrays(1, &id));
+#endif
 }
 
-void Renderer::BindVAO(VertexBuffer *vb)
+void Renderer::BindVAO(const VertexBuffer *vb)
 {
-    /*if(previous_vao != vb->GetVAO()->GetId())
+#ifdef USE_VAO
+    BindVAO(vb->GetVAO());
+#endif //USE_VAO
+}
+
+void Renderer::BindVAO(const VertexArrayObject *vao)
+{
+#ifdef USE_VAO
+    if(previous_vao != vao->GetId())
     {
-    previous_vao = vb->GetVAO()->GetId();
-    glBindVertexArray(vb->GetVAO()->GetId());
-    }*/
+        previous_vao = vao->GetId();
+        glBindVertexArray(vao->GetId());
+    }
+#endif //USE_VAO
 }
 
-void Renderer::UnbindVAO() const
+void Renderer::UnbindVAO()
 {
-    //glBindVertexArray(0);    
+#ifdef USE_VAO
+    BindVAO(&main_vao);
+#endif //USE_VAO
 }
 
 int Renderer::CompileShader(const std::string source, SHADER_TYPE st) const
@@ -1119,6 +1148,9 @@ bool Renderer::Initialize()
     SetVerticalSynchronization(vsync);
 #endif //MOBITECH_WIN32
 
+    main_vao.Instantiate();
+    BindVAO(&main_vao);    
+
     OPENGL_CHECK_FOR_ERRORS();
 
     float aspectRatio = (float)width / (float)height;
@@ -1133,15 +1165,17 @@ bool Renderer::Initialize()
 
 void Renderer::Release()
 {
+    main_vao.Free();
     window.Destroy();    
 }
 
 void Renderer::PrintDebugInfo()
 {
+
 #ifdef MOBITECH_WIN32
     const char *major = (const char *)glGetString(GL_MAJOR_VERSION);
     const char *minor = (const char *)glGetString(GL_MINOR_VERSION);
-    const char *mrt = (const char *)glGetString(GL_MINOR_VERSION);
+    //const char *mrt = (const char *)glGetString(GL_MINOR_VERSION);
 #endif //MOBITECH_WIN32
 
     char message[1024];
@@ -1247,10 +1281,9 @@ void IndexBuffer::Free()
 
 bool VertexBuffer::Instantiate()
 {
-    //vao = new VertexArrayObject();
-    //vao->Instantiate();
-    
-    //Renderer::GetInstance()->BindVAO(this);
+    vao = new VertexArrayObject();
+    vao->Instantiate();
+    Renderer::GetInstance()->BindVAO(this);
 
     _id = -1;
     _id = Renderer::GetInstance()->CreateVBO(this, type);
@@ -1264,17 +1297,22 @@ void VertexBuffer::Free()
         Renderer::GetInstance()->DeleteVBO(this);
     _id = -1;
 
-    delete[] (Vertex*)vertices;
-    delete vao;
+    if(vertices != NULL)
+        delete[] (Vertex*)vertices;
+    vertices = NULL;
+
+    if(vao != NULL)
+        delete vao;
+    vao = NULL;
 }
 
 void* VertexBuffer::Lock() const
 {
 #ifdef MOBITECH_WIN32
-    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
+    Renderer::GetInstance()->BindBuffer(this);
     glBufferData(GL_ARRAY_BUFFER, num_vertices * sizeof(Vertex), 0, GL_STREAM_DRAW_ARB);
     Vertex* pBuffer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    Renderer::GetInstance()->UnbindBuffer(true);
     return pBuffer;
 #endif //MOBITECH_WIN32
     return NULL;
@@ -1283,9 +1321,9 @@ void* VertexBuffer::Lock() const
 void VertexBuffer::Unlock() const
 {
 #ifdef MOBITECH_WIN32
-    glBindBuffer(GL_ARRAY_BUFFER, GLObject::_id);
+    Renderer::GetInstance()->BindBuffer(this);
     GLboolean result = glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    Renderer::GetInstance()->UnbindBuffer(true);
 #endif //MOBITECH_WIN32
 }
 
@@ -1300,6 +1338,7 @@ void VertexArrayObject::Free()
 {
     if(_id != -1)
         Renderer::GetInstance()->DeleteVAO(this);
+    Renderer::GetInstance()->UnbindVAO();
     _id = -1;
 }
 

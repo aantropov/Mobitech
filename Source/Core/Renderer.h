@@ -37,14 +37,14 @@ public:
     void* Lock() const;
     void Unlock() const;
 
-    IndexBuffer(void) { this->type = STATIC; indices = NULL; }
+    IndexBuffer(void) { this->type = DYNAMIC; indices = NULL; }
     virtual ~IndexBuffer(void) { Free(); }
 };
 
 class VertexBuffer : public Buffer
 {    
     int num_vertices;
-    void *vertices;    
+    void *vertices;
     VertexArrayObject *vao;
 
 public:
@@ -52,13 +52,13 @@ public:
     virtual void* GetPointer() const;
     virtual unsigned int GetNum() const { return num_vertices; }
     virtual void Create(int num_vertices);
-    VertexArrayObject* GetVAO() const;
+    VertexArrayObject* GetVAO() const { return vao; }
     virtual bool Instantiate();
     virtual void Free();
     void* Lock() const;
     void Unlock() const;
 
-    VertexBuffer(void) { this->type = STATIC; num_vertices = 0; vertices = NULL; vao = NULL; }
+    VertexBuffer(void) : vao(NULL) { this->type = DYNAMIC; num_vertices = 0; vertices = NULL; vao = NULL; }
     virtual ~VertexBuffer(void) { Free(); }
 };
 
@@ -217,7 +217,9 @@ class Renderer : public Singleton<Renderer>
 
     int CacheUniformLocation(const string name);
     int CacheUniformLocation(const string name, const ShaderProgram *sh);
-           
+    
+    VertexArrayObject main_vao;
+
 public:
     
 	unsigned int draw_calls;
@@ -259,7 +261,7 @@ public:
     void DeleteTexture(const Texture *tex) const;
     void BindTexture(const Texture *tex, unsigned int channel);
 
-    void BindBuffer(const VertexBuffer *vb) const;
+    void BindBuffer(const VertexBuffer *vb);
     void BindBuffer(const IndexBuffer *ib);
     void UnbindBuffer(bool is_vertex_buffer);
     
@@ -267,8 +269,9 @@ public:
     int CreateVBO(const IndexBuffer *ib, BUFFER_TYPE state);
     void DeleteVBO(const Buffer *vb) const;
     
-    void BindVAO(VertexBuffer *vb);
-    void UnbindVAO() const;    
+    void BindVAO(const VertexArrayObject *vao);
+    void BindVAO(const VertexBuffer *vb);
+    void UnbindVAO();    
     int CreateVAO() const;
     void DeleteVAO(VertexArrayObject *vao) const;
 

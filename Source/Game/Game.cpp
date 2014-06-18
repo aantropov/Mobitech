@@ -194,12 +194,12 @@ public:
 
         render->EnableBlend(BT_ADDITIVE);
 
+        render->BindVAO(shape);
         render->BindBuffer(shape);
         render->BindBuffer(&index_buffer);
         render->DrawBuffer(&index_buffer);
         render->UnbindBuffer(true);
         render->UnbindBuffer(false);
-
         render->DisableBlend();
     }
 
@@ -260,7 +260,7 @@ public:
 
         shader = Engine::main_resource_factory.Load(ASSETS_ROOT + "Shaders\\diffuse.vs", ASSETS_ROOT + "Shaders\\diffuse.ps");
         texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\alien2.png", RT_TEXTURE));
-
+               
         OPENGL_CHECK_FOR_ERRORS();
     }
 
@@ -512,7 +512,7 @@ public:
     }
 
     virtual void DrawFrame()
-    {        
+    {   
         Renderer *render = Renderer::GetInstance();
 
         mat4 model = mat4_identity;
@@ -542,12 +542,12 @@ public:
         render->SetCurrentCamera(&camera);
 
         ship.Draw();
-
+        
         for(std::list<GameObject*>::iterator it = objects.begin(); it !=  objects.end(); it++)
             (*it)->Draw();
 
         render->DisableBlend();
-
+        
         if(press_any_key_to_start)
         {
             render->SetCurrentCamera(&camera_ortho_01);
