@@ -34,7 +34,7 @@ public:
     vec3 colors[8];
 
     float fps;
-    float start_time;    
+    long long start_time;    
     int current_frame;
 
     float size;
@@ -74,7 +74,7 @@ public:
         else
             texture = dynamic_cast<Texture*>(Engine::main_resource_factory.Load(ASSETS_ROOT + "Textures\\explosion.png", RT_TEXTURE));
 
-        start_time = Engine::GetTimeMS()*0.001f;
+        start_time = Engine::GetTimeMS();
 
         OPENGL_CHECK_FOR_ERRORS();
     }
@@ -97,7 +97,7 @@ public:
 
     virtual void Update(double dt)
     {
-        current_frame = (int)clamp((Engine::GetTimeMS()*0.001f - start_time)*fps, 0, (float)rows_size * columns_size);
+        current_frame = (int)clamp(float(Engine::GetTimeMS() - start_time)*fps*0.001f, 0, (float)rows_size * columns_size);
 
         if(current_frame == rows_size * columns_size)
             is_destroying = true;
@@ -378,7 +378,7 @@ class GameScene : public Scene, IInputListener
 
     std::list<GameObject*> objects;
 
-    float latest_asteroid_spawn_time;
+    long long latest_asteroid_spawn_time;
     float asteroid_spawn_time;
 
 public:
@@ -430,10 +430,9 @@ public:
         camera.SetPosition(ship.model.position - vec2(render_w * 0.2f, render_h * 0.5f));
 
         //to seconds
-        latest_asteroid_spawn_time = (float)Engine::GetTimeMS() * 0.001f;
+        latest_asteroid_spawn_time = Engine::GetTimeMS();
 
         touch_pressed_action = false;
-
     }
 
     ~GameScene() { Input::GetInstance()->Unregister(this); }
@@ -463,10 +462,10 @@ public:
         if(background_rotation >= 360.0f)
             background_rotation = 0.0f;
 
-        if(abs(latest_asteroid_spawn_time - (float)Engine::GetTimeMS() * 0.001f) > asteroid_spawn_time)
+        if(Engine::GetTimeMS() - latest_asteroid_spawn_time > 1000 * (long long)asteroid_spawn_time)
         {
             CreateObject(new Asteroid(), vec3(render_w + 300.0f, unirand(-render_h,render_h) * 0.5f, 0.0f));
-            latest_asteroid_spawn_time = (float)Engine::GetTimeMS() * 0.001f;
+            latest_asteroid_spawn_time = Engine::GetTimeMS();
         }
 
         if(touch_pressed_action)
@@ -540,7 +539,7 @@ public:
         render->DrawTriangles(vertices_ortho_01, colors, texcoords_ortho_01, 6);
 
         render->SetCurrentCamera(&camera);
-
+        
         ship.Draw();
         
         for(std::list<GameObject*>::iterator it = objects.begin(); it !=  objects.end(); it++)
